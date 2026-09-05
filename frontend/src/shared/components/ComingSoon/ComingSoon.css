@@ -1,0 +1,321 @@
+/* =========================================================
+   COMING SOON
+========================================================= */
+
+.coming-soon {
+  min-height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 24px;
+
+  box-sizing: border-box;
+  text-align: center;
+
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.coming-soon-icon {
+  position: relative;
+
+  width: 72px;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+  color: #6b7280;
+
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+
+  animation:
+    coming-icon-enter 0.6s ease-out both,
+    coming-icon-float 4s ease-in-out 0.8s infinite;
+}
+
+
+/* Animated outer glow */
+
+.coming-soon-icon::before {
+  content: "";
+
+  position: absolute;
+  inset: -5px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+
+  opacity: 0;
+
+  animation: coming-icon-pulse 2.8s ease-out 0.8s infinite;
+}
+
+
+.coming-soon-icon svg {
+  width: 32px;
+  height: 32px;
+
+  animation: coming-clock 4s linear 1s infinite;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.coming-soon-label {
+  margin-bottom: 10px;
+
+  color: #6b7280;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+
+  animation: coming-fade-up 0.55s ease-out 0.2s both;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.coming-soon h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+
+  letter-spacing: -0.025em;
+
+  animation: coming-fade-up 0.6s ease-out 0.3s both;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.coming-soon p {
+  max-width: 480px;
+
+  margin: 12px 0 24px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+
+  animation: coming-fade-up 0.6s ease-out 0.4s both;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.coming-soon button {
+  padding: 10px 18px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  animation: coming-fade-up 0.6s ease-out 0.5s both;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.coming-soon button:hover {
+  background: #1f2937;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+
+.coming-soon button:active {
+  transform: translateY(0);
+
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+/* Elements enter from slightly below */
+
+@keyframes coming-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Icon entrance */
+
+@keyframes coming-icon-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.75) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+/* Very subtle floating animation */
+
+@keyframes coming-icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+
+/* Outer pulse */
+
+@keyframes coming-icon-pulse {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.95);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+
+/* Clock movement */
+
+@keyframes coming-clock {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+  .coming-soon {
+    padding: 32px 20px;
+  }
+
+  .coming-soon-icon {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 16px;
+  }
+
+  .coming-soon-icon::before {
+    border-radius: 20px;
+  }
+
+  .coming-soon-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .coming-soon h1 {
+    font-size: 26px;
+  }
+
+  .coming-soon p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .coming-soon-icon,
+  .coming-soon-icon::before,
+  .coming-soon-icon svg,
+  .coming-soon-label,
+  .coming-soon h1,
+  .coming-soon p,
+  .coming-soon button {
+    animation: none;
+  }
+
+  .coming-soon button {
+    transition: none;
+  }
+}

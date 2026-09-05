@@ -1,0 +1,119 @@
+.moviera-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  user-select: none;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease;
+}
+
+.moviera-logo.clickable {
+  cursor: pointer;
+}
+
+.moviera-logo.clickable:hover {
+  transform: translateY(-2px);
+}
+
+.moviera-logo-img-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transition: transform 220ms ease;
+}
+
+.moviera-logo.clickable:hover .moviera-logo-img-container {
+  transform: scale(1.03);
+}
+
+.moviera-logo-img {
+  display: block;
+  object-fit: contain;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  filter: drop-shadow(0 2px 8px rgba(248, 68, 100, 0.15));
+}
+
+.moviera-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.brand-title {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  display: inline-flex;
+}
+
+.brand-movie {
+  color: #1f2533;
+}
+
+.brand-ra {
+  color: #f84464;
+  background: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f84464;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.15rem;
+}
+
+/* Size Variants */
+.moviera-logo.size-sm .moviera-logo-img-container {
+  height: 32px;
+}
+.moviera-logo.size-sm .brand-title {
+  font-size: 1.05rem;
+}
+
+.moviera-logo.size-md .moviera-logo-img-container {
+  height: 48px;
+}
+.moviera-logo.size-md .brand-title {
+  font-size: 1.35rem;
+}
+
+.moviera-logo.size-lg .moviera-logo-img-container {
+  height: 64px;
+}
+.moviera-logo.size-lg .brand-title {
+  font-size: 1.65rem;
+}
+
+.moviera-logo.size-xl .moviera-logo-img-container {
+  height: 84px;
+}
+.moviera-logo.size-xl .brand-title {
+  font-size: 2.1rem;
+}
+
+/* Style Variants */
+.moviera-logo.variant-light .brand-movie {
+  color: #ffffff;
+}
+
+.moviera-logo.variant-badge {
+  background: rgba(248, 68, 100, 0.08);
+  border: 1px solid rgba(248, 68, 100, 0.2);
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+}
+
+.moviera-logo.variant-icon-only .moviera-logo-text {
+  display: none;
+}

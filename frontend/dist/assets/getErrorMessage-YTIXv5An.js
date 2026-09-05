@@ -1,0 +1,1 @@
+import{l as e}from"./index-_wNF1otA.js";var t=t=>e.isAxiosError(t)?t.response?.data?.message||`Something went Wrong`:`Something went wrong`;export{t};

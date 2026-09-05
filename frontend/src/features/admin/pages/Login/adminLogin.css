@@ -1,0 +1,319 @@
+/* ==========================================================================
+   Moviera Cinema Admin System - Admin Login Stylesheet
+   ========================================================================== */
+
+:root {
+  /* BookMyShow Classic White & Red Theme Palette */
+  --admin-bg-page: #f8fafc;
+  --admin-bg-gradient: radial-gradient(circle at 50% 0%, rgba(248, 68, 100, 0.06) 0%, rgba(248, 250, 252, 1) 75%);
+  --admin-bg-card: #ffffff;
+  --admin-bg-input: #f8fafc;
+  
+  --admin-text-headline: #111827;
+  --admin-text-body: #374151;
+  --admin-text-muted: #6b7280;
+  --admin-text-subtle: #9ca3af;
+
+  /* Iconic BookMyShow Red */
+  --admin-brand-primary: #f84464;
+  --admin-brand-hover: #e03352;
+  --admin-brand-active: #c82240;
+  --admin-accent-red: #f84464;
+  --admin-accent-gradient: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  --admin-accent-gradient-hover: linear-gradient(135deg, #ff5273 0%, #e03352 100%);
+  --admin-accent-glow: rgba(248, 68, 100, 0.16);
+
+  --admin-border-light: #e5e7eb;
+  --admin-border-input: #d1d5db;
+  --admin-border-focus: #f84464;
+
+  --admin-status-error-bg: #fff1f3;
+  --admin-status-error-border: #fecdd3;
+  --admin-status-error-text: #e11d48;
+
+  --admin-radius-card: 20px;
+  --admin-radius-input: 10px;
+  --admin-radius-button: 10px;
+
+  --admin-shadow-card: 0 20px 45px -10px rgba(17, 24, 39, 0.08), 0 1px 3px rgba(17, 24, 39, 0.05);
+  --admin-shadow-button: 0 4px 14px rgba(248, 68, 100, 0.3);
+  --admin-shadow-button-hover: 0 8px 22px rgba(248, 68, 100, 0.45);
+
+  --admin-transition-standard: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Page Wrapper & Placement (No Page Scroll)
+   ========================================================================== */
+
+.admin-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: var(--admin-bg-page);
+  background-image: var(--admin-bg-gradient);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Central White Card Structure
+   ========================================================================== */
+
+.admin-login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 2.25rem 2rem;
+  box-sizing: border-box;
+  background: var(--admin-bg-card);
+  border: 1px solid var(--admin-border-light);
+  border-top: 4px solid var(--admin-brand-primary);
+  border-radius: var(--admin-radius-card);
+  box-shadow: var(--admin-shadow-card);
+  animation: adminCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes adminCardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   Brand & Header Group
+   ========================================================================== */
+
+.admin-login-header {
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.admin-login-header h1 {
+  margin: 0.75rem 0 0 0;
+  color: var(--admin-text-headline);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+/* ==========================================================================
+   Error Alert Banner
+   ========================================================================== */
+
+.admin-login-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--admin-status-error-border);
+  border-left: 4px solid #e11d48;
+  border-radius: 8px;
+  background: var(--admin-status-error-bg);
+  color: var(--admin-status-error-text);
+  font-size: 0.825rem;
+  line-height: 1.45;
+  animation: adminErrorSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-sizing: border-box;
+}
+
+@keyframes adminErrorSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-login-error svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #e11d48;
+}
+
+/* ==========================================================================
+   Form Controls & Inputs
+   ========================================================================== */
+
+.admin-form-group {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.admin-form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--admin-text-headline);
+  font-size: 0.78125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-form-group input {
+  width: 100%;
+  height: 44px;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  border: 1.5px solid var(--admin-border-input);
+  border-radius: var(--admin-radius-input);
+  background: var(--admin-bg-input);
+  color: var(--admin-text-headline);
+  outline: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all var(--admin-transition-standard);
+}
+
+.admin-form-group input::placeholder {
+  color: var(--admin-text-subtle);
+}
+
+.admin-form-group input:hover {
+  border-color: #9ca3af;
+  background: #ffffff;
+}
+
+.admin-form-group input:focus {
+  border-color: var(--admin-border-focus);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--admin-accent-glow);
+}
+
+.admin-form-group input[aria-invalid='true'] {
+  border-color: var(--admin-status-error-text);
+  background-color: var(--admin-status-error-bg);
+}
+
+.admin-field-error {
+  margin: 0.35rem 0 0 0.1rem;
+  color: var(--admin-status-error-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Primary Enterprise Submit Button
+   ========================================================================== */
+
+.admin-login-button {
+  width: 100%;
+  height: 46px;
+  margin-top: 0.5rem;
+  border: none;
+  border-radius: var(--admin-radius-button);
+  background: var(--admin-accent-gradient);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--admin-shadow-button);
+  transition: all var(--admin-transition-standard);
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.admin-login-button:hover:not(:disabled) {
+  background: var(--admin-accent-gradient-hover);
+  box-shadow: var(--admin-shadow-button-hover);
+  transform: translateY(-1px);
+}
+
+.admin-login-button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(248, 68, 100, 0.35);
+}
+
+.admin-login-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--admin-accent-glow);
+}
+
+.admin-login-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==========================================================================
+   Footer Navigation Link
+   ========================================================================== */
+
+.admin-footer-text {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+  margin: 1.5rem 0 0 0;
+  font-weight: 500;
+}
+
+.admin-footer-text a {
+  color: var(--admin-brand-primary);
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 0.35rem;
+  transition: color var(--admin-transition-standard);
+}
+
+.admin-footer-text a:hover {
+  color: var(--admin-brand-hover);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .admin-login-container {
+    padding: 0.75rem;
+  }
+
+  .admin-login-card {
+    padding: 1.5rem 1.15rem;
+    border-radius: 18px;
+  }
+
+  .admin-login-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .admin-form-group input {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+
+  .admin-login-button {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}

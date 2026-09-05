@@ -1,0 +1,345 @@
+/* ==========================================================================
+   Moviera Cinema System - Admin Register Stylesheet
+   ========================================================================== */
+
+:root {
+  /* BookMyShow Classic White & Red Theme Palette */
+  --hosp-bg-page: #f8fafc;
+  --hosp-bg-gradient: radial-gradient(circle at 50% 0%, rgba(248, 68, 100, 0.06) 0%, rgba(248, 250, 252, 1) 75%);
+  --hosp-bg-card: #ffffff;
+  --hosp-bg-input: #f8fafc;
+  
+  --hosp-text-headline: #111827;
+  --hosp-text-body: #374151;
+  --hosp-text-muted: #6b7280;
+  --hosp-text-subtle: #9ca3af;
+
+  /* Iconic BookMyShow Red */
+  --hosp-brand-primary: #f84464;
+  --hosp-brand-hover: #e03352;
+  --hosp-brand-active: #c82240;
+  --hosp-accent-red: #f84464;
+  --hosp-accent-gradient: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  --hosp-accent-gradient-hover: linear-gradient(135deg, #ff5273 0%, #e03352 100%);
+  --hosp-accent-glow: rgba(248, 68, 100, 0.16);
+
+  --hosp-border-light: #e5e7eb;
+  --hosp-border-input: #d1d5db;
+  --hosp-border-focus: #f84464;
+
+  --hosp-status-error-bg: #fff1f3;
+  --hosp-status-error-border: #fecdd3;
+  --hosp-status-error-text: #e11d48;
+
+  --hosp-radius-card: 20px;
+  --hosp-radius-input: 10px;
+  --hosp-radius-button: 10px;
+
+  --hosp-shadow-card: 0 20px 45px -10px rgba(17, 24, 39, 0.08), 0 1px 3px rgba(17, 24, 39, 0.05);
+  --hosp-shadow-button: 0 4px 14px rgba(248, 68, 100, 0.3);
+  --hosp-shadow-button-hover: 0 8px 22px rgba(248, 68, 100, 0.45);
+
+  --hosp-transition-standard: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Page Wrapper & Placement (No Page Scroll)
+   ========================================================================== */
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: var(--hosp-bg-page);
+  background-image: var(--hosp-bg-gradient);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Central Cinema Register Card
+   ========================================================================== */
+
+.register-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 2.25rem 2rem;
+  box-sizing: border-box;
+  background: var(--hosp-bg-card);
+  border: 1px solid var(--hosp-border-light);
+  border-top: 4px solid var(--hosp-brand-primary);
+  border-radius: var(--hosp-radius-card);
+  box-shadow: var(--hosp-shadow-card);
+  animation: registerCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes registerCardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   Brand & Header Group
+   ========================================================================== */
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--hosp-text-headline);
+  margin: 0.75rem 0 0.25rem 0;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.brand-header p {
+  color: var(--hosp-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   Error Alert Banner
+   ========================================================================== */
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--hosp-status-error-border);
+  border-left: 4px solid #e11d48;
+  border-radius: 8px;
+  background: var(--hosp-status-error-bg);
+  color: var(--hosp-status-error-text);
+  font-size: 0.825rem;
+  line-height: 1.45;
+  animation: bannerSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-sizing: border-box;
+}
+
+@keyframes bannerSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-banner svg {
+  color: #e11d48;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Form Controls & Inputs
+   ========================================================================== */
+
+.form-group {
+  margin-bottom: 0.85rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--hosp-text-headline);
+  font-size: 0.78125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 42px;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  border: 1.5px solid var(--hosp-border-input);
+  border-radius: var(--hosp-radius-input);
+  background: var(--hosp-bg-input);
+  color: var(--hosp-text-headline);
+  outline: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all var(--hosp-transition-standard);
+}
+
+.input-wrapper input::placeholder {
+  color: var(--hosp-text-subtle);
+}
+
+.input-wrapper input:hover {
+  border-color: #9ca3af;
+  background: #ffffff;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--hosp-border-focus);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--hosp-accent-glow);
+}
+
+.input-wrapper input[aria-invalid='true'] {
+  border-color: var(--hosp-status-error-text);
+  background-color: var(--hosp-status-error-bg);
+}
+
+.error-message {
+  margin: 0.35rem 0 0 0.1rem;
+  color: var(--hosp-status-error-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ==========================================================================
+   Turnstile Captcha Centering
+   ========================================================================== */
+
+.turnstile-wrapper,
+.register-card form > div[class*='turnstile'],
+.register-card form iframe[src*='turnstile'],
+.register-card form > div:has(iframe) {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0.85rem 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   Primary Execution Button
+   ========================================================================== */
+
+.submit-btn {
+  width: 100%;
+  height: 46px;
+  margin-top: 0.35rem;
+  border: none;
+  border-radius: var(--hosp-radius-button);
+  background: var(--hosp-accent-gradient);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--hosp-shadow-button);
+  transition: all var(--hosp-transition-standard);
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: var(--hosp-accent-gradient-hover);
+  box-shadow: var(--hosp-shadow-button-hover);
+  transform: translateY(-1px);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(248, 68, 100, 0.35);
+}
+
+.submit-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--hosp-accent-glow);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==========================================================================
+   Footer Meta Link Navigation
+   ========================================================================== */
+
+.footer-text {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--hosp-text-muted);
+  margin: 1.5rem 0 0 0;
+  font-weight: 500;
+}
+
+.footer-text a {
+  color: var(--hosp-brand-primary);
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 0.35rem;
+  transition: color var(--hosp-transition-standard);
+}
+
+.footer-text a:hover {
+  color: var(--hosp-brand-hover);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 0.75rem;
+  }
+
+  .register-card {
+    padding: 1.5rem 1.15rem;
+    border-radius: 18px;
+  }
+
+  .brand-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .submit-btn {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}
+

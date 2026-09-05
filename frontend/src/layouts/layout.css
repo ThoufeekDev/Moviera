@@ -1,0 +1,143 @@
+/* =========================================================
+   Moviera Admin Layout
+========================================================= */
+
+:root {
+  --bg-shell: #f8fafc;
+
+  --shell-border: #e5e7eb;
+
+  --shell-text-main: #111827;
+
+  --shell-transition:
+    0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.layout-container {
+  width: 100%;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+
+  background: var(--bg-shell);
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   MAIN CONTENT AREA
+========================================================= */
+
+.layout-main {
+  flex: 1;
+
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.main-content {
+  flex: 1;
+
+  width: 100%;
+
+  padding: 32px;
+
+  box-sizing: border-box;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.main-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+
+  border-radius: 100px;
+}
+
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+
+/* Firefox */
+
+.main-content {
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    #d1d5db
+    transparent;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 992px) {
+
+  .layout-container {
+    min-height: 100dvh;
+  }
+
+
+  .layout-main {
+    width: 100%;
+
+    min-height: 100dvh;
+  }
+
+
+  .main-content {
+    padding: 24px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+  .main-content {
+    padding: 20px 16px;
+  }
+}

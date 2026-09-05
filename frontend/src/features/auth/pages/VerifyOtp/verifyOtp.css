@@ -1,0 +1,384 @@
+/* ==========================================================================
+   Moviera Cinema Auth System - Verify OTP Stylesheet (Single Card)
+   ========================================================================== */
+
+:root {
+  /* BookMyShow Classic White & Red Theme Palette */
+  --auth-bg-page: #f8fafc;
+  --auth-bg-gradient: radial-gradient(circle at 50% 0%, rgba(248, 68, 100, 0.06) 0%, rgba(248, 250, 252, 1) 75%);
+  
+  --auth-bg-card: #ffffff;
+  
+  --auth-text-headline: #111827;
+  --auth-text-body: #374151;
+  --auth-text-muted: #6b7280;
+  --auth-text-subtle: #9ca3af;
+
+  /* Iconic BookMyShow Red */
+  --auth-brand-primary: #f84464;
+  --auth-brand-hover: #e03352;
+  --auth-brand-active: #c82240;
+  --auth-accent-red: #f84464;
+  --auth-accent-gradient: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  --auth-accent-gradient-hover: linear-gradient(135deg, #ff5273 0%, #e03352 100%);
+  --auth-accent-glow: rgba(248, 68, 100, 0.16);
+
+  --auth-border-light: #e5e7eb;
+  --auth-border-input: #d1d5db;
+  --auth-border-focus: #f84464;
+
+  --auth-status-error-bg: #fff1f3;
+  --auth-status-error-border: #fecdd3;
+  --auth-status-error-text: #e11d48;
+
+  --auth-radius-card: 20px;
+  --auth-radius-input: 10px;
+  --auth-radius-button: 10px;
+
+  --auth-shadow-card: 0 20px 45px -10px rgba(17, 24, 39, 0.08), 0 1px 3px rgba(17, 24, 39, 0.05);
+  --auth-shadow-button: 0 4px 14px rgba(248, 68, 100, 0.3);
+  --auth-shadow-button-hover: 0 8px 22px rgba(248, 68, 100, 0.45);
+
+  --auth-transition-standard: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Page Container (No Page Scroll)
+   ========================================================================== */
+
+.otp-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: var(--auth-bg-page);
+  background-image: var(--auth-bg-gradient);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.otp-background-glow {
+  display: none;
+}
+
+.otp-card {
+  position: relative;
+  z-index: 1;
+  background: var(--auth-bg-card);
+  padding: 2.25rem 2rem;
+  border-radius: var(--auth-radius-card);
+  border: 1px solid var(--auth-border-light);
+  border-top: 4px solid var(--auth-brand-primary);
+  box-shadow: var(--auth-shadow-card);
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-sizing: border-box;
+  text-align: center;
+  animation: otpCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes otpCardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   Brand Header
+   ========================================================================== */
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--auth-text-headline);
+  margin: 0.75rem 0 0.25rem 0;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.brand-header p {
+  color: var(--auth-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin: 0;
+  font-weight: 400;
+}
+
+.email-highlight {
+  color: var(--auth-text-headline);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Success Banner
+   ========================================================================== */
+
+.otp-success-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--auth-radius-input);
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  animation: successSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.success-check {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.success-check svg {
+  width: 13px;
+  height: 13px;
+}
+
+.success-check path {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes successSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Segmented 6-Digit OTP Box Grid
+   ========================================================================== */
+
+.form-group {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.otp-label {
+  display: block;
+  font-size: 0.78125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--auth-text-headline);
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+.otp-box-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.otp-digit-box {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--auth-text-headline);
+  text-align: center;
+  border: 1.5px solid var(--auth-border-input);
+  border-radius: var(--auth-radius-input);
+  background: #f8fafc;
+  outline: none;
+  transition: all var(--auth-transition-standard);
+  box-sizing: border-box;
+}
+
+.otp-digit-box:hover {
+  border-color: #9ca3af;
+  background: #ffffff;
+}
+
+.otp-digit-box:focus {
+  border-color: var(--auth-border-focus);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--auth-accent-glow);
+  transform: translateY(-1px);
+}
+
+.otp-digit-box.filled {
+  border-color: var(--auth-brand-primary);
+  background-color: #ffffff;
+  color: var(--auth-text-headline);
+}
+
+.otp-digit-box.error {
+  border-color: var(--auth-status-error-text);
+  background-color: var(--auth-status-error-bg);
+}
+
+.field-error {
+  color: var(--auth-status-error-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: left;
+  margin: 0.4rem 0 0 0.1rem;
+}
+
+.timer-wrapper {
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--auth-text-muted);
+}
+
+/* ==========================================================================
+   Submit Button & Resend Action
+   ========================================================================== */
+
+.submit-btn {
+  width: 100%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--auth-accent-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--auth-radius-button);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--auth-shadow-button);
+  transition: all var(--auth-transition-standard);
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: var(--auth-accent-gradient-hover);
+  box-shadow: var(--auth-shadow-button-hover);
+  transform: translateY(-1px);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(248, 68, 100, 0.35);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.resend-wrapper {
+  margin-top: 1.35rem;
+}
+
+.resend-text {
+  font-size: 0.85rem;
+  color: var(--auth-text-muted);
+  margin: 0;
+}
+
+.resend-btn {
+  color: var(--auth-brand-primary);
+  text-decoration: none;
+  font-weight: 700;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-left: 0.25rem;
+  transition: color var(--auth-transition-standard);
+  font-size: 0.85rem;
+}
+
+.resend-btn:hover:not(:disabled) {
+  color: var(--auth-brand-hover);
+  text-decoration: underline;
+}
+
+.resend-btn:disabled {
+  color: var(--auth-text-subtle);
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .otp-container {
+    padding: 0.75rem;
+  }
+
+  .otp-card {
+    padding: 1.5rem 1.15rem;
+    border-radius: 18px;
+  }
+
+  .otp-box-grid {
+    gap: 0.35rem;
+  }
+
+  .otp-digit-box {
+    height: 44px;
+    font-size: 1.15rem;
+  }
+
+  .submit-btn {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}
+

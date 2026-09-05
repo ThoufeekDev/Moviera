@@ -1,0 +1,23 @@
+.auth-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 1.25rem;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.auth-error-icon {
+  flex-shrink: 0;
+  color: #dc2626;
+}
+
+.auth-error-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #991b1b;
+  line-height: 1.4;
+}

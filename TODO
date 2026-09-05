@@ -1,0 +1,101 @@
+# MOVIERA — PROJECT ROADMAP
+
+## Infrastructure & Developer Experience
+
+✔ Dockerize Backend & Frontend
+✔ Configure Vitest & Supertest for Backend Testing
+☐ Configure ESLint for React Frontend
+
+
+## Authentication & Authorization
+
+✔ Implement OTP Expiration / Timeout @started(26-09-01 11:21) @done(26-09-01 13:49) @lasted(2h28m54s)
+✔ Implement Resend OTP @done(26-09-04 04:41)
+✔ Implement Google OAuth @done(26-09-05 00:13)
+✘ Implement Apple OAuth @cancelled(26-09-01 03:03)
+✘ Apple OAuth — Cancelled
+☐ Implement forgot password on Login Page
+
+
+## User Application
+
+### Landing Page
+
+☐ Implement Landing Page
+  ├─ Search / Discovery
+  ├─ Features
+  └─ Call-to-Action
+
+
+### Hospital Discovery
+
+☐ Implement Hospital Listing Page
+  ├─ List Available Hospitals
+  ├─ Search Hospitals
+  ├─ Filter Hospitals
+  └─ Pagination / Infinite Scroll
+
+☐ Implement Hospital Details Page
+  ├─ Hospital Information
+  ├─ Departments
+  ├─ Doctors
+  ├─ Specializations
+  └─ Available Consultation Information
+
+### Appointment Management
+
+☐ Implement Appointment Booking
+  ├─ Select Hospital
+  ├─ Select Doctor
+  ├─ Select Date
+  ├─ Select Time Slot
+  ├─ Confirm Appointment
+  └─ Booking Confirmation
+
+
+## Admin — Hospital Management
+
+### Hospital Onboarding
+
+☐ Fix Current Location Detection During Hospital Creation
+☐ Implement Hospital Location / Address Selection
+
+
+### Doctor Management
+
+✔ Implement Doctor Creation
+
+☐ Implement Doctor Management
+  ├─ View Doctors
+  ├─ Edit Doctor
+  ├─ Activate / Deactivate Doctor
+  └─ Doctor Details
+
+
+### Specialization Management
+
+✔ Implement Specialization Creation
+
+☐ Implement Specialization Management
+  ├─ View Specializations
+  ├─ Add Specialization
+  └─ Manage Specializations
+
+
+## Quality & Testing
+
+✔ Expand Backend Unit Test Coverage @done(26-09-01 03:05)
+☐ Add Backend Integration Tests
+☐ Add Frontend Unit Tests
+☐ Add Frontend Component Tests
+✔ Configure Test Coverage Reporting @done(26-09-01 03:05)
+☐ Add API Error-Handling Tests
+
+
+## Deployment & Production Readiness
+
+☐ Configure Production Environment Variables
+☐ Configure Production Docker Setup
+☐ Configure CI/CD Pipeline
+☐ Add Automated Test Execution in CI
+☐ Production Logging & Monitoring
