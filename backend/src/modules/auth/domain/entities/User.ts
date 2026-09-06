@@ -12,7 +12,7 @@ export class User {
     public role: Role,
     public isVerified: boolean,
     public phone: string | null,
-    public profileImage: string | null,
+    public avatar: string | null,
     public gender: string | null,
     public dateOfBirth: Date | null,
     public readonly createdAt: Date,

@@ -8,7 +8,7 @@ export class GoogleLoginUseCase {
     googleId: string;
     email: string;
     name: string;
-    profileImage: string | null;
+    avatar: string | null;
   }) {
     const existingGoogleUser = await this.userRepository.findByGoogleId(data.googleId);
     const existingEmailUser = await this.userRepository.findByEmail(data.email);

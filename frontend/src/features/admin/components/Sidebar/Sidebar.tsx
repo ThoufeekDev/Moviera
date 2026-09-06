@@ -94,12 +94,6 @@ const icons: Record<string, React.ReactNode> = {
   ),
 };
 
-// const SearchIcon = () => (
-//   <svg viewBox="0 0 24 24">
-//     <circle cx="11" cy="11" r="7" />
-//     <path d="m20 20-4-4" />
-//   </svg>
-// );
 
 const ChevronIcon = () => (
   <svg viewBox="0 0 24 24">
@@ -143,15 +137,6 @@ const Sidebar: React.FC<SidebarProps> = React.memo(
             <MovieraLogo size="sm" variant="light" subtitle="Admin Portal" />
           </div>
 
-          {/* Search */}
-
-          {/* <div className="sidebar-search">
-            <SearchIcon />
-
-            <input type="text" placeholder="Search..." aria-label="Search sidebar" />
-          </div> */}
-
-          {/* Navigation */}
 
           <nav className="sidebar-navigation" aria-label="Admin navigation">
             {SIDEBAR_ITEMS.map((item) => {

@@ -6,7 +6,6 @@
 ✔ Configure Vitest & Supertest for Backend Testing
 ☐ Configure ESLint for React Frontend
 
-
 ## Authentication & Authorization
 
 ✔ Implement OTP Expiration / Timeout @started(26-09-01 11:21) @done(26-09-01 13:49) @lasted(2h28m54s)
@@ -14,12 +13,77 @@
 ✔ Implement Google OAuth @done(26-09-05 00:13)
 ✘ Implement Apple OAuth @cancelled(26-09-01 03:03)
 ✘ Apple OAuth — Cancelled
-☐ Implement forgot password on Login Page
-
+☐ Implement Forgot Password on Login Page
+☐ Implement Role-Based Access Control
+☐ Implement Super Admin Authorization
+☐ Implement Theatre Admin Authorization
 
 ## User Application
 
+☐ User Profile
+☐ Update User Profile
+☐ Change Password
+☐ User Booking History
+☐ View Booking Details
+☐ Download / View QR Ticket
 
+## Movie Module
+
+✔ Create Movie — Super Admin
+✔ Get All Movies — Public
+✔ Get Movie by ID — Public
+☐ Update Movie — Super Admin @started(26-09-07 00:47)
+☐ Deactivate Movie — Super Admin
+☐ Add Movie Module Tests
+
+## Theatre Module
+
+☐ Create Theatre — Theatre Admin
+☐ Get All Theatres — Public
+☐ Get Theatre by ID — Public
+☐ Update Theatre — Theatre Admin
+☐ Deactivate Theatre — Theatre Admin
+☐ Add Theatre Module Tests
+
+## Screen & Seat Layout
+
+☐ Create Screen
+☐ Update Screen
+☐ Deactivate Screen
+☐ Configure Seats
+☐ Store Seat `x` Position
+☐ Store Seat `y` Position
+☐ Store Seat `rotation`
+☐ Return Seat Layout to Frontend
+☐ Add Screen & Seat Layout Tests
+
+## Shows
+
+☐ Create Show
+☐ Validate Show Timing
+☐ Generate `ShowSeat` Records from Screen Seats
+☐ Get Shows by Movie
+☐ Get Shows by Theatre
+☐ Get Shows by Date
+☐ Get Shows by Movie + Theatre + Date
+☐ Add Shows Module Tests
+
+## Booking
+
+☐ Check Seat Availability
+☐ Implement Redis Seat Locking
+☐ Implement Seat Lock Expiration
+☐ Create Booking
+☐ Handle Booking Expiration
+☐ Integrate Stripe Payment
+☐ Create Stripe Checkout / Payment Flow
+☐ Implement Stripe Webhook
+☐ Verify Payment
+☐ Confirm Booking After Successful Payment
+☐ Release Seats After Failed / Expired Payment
+☐ Generate QR Ticket
+☐ Return Booking / Ticket Details
+☐ Add Booking Module Tests
 
 ## Quality & Testing
 
@@ -29,7 +93,13 @@
 ☐ Add Frontend Component Tests
 ✔ Configure Test Coverage Reporting @done(26-09-01 03:05)
 ☐ Add API Error-Handling Tests
-
+☐ Add Authentication Tests
+☐ Add Authorization Tests
+☐ Add Movie Flow Integration Tests
+☐ Add Theatre Flow Integration Tests
+☐ Add Show Flow Integration Tests
+☐ Add Seat Locking Tests
+☐ Add Booking & Payment Flow Tests
 
 ## Deployment & Production Readiness
 
@@ -38,3 +108,10 @@
 ☐ Configure CI/CD Pipeline
 ☐ Add Automated Test Execution in CI
 ☐ Production Logging & Monitoring
+☐ Production Database Setup
+☐ Production Redis Setup
+☐ Production Stripe Configuration
+☐ Run Production Database Migrations
+☐ API Documentation
+☐ Health Check Endpoint
+☐ Production Security Review

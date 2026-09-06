@@ -2,8 +2,10 @@ import { Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
 
 import { authenticateUser } from '../../../../shared/middleware/authenticateUser';
+import { authorizeRoles } from '../../../../shared/middleware/authorizeRoles';
 import { otpRateLimit } from '../../../../shared/middleware/rateLimit.middleware';
 import { verifyTurnStile } from '../../../../shared/middleware/verifyTurnstile.middleware';
+import { Role } from '../../../../shared/enums/Role';
 const router = Router();
 
 const authController = new AuthController();

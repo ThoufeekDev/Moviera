@@ -1,3 +1,4 @@
+
 import prisma from '../../../../config/database';
 
 import { User, CreateUserData } from '../../domain/entities/User';
@@ -5,16 +6,20 @@ import { User, CreateUserData } from '../../domain/entities/User';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 
 import { Role as PrismaRole } from '@prisma/client';
+
 import { Role } from '../../../../shared/enums/Role';
 
 export class PrismaUserRepository implements IUserRepository {
+
   private toDomainRole(role: PrismaRole): Role {
+
     switch (role) {
+
       case PrismaRole.USER:
         return Role.USER;
 
-      case PrismaRole.ADMIN:
-        return Role.ADMIN;
+      case PrismaRole.THEATRE_ADMIN:
+        return Role.THEATRE_ADMIN;
 
       case PrismaRole.SUPER_ADMIN:
         return Role.SUPER_ADMIN;
@@ -25,12 +30,14 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   private toPrismaRole(role: Role): PrismaRole {
+
     switch (role) {
+
       case Role.USER:
         return PrismaRole.USER;
 
-      case Role.ADMIN:
-        return PrismaRole.ADMIN;
+      case Role.THEATRE_ADMIN:
+        return PrismaRole.THEATRE_ADMIN;
 
       case Role.SUPER_ADMIN:
         return PrismaRole.SUPER_ADMIN;
@@ -49,12 +56,13 @@ export class PrismaUserRepository implements IUserRepository {
     role: PrismaRole;
     isVerified: boolean;
     phone: string | null;
-    profileImage: string | null;
+    avatar: string | null;
     gender: string | null;
     dateOfBirth: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }): User {
+
     return new User(
       user.id,
       user.name,
@@ -64,7 +72,7 @@ export class PrismaUserRepository implements IUserRepository {
       this.toDomainRole(user.role),
       user.isVerified,
       user.phone,
-      user.profileImage,
+      user.avatar,
       user.gender,
       user.dateOfBirth,
       user.createdAt,
@@ -73,6 +81,7 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async create(userData: CreateUserData): Promise<User> {
+
     const user = await prisma.user.create({
       data: {
         ...userData,
@@ -84,6 +93,7 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
+
     const user = await prisma.user.findUnique({
       where: {
         email,
@@ -98,30 +108,39 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async findByGoogleId(googleId: string): Promise<User | null> {
-      
+
     const user = await prisma.user.findUnique({
       where: {
         googleId,
-      }
-    })
+      },
+    });
 
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
 
     return this.toDomainEntity(user);
   }
 
-  async linkGoogleAccount(userId: string, googleId: string): Promise<User> {
+  async linkGoogleAccount(
+    userId: string,
+    googleId: string,
+  ): Promise<User> {
+
     const user = await prisma.user.update({
-      where: { id: userId },
+      where: {
+        id: userId,
+      },
       data: {
-        googleId
-      }
-    })
+        googleId,
+      },
+    });
 
     return this.toDomainEntity(user);
   }
 
   async verifyUser(userId: string): Promise<void> {
+
     await prisma.user.update({
       where: {
         id: userId,
@@ -133,6 +152,7 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
+
     const user = await prisma.user.findUnique({
       where: {
         id,
@@ -146,3 +166,4 @@ export class PrismaUserRepository implements IUserRepository {
     return this.toDomainEntity(user);
   }
 }
+

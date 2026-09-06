@@ -1,8 +1,9 @@
 import { NextFunction, Response } from 'express';
-import { Role } from '@prisma/client';
+// import { Role } from '@prisma/client';
+import { Role } from '../enums/Role';
 import { AuthenticatedRequest } from '../types/AuthenticateRequest';
-import { success } from 'zod';
 
+                               // can pass any number of role  [...]
 export const authorizeRoles = (...allowedRoles: Role[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.role) {

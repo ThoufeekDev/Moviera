@@ -22,7 +22,7 @@ import { BadRequestError } from '../../../../shared/exceptions/BadRequestError';
 import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedError';
 
 // Shared - HTTP Utilities
-import { successResponse } from '../../../../shared/utils/response';
+import { successResponse } from '../../../../shared/utils/apiResponse';
 import { setAccessTokenCookie, setAuthCookies } from '../../../../shared/utils/authCookies';
 
 // Shared - Types
@@ -96,7 +96,7 @@ export class AuthController {
       googleId: payload!.sub!,
       email: payload!.email!,
       name: payload!.name!,
-      profileImage: payload!.picture ?? null,
+      avatar: payload!.picture ?? null,
     });
 
     setAuthCookies(res, user.id, user.role);
@@ -141,47 +141,3 @@ export class AuthController {
     successResponse(res, 200, true, 'Get Profile succes', result.user);
   }
 }
-
-// async googleLogin(req: Request, res: Response) {
-//   try {
-//     const { credential } = req.body;
-
-//     // console.log('Google credential received:', !!credential);
-
-//     if (!credential) {
-//       // return res.status(400).json({
-//       //   success: false,
-//       //   message: 'Google credential is required',
-//       // });
-
-//       throw new BadRequestError('Google credential is required');
-//     }
-
-//     const ticket = await googleClient.verifyIdToken({
-//       idToken: credential,
-//       audience: process.env.GOOGLE_CLIENT_ID,
-//     });
-
-//     const payload = ticket.getPayload();
-
-//     const googleLoginUseCase = makeGoogleLoginUseCase();
-
-//     const user = await googleLoginUseCase.execute({
-//       googleId: payload!.sub!,
-//       email: payload!.email!,
-//       name: payload!.name!,
-//       profileImage: payload!.picture ?? null,
-//     });
-
-//     setAuthCookies(res, user.id, user.role);
-
-//     successResponse(res, 200, true, 'Google succesfully Logined', user);
-//   } catch (error) {
-//     console.error('Google verification failed:', error);
-
-//     return res.status(401).json({
-//       success: false,
-//       message: 'Invalid Google credential',
-//     });
-//   }
-// }
