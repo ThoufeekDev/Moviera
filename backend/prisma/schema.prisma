@@ -9,7 +9,7 @@ datasource db {
 
 enum Role {
   USER
-  ADMIN
+  THEATRE_ADMIN
   SUPER_ADMIN
 }
 
@@ -63,6 +63,9 @@ model User {
 
   isVerified Boolean @default(false)
   isActive   Boolean @default(true)
+
+  gender      String?
+  dateOfBirth DateTime?
 
   bookings Booking[]
 

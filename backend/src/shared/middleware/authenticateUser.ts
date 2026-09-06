@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { env } from '../../config/env';
 import { verifyToken } from '../utils/verifyToken';
 import { AuthenticatedRequest } from '../types/AuthenticateRequest';
-import { Role } from '@prisma/client';
+import { Role } from '../enums/Role';
 
 export const authenticateUser = (
   req: AuthenticatedRequest,
@@ -10,7 +10,7 @@ export const authenticateUser = (
   next: NextFunction,
 ): void => {
   try {
-    const token = req.cookies.accessToken;
+    const token = req.cookies?.accessToken;
 
     if (!token) {
       res.status(401).json({

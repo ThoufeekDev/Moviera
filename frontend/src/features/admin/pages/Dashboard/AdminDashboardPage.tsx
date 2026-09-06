@@ -1,9 +1,13 @@
-import React from 'react';
-import DashboardMain from '../../../admin/components/DashboardMain/DashboardMain';
 
-const AdminDashboardPage: React.FC = () => {
+function AdminDashboardPage(){
   // Perfect place to hook up state management or API calls later.
-  return <DashboardMain />;
+  return (
+    
+    <>
+    
+      <h1>ADMIN DASHBOARD</h1>
+    </>
+  )
 };
 
 export default AdminDashboardPage;
