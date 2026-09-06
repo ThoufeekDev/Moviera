@@ -19,67 +19,6 @@
 
 ## User Application
 
-### Landing Page
-
-☐ Implement Landing Page
-  ├─ Search / Discovery
-  ├─ Features
-  └─ Call-to-Action
-
-
-### Hospital Discovery
-
-☐ Implement Hospital Listing Page
-  ├─ List Available Hospitals
-  ├─ Search Hospitals
-  ├─ Filter Hospitals
-  └─ Pagination / Infinite Scroll
-
-☐ Implement Hospital Details Page
-  ├─ Hospital Information
-  ├─ Departments
-  ├─ Doctors
-  ├─ Specializations
-  └─ Available Consultation Information
-
-### Appointment Management
-
-☐ Implement Appointment Booking
-  ├─ Select Hospital
-  ├─ Select Doctor
-  ├─ Select Date
-  ├─ Select Time Slot
-  ├─ Confirm Appointment
-  └─ Booking Confirmation
-
-
-## Admin — Hospital Management
-
-### Hospital Onboarding
-
-☐ Fix Current Location Detection During Hospital Creation
-☐ Implement Hospital Location / Address Selection
-
-
-### Doctor Management
-
-✔ Implement Doctor Creation
-
-☐ Implement Doctor Management
-  ├─ View Doctors
-  ├─ Edit Doctor
-  ├─ Activate / Deactivate Doctor
-  └─ Doctor Details
-
-
-### Specialization Management
-
-✔ Implement Specialization Creation
-
-☐ Implement Specialization Management
-  ├─ View Specializations
-  ├─ Add Specialization
-  └─ Manage Specializations
 
 
 ## Quality & Testing
