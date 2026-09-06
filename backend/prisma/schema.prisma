@@ -13,129 +13,321 @@ enum Role {
   SUPER_ADMIN
 }
 
+
+enum SeatType {
+  REGULAR
+  PREMIUM
+  RECLINER
+  COUPLE
+  WHEELCHAIR
+}
+
+enum ShowSeatStatus {
+  AVAILABLE
+  BOOKED
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  INITIATED
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+}
+
+
 model User {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
-  name String
-
-  email String @unique
-
-  googleId String? @unique
-
+  name     String
+  email    String @unique
   password String?
+  phone    String? @unique
 
   role Role @default(USER)
 
-  isVerified Boolean @default(false)
-
-  phone String?
-
-  profileImage String?
-
-  gender String?
-
-  dateOfBirth DateTime?
-
-  hospital Hospital? @relation("HospitalAdmin")
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-}
-
-model Hospital {
-  id String @id @default(uuid())
-
-  adminId String @unique
-
-  admin User @relation("HospitalAdmin", fields: [adminId], references: [id])
-
-  name String
-
-  email String?
-
-  phone String?
-
-  description String
-
-  imageUrl String?
-
-  licenseNumber String?
-
-  address String
-
-  city String?
-
-  state String?
-
-  country String?
-
-  zipcode String?
-
-  latitude Float
-
-  longitude Float
+  googleId String? @unique
+  avatar   String?
 
   isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
 
-  doctors Doctor[]
+  bookings Booking[]
 
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
+
+  @@index([role])
 }
 
-enum Gender {
-  MALE
-  FEMALE
-}
 
-model Doctor {
-  id String @id @default(uuid())
+model Movie {
+  id String @id @default(cuid())
 
-  name String
+  title       String
+  slug        String @unique
+  description String?
+  duration    Int
+  releaseDate DateTime
+  language    String
+  genre       String
+  certificate String
 
-  email String @unique
-
-  phone String
-
-  imageUrl String?
-
-  bio String?
-
-  qualification String
-
-  gender Gender
-
-  experience Int
-
-  consultationFee Int
+  posterUrl   String?
+  backdropUrl String?
+  trailerUrl  String?
 
   isActive Boolean @default(true)
 
-  onDuty Boolean @default(true)
-
-  hospitalId String
-
-  specializationId String
-
-  hospital Hospital @relation(fields: [hospitalId], references: [id])
-
-  specialization Specialization @relation(fields: [specializationId], references: [id])
+  shows Show[]
 
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
 }
 
-model Specialization {
-  id String @id @default(uuid())
 
-  name String @unique
+model City {
+  id String @id @default(cuid())
 
-  doctors Doctor[]
+  name    String
+  state   String
+  country String
+  slug    String @unique
+
+  isActive Boolean @default(true)
+
+  theatres Theatre[]
 
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
+
+  @@unique([name, state, country])
+}
+
+
+model Theatre {
+  id String @id @default(cuid())
+
+  cityId String
+  city   City   @relation(fields: [cityId], references: [id])
+
+  name      String
+  slug      String
+  address   String
+  latitude  Float?
+  longitude Float?
+
+  isActive Boolean @default(true)
+
+  screens Screen[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cityId, name])
+  @@unique([cityId, slug])
+  @@index([cityId])
+}
+
+
+model Screen {
+  id String @id @default(cuid())
+
+  theatreId String
+  theatre   Theatre @relation(fields: [theatreId], references: [id])
+
+  name String
+  slug String
+
+  isActive Boolean @default(true)
+
+  seats Seat[]
+  shows Show[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([theatreId, name])
+  @@unique([theatreId, slug])
+  @@index([theatreId])
+}
+
+
+model Seat {
+  id String @id @default(cuid())
+
+  screenId String
+  screen   Screen @relation(fields: [screenId], references: [id])
+
+  rowLabel  String
+  seatNumber Int
+  label     String
+
+  x        Float
+  y        Float
+  rotation Float @default(0)
+
+  type SeatType
+
+  isActive Boolean @default(true)
+
+  showSeats ShowSeat[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([screenId, label])
+  @@unique([screenId, rowLabel, seatNumber])
+  @@index([screenId])
+}
+
+
+model Show {
+  id String @id @default(cuid())
+
+  movieId String
+  movie   Movie  @relation(fields: [movieId], references: [id])
+
+  screenId String
+  screen   Screen @relation(fields: [screenId], references: [id])
+
+  startTime DateTime
+  endTime   DateTime
+
+  basePrice Int
+
+  isActive Boolean @default(true)
+
+  showSeats ShowSeat[]
+  bookings  Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([movieId])
+  @@index([screenId])
+  @@index([startTime])
+}
+
+
+model ShowSeat {
+  id String @id @default(cuid())
+
+  showId String
+  show   Show @relation(fields: [showId], references: [id])
+
+  seatId String
+  seat   Seat @relation(fields: [seatId], references: [id])
+
+  price  Int
+  status ShowSeatStatus @default(AVAILABLE)
+
+  bookingSeats BookingSeat[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([showId, seatId])
+  @@index([showId])
+  @@index([showId, status])
+}
+
+
+model Booking {
+  id String @id @default(cuid())
+
+  bookingReference String @unique
+
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+
+  showId String
+  show   Show @relation(fields: [showId], references: [id])
+
+  // Historical snapshots
+  movieTitle   String
+  theatreName  String
+  screenName   String
+  showDateTime DateTime
+
+  status BookingStatus @default(PENDING_PAYMENT)
+
+  // All monetary values are stored in paise
+  subtotal       Int
+  convenienceFee Int @default(0)
+  taxAmount      Int @default(0)
+  totalAmount    Int
+
+  // Internal revenue split
+  theatreAmount      Int
+  platformCommission Int
+
+  bookingSeats BookingSeat[]
+  payments     Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([showId])
+  @@index([status])
+}
+
+
+model BookingSeat {
+  id String @id @default(cuid())
+
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  showSeatId String
+  showSeat   ShowSeat @relation(fields: [showSeatId], references: [id])
+
+  // Historical snapshots
+  seatLabel String
+  price     Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookingId, showSeatId])
+  @@index([bookingId])
+  @@index([showSeatId])
+}
+
+
+model Payment {
+  id String @id @default(cuid())
+
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  amount   Int
+  currency String @default("INR")
+
+  status   PaymentStatus   @default(INITIATED)
+  provider PaymentProvider @default(STRIPE)
+
+  providerOrderId   String?
+  providerPaymentId String?
+
+  idempotencyKey String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([status])
 }
