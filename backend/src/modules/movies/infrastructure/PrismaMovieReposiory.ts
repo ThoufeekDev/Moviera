@@ -45,4 +45,18 @@ export class PrismaMovieRepository implements IMovieRepository {
         return allMovies.map((movie) => MovieMapper.toDomain(movie));
     }
 
+   async updatMovie(id: string, movie: Partial<Movie>): Promise<Movie> {
+        const updatedMovie = await prisma.movie.update({
+            where: {
+                 id,
+            },
+                data: {
+                    ...movie
+                }
+            
+        })
+        
+        return MovieMapper.toDomain(updatedMovie)
+    }
+
 }

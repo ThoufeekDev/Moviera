@@ -4,7 +4,8 @@ import { Movie } from "../domain/entities/Movie";
 export class MovieMapper {
     static toDomain(movie: PrismaMovie): Movie{
         return new Movie(
-                  movie.title,
+   
+      movie.title,
       movie.slug,
       movie.description,
       movie.duration,
