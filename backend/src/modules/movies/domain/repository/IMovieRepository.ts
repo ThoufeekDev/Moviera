@@ -7,5 +7,7 @@ export interface IMovieRepository {
     
     findBySlug(slug: string): Promise<Movie | null> 
     
-    findAll():Promise<Movie[]>
+    findAll(): Promise<Movie[]>
+    
+    updatMovie(id:string,movie:Partial<Movie>):Promise<Movie>
 }

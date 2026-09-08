@@ -9,7 +9,7 @@ export class GetMovieByIdController {
     
 
     handle = async (req: Request<{id:string}>, res: Response) => {
-      console.log("trigger");
+    
       
         const movie = await this.getMovieByIdUseCase.execute(req.params.id);
 
