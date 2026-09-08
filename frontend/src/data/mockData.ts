@@ -1,7 +1,7 @@
 import type {
   SidebarItem,
 
-} from '../features/admin/types/dashboard.types';
+} from '../features/theatre_admin/types/dashboard.types';
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: '📊' },

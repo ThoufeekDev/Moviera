@@ -1,7 +1,8 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../features/auth/store/auth.store';
 import Loader from '../components/common/Loader';
-
+import { Role } from '../shared/enums/Role';
+import RoleRedirect from './RoleRedirect';
 interface Props {
   children: React.ReactNode;
 }
@@ -17,8 +18,8 @@ export default function ProtectedRoute({ children }: Props) {
     return <Navigate to="/user/login" replace />;
   }
 
-  if (user?.role !== 'USER') {
-    return <Navigate to="/admin/dashboard" replace />;
+  if (user?.role !== Role.USER) {
+    return <RoleRedirect/>
   }
 
   return children;
