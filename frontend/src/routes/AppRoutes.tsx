@@ -16,6 +16,7 @@ const GatewayPage = lazy(() => import('../features/onboarding/RegisterSelectionP
 
 const AdminLoginPage = lazy(() => import('../features/theatre_admin/pages/Login/Theatre_AdminLoginPage'));
 
+
 const AdminRegisterPage = lazy(
   () => import('../features/theatre_admin/pages/Register/AdminRegisterPage'),
 );
@@ -24,21 +25,32 @@ const AdminDashboardPage = lazy(
   () => import('../features/theatre_admin/pages/Dashboard/AdminDashboardPage'),
 );
 
+
+// SUPER_ADMIN PAGES
+
+const SuperAdminLoginPage = lazy(() => import('../features/super_admin/pages/Login/SuperAdminLoginPage'))
+
+const SuperAdminDashboardPage = lazy(()=>import("../features/super_admin/pages/Dashboard/SuperAdminDashboardPage"))
+
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
 // Route Components
 
 // import AdminRoute from './AdminProtectedRoute';
 // import AdminPublicRoute from './AdminPublicRoute';
+// import SuperAdminRoute from './SuperAdminRoute';
+// import AdminRedirect from './AdminRedirect';
+
+
 import TheatreAdminRoute from './TheatreAdminRoute';
-import SuperAdminRoute from './SuperAdminRoute';
 import RoleRedirect from './RoleRedirect';
 import TheatreAdminPublicRoute from './TheatreAdminPublicRoute';
 import AdminLayoutWrapper from './AdminLayoutWrapper';
 import AdminOnboardingRoute from './AdminOnboardingRoute';
 import PublicRoute from './PublicRoute';
 import ProtectedRoute from './ProtectedRoute';
-// import AdminRedirect from './AdminRedirect';
+import SuperAdminRoute from './SuperAdminRoute';
+
 import ComingSoon from '../shared/components/ComingSoon/ComingSoon';
 
 export default function AppRoutes() {
@@ -94,7 +106,7 @@ export default function AppRoutes() {
 
           {/* Admin Public Routes */}
           <Route
-            path="/register/theatre"
+            path="/theatre-admin/register"
             element={
               <TheatreAdminPublicRoute>
                 <AdminRegisterPage />
@@ -105,9 +117,9 @@ export default function AppRoutes() {
           <Route
             path="/theatre-admin/login"
             element={
-              <TheatreAdminPublicRoute>
+              <TheatreAdminRoute>
                 <AdminLoginPage />
-              </TheatreAdminPublicRoute>
+              </TheatreAdminRoute>
             }
           />
 
@@ -139,6 +151,33 @@ export default function AppRoutes() {
               }
             />
           </Route>
+
+
+
+
+
+
+
+
+          <Route
+          
+            path='/super-admin/login'
+            element={
+                 <PublicRoute>
+                  <SuperAdminLoginPage />
+                </PublicRoute>
+            }
+          
+          />
+
+
+          <Route
+            path='/super-admin'
+            element={
+              <SuperAdminRoute>
+                <SuperAdminDashboardPage />
+              </SuperAdminRoute>
+            } />
 
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />

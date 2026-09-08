@@ -17,9 +17,12 @@ export const verifyOtpPaylod = async (data: VerifyOtpDTO) => {
 };
 
 export const loginUser = async (data: LoginDTO) => {
-  const response = await api.post('/auth/login', data);
-  console.log('login response',response.data.data)
-  return response.data.data;
+
+        const response = await api.post('/auth/login', data);
+
+        return response.data.data;
+  
+
   // return response.data.user
 };
 
@@ -43,13 +46,13 @@ await api.post('/auth/refresh-token');
 
 export const resendOtp = async (data: ResendOtp) => {
   const response = await api.post('/auth/resend-otp',data);
-  console.log("resend otp response is ",response)
+
   return response.data;
 }
 
 
 export const googleLogin = async (credential:string) => {
   const response = await api.post('/auth/google',{credential})
-  console.log(response.data)
+ 
   return response.data.data;
 }

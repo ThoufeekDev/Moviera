@@ -1,0 +1,406 @@
+/* ==========================================================================
+   Moviera Cinema Auth System - Super Admin Portal (BookMyShow Red Theme)
+   ========================================================================== */
+
+:root {
+  /* BookMyShow Classic White & Red Theme Palette */
+  --auth-bg-page: #f8fafc;
+  --auth-bg-gradient: radial-gradient(circle at 50% 0%, rgba(248, 68, 100, 0.06) 0%, rgba(248, 250, 252, 1) 75%);
+  
+  --auth-bg-card: #ffffff;
+  
+  --auth-text-headline: #111827;
+  --auth-text-body: #374151;
+  --auth-text-muted: #6b7280;
+  --auth-text-subtle: #9ca3af;
+
+  /* Iconic BookMyShow Red */
+  --auth-brand-primary: #f84464;
+  --auth-brand-hover: #e03352;
+  --auth-brand-active: #c82240;
+  --auth-accent-red: #f84464;
+  --auth-accent-gradient: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  --auth-accent-gradient-hover: linear-gradient(135deg, #ff5273 0%, #e03352 100%);
+  --auth-accent-glow: rgba(248, 68, 100, 0.16);
+
+  --auth-border-light: #e5e7eb;
+  --auth-border-input: #d1d5db;
+  --auth-border-focus: #f84464;
+
+  --auth-status-error-bg: #fff1f3;
+  --auth-status-error-border: #fecdd3;
+  --auth-status-error-text: #e11d48;
+
+  --auth-radius-card: 20px;
+  --auth-radius-input: 10px;
+  --auth-radius-button: 10px;
+
+  --auth-shadow-card: 0 20px 45px -10px rgba(17, 24, 39, 0.08), 0 1px 3px rgba(17, 24, 39, 0.05);
+  --auth-shadow-button: 0 4px 14px rgba(248, 68, 100, 0.3);
+  --auth-shadow-button-hover: 0 8px 22px rgba(248, 68, 100, 0.45);
+
+  --auth-transition-standard: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:global(.login-container) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: var(--auth-bg-page);
+  background-image: var(--auth-bg-gradient);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+:global(.login-card) {
+  position: relative;
+  z-index: 1;
+  background: var(--auth-bg-card);
+  padding: 2.5rem 2.25rem;
+  border-radius: var(--auth-radius-card);
+  border: 1px solid var(--auth-border-light);
+  border-top: 4px solid var(--auth-brand-primary);
+  box-shadow: var(--auth-shadow-card);
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-sizing: border-box;
+  animation: authCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+:global(.login-card)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #f84464 0%, #ff6b8b 50%, #f84464 100%);
+}
+
+@keyframes authCardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+:global(.card-cinema-badge) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(248, 68, 100, 0.08);
+  border: 1px solid rgba(248, 68, 100, 0.2);
+  color: var(--auth-brand-primary);
+  font-size: 0.725rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  margin-bottom: 1.25rem;
+}
+
+:global(.card-cinema-badge) :global(.badge-dot) {
+  width: 6px;
+  height: 6px;
+  background-color: var(--auth-brand-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--auth-brand-primary);
+  display: inline-block;
+}
+
+:global(.brand-header) {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+:global(.brand-header) h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--auth-text-headline);
+  margin: 1.25rem 0 0.4rem 0;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+:global(.brand-header) p {
+  color: var(--auth-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+}
+
+:global(.form-group) {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+:global(.form-group) label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--auth-text-headline);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+:global(.input-wrapper) {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+:global(.input-wrapper) input {
+  width: 100%;
+  height: 48px;
+  padding: 0 1.15rem;
+  font-size: 0.95rem;
+  background: #f6f7fa;
+  border: 1.5px solid var(--auth-border-input);
+  border-radius: var(--auth-radius-input);
+  color: var(--auth-text-headline);
+  outline: none;
+  transition: all var(--auth-transition-standard);
+  box-sizing: border-box;
+}
+
+:global(.input-wrapper) input::placeholder {
+  color: var(--auth-text-subtle);
+}
+
+:global(.input-wrapper) input:hover {
+  border-color: #b0b7c8;
+  background: #ffffff;
+}
+
+:global(.input-wrapper) input:focus {
+  border-color: var(--auth-border-focus);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--auth-accent-glow);
+}
+
+:global(.input-wrapper) input[aria-invalid='true'] {
+  border-color: var(--auth-status-error-text);
+  background-color: var(--auth-status-error-bg);
+}
+
+:global(.input-wrapper) input[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.15);
+}
+
+:global(.error-message) {
+  color: var(--auth-status-error-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0.45rem 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  animation: errorFadeIn 0.2s ease-out;
+}
+
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+:global(.form-actions) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.15rem 0 1.5rem 0;
+}
+
+:global(.remember-me) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.85rem;
+  color: var(--auth-text-muted);
+  font-weight: 500;
+}
+
+:global(.remember-me) input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--auth-brand-primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+:global(.forgot-password) {
+  font-size: 0.85rem;
+  color: var(--auth-brand-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--auth-transition-standard);
+}
+
+:global(.forgot-password):hover {
+  color: var(--auth-brand-hover);
+  text-decoration: underline;
+}
+
+:global(.submit-btn),
+:global(button.button) {
+  width: 100%;
+  height: 50px;
+  background: var(--auth-accent-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--auth-radius-button);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--auth-shadow-button);
+  transition: all var(--auth-transition-standard);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+  margin-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+:global(.submit-btn):hover,
+:global(button.button):hover {
+  background: var(--auth-accent-gradient-hover);
+  box-shadow: var(--auth-shadow-button-hover);
+  transform: translateY(-2px);
+}
+
+:global(.submit-btn):active,
+:global(button.button):active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(248, 68, 100, 0.35);
+}
+
+:global(.submit-btn):focus-visible,
+:global(button.button):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--auth-accent-glow);
+}
+
+:global(.submit-btn):disabled,
+:global(button.button):disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+:global(.footer-text) {
+  text-align: center;
+  font-size: 0.885rem;
+  color: var(--auth-text-muted);
+  margin: 0;
+  font-weight: 500;
+}
+
+:global(.footer-text) a {
+  color: var(--auth-brand-primary);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color var(--auth-transition-standard);
+  margin-left: 0.25rem;
+}
+
+:global(.footer-text) a:hover {
+  color: var(--auth-brand-hover);
+  text-decoration: underline;
+}
+
+@media (min-width: 1200px) {
+  :global(.login-card) {
+    max-width: 450px;
+    padding: 3.25rem 2.75rem;
+  }
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  :global(.login-container) {
+    padding: 2rem 1.5rem;
+  }
+
+  :global(.login-card) {
+    max-width: 420px;
+    padding: 2.75rem 2.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  :global(.login-container) {
+    padding: 1.5rem 1rem;
+    align-items: center;
+  }
+
+  :global(.login-card) {
+    padding: 2.25rem 1.75rem;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+
+  :global(.brand-header) h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :global(.login-container) {
+    padding: 1.25rem 0.75rem;
+    min-height: 100vh;
+  }
+
+  :global(.login-card) {
+    padding: 2rem 1.25rem;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
+  }
+
+  :global(.brand-header) {
+    margin-bottom: 1.5rem;
+  }
+
+  :global(.brand-header) h2 {
+    font-size: 1.375rem;
+  }
+
+  :global(.brand-header) p {
+    font-size: 0.825rem;
+  }
+
+  :global(.input-wrapper) input {
+    height: 46px;
+    font-size: 0.9rem;
+  }
+
+  :global(.submit-btn),
+  :global(button.button) {
+    height: 46px;
+    font-size: 0.95rem;
+  }
+}

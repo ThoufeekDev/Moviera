@@ -4,7 +4,8 @@ import { Response } from "express";
 import { generateAccessToken } from "./generateAccessToken";
 import { generateRefreshToken } from "./generateRefreshToken";
 export async function setAuthCookies(res:Response,userId:string,role:Role) {
-    
+     console.log("trigger setAuthCookies");
+     
   const accessToken = generateAccessToken({
     userId,
     role,

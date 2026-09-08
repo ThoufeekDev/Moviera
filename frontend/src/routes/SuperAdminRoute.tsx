@@ -13,7 +13,7 @@ export default function SuperAdminRoute({ children }:Props) {
 
   if (isCheckingAuth) return <Loader />;
 
-  if (isAuthenticated) {
+  if (!isAuthenticated) {
     return <Navigate to="/super-admin/login" />;
   }
 

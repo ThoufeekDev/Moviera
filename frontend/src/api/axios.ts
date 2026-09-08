@@ -67,7 +67,9 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== '/auth/refresh-token'
+      originalRequest.url !== '/auth/refresh-token' &&
+      originalRequest.url !== '/auth/login' &&
+      originalRequest.url !== '/auth/profile'
     ) {
       // ==================================
       // PREVENT INFINITE RETRY LOOP
@@ -102,7 +104,7 @@ api.interceptors.response.use(
         // ================================
 
         // await api.post('/auth/refresh-token');
-        await refreshAccessToken()
+        await refreshAccessToken();
 
         // ================================
         // RETRY WAITING REQUESTS
