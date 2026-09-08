@@ -14,27 +14,31 @@ const HomePage = lazy(() => import('../features/auth/pages/Home/HomePage'));
 
 const GatewayPage = lazy(() => import('../features/onboarding/RegisterSelectionPage'));
 
-const AdminLoginPage = lazy(() => import('../features/admin/pages/Login/AdminLoginPage'));
+const AdminLoginPage = lazy(() => import('../features/theatre_admin/pages/Login/Theatre_AdminLoginPage'));
 
 const AdminRegisterPage = lazy(
-  () => import('../features/admin/pages/Register/AdminRegisterPage'),
+  () => import('../features/theatre_admin/pages/Register/AdminRegisterPage'),
 );
 
 const AdminDashboardPage = lazy(
-  () => import('../features/admin/pages/Dashboard/AdminDashboardPage'),
+  () => import('../features/theatre_admin/pages/Dashboard/AdminDashboardPage'),
 );
 
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
 // Route Components
 
-import AdminRoute from './AdminProtectedRoute';
-import AdminPublicRoute from './AdminPublicRoute';
+// import AdminRoute from './AdminProtectedRoute';
+// import AdminPublicRoute from './AdminPublicRoute';
+import TheatreAdminRoute from './TheatreAdminRoute';
+import SuperAdminRoute from './SuperAdminRoute';
+import RoleRedirect from './RoleRedirect';
+import TheatreAdminPublicRoute from './TheatreAdminPublicRoute';
 import AdminLayoutWrapper from './AdminLayoutWrapper';
 import AdminOnboardingRoute from './AdminOnboardingRoute';
 import PublicRoute from './PublicRoute';
 import ProtectedRoute from './ProtectedRoute';
-import AdminRedirect from './AdminRedirect';
+// import AdminRedirect from './AdminRedirect';
 import ComingSoon from '../shared/components/ComingSoon/ComingSoon';
 
 export default function AppRoutes() {
@@ -90,117 +94,46 @@ export default function AppRoutes() {
 
           {/* Admin Public Routes */}
           <Route
-            path="/register/hospital"
+            path="/register/theatre"
             element={
-              <AdminPublicRoute>
+              <TheatreAdminPublicRoute>
                 <AdminRegisterPage />
-              </AdminPublicRoute>
+              </TheatreAdminPublicRoute>
             }
           />
 
           <Route
-            path="/admin/login"
+            path="/theatre-admin/login"
             element={
-              <AdminPublicRoute>
+              <TheatreAdminPublicRoute>
                 <AdminLoginPage />
-              </AdminPublicRoute>
+              </TheatreAdminPublicRoute>
             }
           />
 
           {/* Admin Redirect */}
-          <Route path="/admin" element={<AdminRedirect />} />
+          <Route path="/admin" element={<RoleRedirect />} />
 
           {/* Admin Dashboard Routes */}
           <Route
             element={
-              <AdminRoute>
+              <TheatreAdminRoute>
                 <AdminOnboardingRoute>
                   <AdminLayoutWrapper />
                 </AdminOnboardingRoute>
-              </AdminRoute>
+              </TheatreAdminRoute>
             }
           >
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/theatre-admin/dashboard" element={<AdminDashboardPage />} />
+
 
             <Route
-              path="/admin/departments"
-              element={
-                <ComingSoon
-                  title="Departments"
-                  description="Cinema departments and screens features are coming soon."
-                  backTo="/admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
-              }
-            />
-
-            <Route
-              path="/admin/appointments"
-              element={
-                <ComingSoon
-                  title="Appointments"
-                  description="Cinema showtimes & reservations features are coming soon."
-                  backTo="/admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
-              }
-            />
-
-            <Route
-              path="/admin/patients"
-              element={
-                <ComingSoon
-                  title="Audience"
-                  description="Cinema audience management features are coming soon."
-                  backTo="/admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
-              }
-            />
-
-            <Route
-              path="/admin/reviews"
-              element={
-                <ComingSoon
-                  title="Reviews"
-                  description="Cinema reviews features are coming soon."
-                  backTo="/admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
-              }
-            />
-
-            <Route
-              path="/admin/queue"
-              element={
-                <ComingSoon
-                  title="Queue"
-                  description="Cinema ticket queue features are coming soon."
-                  backTo="/admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
-              }
-            />
-
-            <Route
-              path="/admin/analytics"
-              element={
-                <ComingSoon
-                  title="Analytics"
-                  description="Cinema analytics features are coming soon."
-                  backTo="/admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
-              }
-            />
-
-            <Route
-              path="/admin/settings"
+              path="/theatre-admin/settings"
               element={
                 <ComingSoon
                   title="Settings"
                   description="Cinema settings features are coming soon."
-                  backTo="/admin/dashboard"
+                  backTo="/theatre-admin/dashboard"
                   backLabel="Back to Dashboard"
                 />
               }
