@@ -10,6 +10,7 @@ import { getErrorMessage } from '../../../../shared/utils/getErrorMessage';
 import MovieraLogo from '../../../../components/common/MovieraLogo/MovieraLogo';
 
 import './adminLogin.css';
+import { Role } from '../../../../shared/enums/Role';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -33,10 +34,10 @@ export default function AdminLoginPage() {
 
       await login({
         ...data,
-        role: 'ADMIN',
+        role: Role.THEATRE_ADMIN,
       });
 
-      navigate('/admin');
+      navigate('/theatre-admin');
     } catch (error: unknown) {
       setAuthError(getErrorMessage(error));
     }

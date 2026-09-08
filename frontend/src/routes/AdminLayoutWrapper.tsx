@@ -19,9 +19,9 @@ const AdminLayoutWrapper: React.FC = () => {
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
     if (tabId === 'dashboard') {
-      navigate('/admin/dashboard');
+      navigate('/theatre-admin/dashboard');
     } else {
-      navigate(`/admin/${tabId}`);
+      navigate(`/theatre-admin/${tabId}`);
     }
   };
 

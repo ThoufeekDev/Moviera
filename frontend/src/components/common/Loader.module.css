@@ -1,0 +1,144 @@
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.fullScreen {
+  height: 100dvh;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  background-image: radial-gradient(
+    circle at 50% 35%,
+    rgba(248, 68, 100, 0.08) 0%,
+    rgba(248, 250, 252, 1) 75%
+  );
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Inter',
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.inline {
+  height: 100%;
+  min-height: 300px;
+  background-color: transparent;
+  background-image: none;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Inter',
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  position: relative;
+  z-index: 1;
+}
+
+.loaderCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.loaderIcon {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.25rem;
+}
+
+.aura {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(248, 68, 100, 0.22) 0%,
+    rgba(248, 68, 100, 0) 70%
+  );
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+}
+
+.badge {
+  position: absolute;
+  inset: 16px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    #f84464 0%,
+    #d62947 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 22px rgba(248, 68, 100, 0.35);
+}
+
+.brandName {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.025em;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.brandAccent {
+  color: #f84464;
+}
+
+.subtext {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.45;
+  margin-bottom: 1.35rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 3.5px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(
+    90deg,
+    rgba(248, 68, 100, 0.1),
+    #f84464,
+    #d62947,
+    rgba(214, 41, 71, 0.1)
+  );
+  border-radius: 99px;
+}
+
