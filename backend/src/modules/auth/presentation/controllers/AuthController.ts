@@ -64,6 +64,7 @@ export class AuthController {
   }
 
   async login(req: Request, res: Response) {
+    console.log("login request triggered")
     const validatedData = loginSchema.parse(req.body);
 
     const loginUserUseCase = makeLoginUserCase();

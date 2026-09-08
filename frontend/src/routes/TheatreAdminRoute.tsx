@@ -15,7 +15,7 @@ export default function TheatreAdminRoute({ children }: Props) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/theatre-admin/login" replace />;
+    return <Navigate to="/theatre-admin/login" replace = {true} />;
   }
 
   if (user?.role !== 'THEATRE_ADMIN') {

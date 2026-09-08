@@ -3,6 +3,7 @@ import { env } from '../../config/env';
 import { verifyToken } from '../utils/verifyToken';
 import { AuthenticatedRequest } from '../types/AuthenticateRequest';
 import { Role } from '../enums/Role';
+import { successResponse } from '../utils/apiResponse';
 
 export const authenticateUser = (
   req: AuthenticatedRequest,
@@ -12,12 +13,17 @@ export const authenticateUser = (
   try {
     const token = req.cookies?.accessToken;
 
+   
+    
+
     if (!token) {
-      res.status(401).json({
-        success: false,
-        message: 'Unauthorized',
-      });
-      return;
+      // res.status(401).json({
+      //   success: false,
+      //   message: 'Unauthorized',
+      // });
+
+      successResponse(res, 401, false, "Unathorized request");
+      return
     }
 
     const decoded = verifyToken(token, env.JWT_SECRET!);

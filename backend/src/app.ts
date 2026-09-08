@@ -17,7 +17,7 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
-app.use('/auth',authenticateUser, authRoutes);
+app.use('/auth', authRoutes);
 
 
 
