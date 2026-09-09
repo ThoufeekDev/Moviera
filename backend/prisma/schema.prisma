@@ -76,6 +76,70 @@ model User {
 }
 
 
+model Person {
+  id        String   @id @default(cuid())
+  name      String
+  imageUrl  String?
+
+  castRoles MovieCast[]
+  crewRoles MovieCrew[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieCast {
+  id        String  @id @default(cuid())
+  movieId   String
+  personId  String
+  character String?
+
+  movie  Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, personId, character])
+  @@index([movieId])
+  @@index([personId])
+}
+
+model MovieCrew {
+  id       String @id @default(cuid())
+  movieId  String
+  personId String
+  job      String
+
+  movie  Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([movieId])
+  @@index([personId])
+}
+
+model Language {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  code      String          @unique
+
+  movies    MovieLanguage[]
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model MovieLanguage {
+  id         String   @id @default(cuid())
+  movieId    String
+  languageId String
+
+  movie      Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, languageId])
+  @@index([movieId])
+  @@index([languageId])
+}
+
+
 model Movie {
   id String @id @default(cuid())
 
@@ -84,7 +148,7 @@ model Movie {
   description String?
   duration    Int
   releaseDate DateTime
-  language    String
+  language    MovieLanguage[]
   genre       String
   certificate String
 
@@ -96,9 +160,14 @@ model Movie {
 
   shows Show[]
 
+  cast MovieCast[]
+
+  crew MovieCrew[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 
 
 model City {

@@ -52,7 +52,10 @@ import ProtectedRoute from './ProtectedRoute';
 import SuperAdminRoute from './SuperAdminRoute';
 
 import ComingSoon from '../shared/components/ComingSoon/ComingSoon';
+import SuperAdminLayout from '../features/super_admin/layouts/SuperAdminLayout';
+import SuperAdminMoviesPage from '../features/super_admin/pages/Movies/SuperAdminMoviesPage';
 
+import SuperAdminCreateMoviePage from '../features/super_admin/pages/Movies/CreateMovies/SuperAdminCreateMoviePage';
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -138,7 +141,6 @@ export default function AppRoutes() {
           >
             <Route path="/theatre-admin/dashboard" element={<AdminDashboardPage />} />
 
-
             <Route
               path="/theatre-admin/settings"
               element={
@@ -152,34 +154,31 @@ export default function AppRoutes() {
             />
           </Route>
 
-
-
-
-
-
-
-
           <Route
-          
-            path='/super-admin/login'
+            path="/super-admin/login"
             element={
-                 <PublicRoute>
-                  <SuperAdminLoginPage />
-                </PublicRoute>
+              <PublicRoute>
+                <SuperAdminLoginPage />
+              </PublicRoute>
             }
-          
           />
 
-
           <Route
-            path='/super-admin'
+            path="/super-admin"
             element={
               <SuperAdminRoute>
-                <SuperAdminDashboardPage />
+                <SuperAdminLayout />
               </SuperAdminRoute>
-            } />
+            }
+          >
+            <Route index element={<SuperAdminDashboardPage />} />
+
+            <Route path="movies" element={<SuperAdminMoviesPage />} />
+            <Route path="movies/create" element={<SuperAdminCreateMoviePage />} />
+          </Route>
 
           {/* 404 */}
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

@@ -1,1 +1,0 @@
-import{n as e,r as t,t as n}from"./schemas-CBAV0Yrp.js";var r=e({email:n(`Invalid email address`),password:t().min(6,`Password must be at least 6 characters`)});export{r as t};
