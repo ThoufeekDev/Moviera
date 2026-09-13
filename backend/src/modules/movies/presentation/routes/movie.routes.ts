@@ -15,6 +15,7 @@ import { makeGetMovieController } from "../../infrastructure/factories/makeGetMo
 import { makeGetMovieByIdController } from "../../infrastructure/factories/makeGetMoviesIdController";
 import { makeUpdateMovieController } from "../../infrastructure/factories/makeUpdateMoviesController";
 import { updateMovieSchema } from "../validators/updateMovieValidator";
+import { upload } from "../../../../shared/middleware/upload.middleware";
 
 const movieRoute = Router();
 
@@ -26,7 +27,7 @@ const getUpdateMovieController = makeUpdateMovieController();
 
 
 
-movieRoute.post('/',authenticateUser,authorizeRoles(Role.SUPER_ADMIN), validate(createMovieSchema), createMovieController.handle)
+movieRoute.post('/',upload.fields([{ name: "poster", maxCount:1},{name:"backdrop",maxCount:1}]), validate(createMovieSchema), createMovieController.handle)
 movieRoute.get('/', getMovieController.handle)
 movieRoute.get('/:id', getMovieByIdController.handle)
 movieRoute.patch('/:id',getUpdateMovieController.handle)

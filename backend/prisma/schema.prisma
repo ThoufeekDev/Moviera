@@ -13,7 +13,6 @@ enum Role {
   SUPER_ADMIN
 }
 
-
 enum SeatType {
   REGULAR
   PREMIUM
@@ -47,12 +46,11 @@ enum PaymentProvider {
   STRIPE
 }
 
-
 model User {
   id String @id @default(cuid())
 
   name     String
-  email    String @unique
+  email    String  @unique
   password String?
   phone    String? @unique
 
@@ -75,11 +73,10 @@ model User {
   @@index([role])
 }
 
-
 model Person {
-  id        String   @id @default(cuid())
-  name      String
-  imageUrl  String?
+  id       String  @id @default(cuid())
+  name     String
+  imageUrl String?
 
   castRoles MovieCast[]
   crewRoles MovieCrew[]
@@ -116,39 +113,38 @@ model MovieCrew {
 }
 
 model Language {
-  id        String          @id @default(cuid())
-  name      String          @unique
-  code      String          @unique
+  id   String @id @default(cuid())
+  name String @unique
+  code String @unique
 
-  movies    MovieLanguage[]
+  movies MovieLanguage[]
 
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model MovieLanguage {
-  id         String   @id @default(cuid())
+  id         String @id @default(cuid())
   movieId    String
   languageId String
 
-  movie      Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  movie    Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
 
   @@unique([movieId, languageId])
   @@index([movieId])
   @@index([languageId])
 }
 
-
 model Movie {
   id String @id @default(cuid())
 
   title       String
-  slug        String @unique
+  slug        String          @unique
   description String?
   duration    Int
   releaseDate DateTime
-  language    MovieLanguage[]
+  languages   MovieLanguage[]
   genre       String
   certificate String
 
@@ -168,8 +164,6 @@ model Movie {
   updatedAt DateTime @updatedAt
 }
 
-
-
 model City {
   id String @id @default(cuid())
 
@@ -187,7 +181,6 @@ model City {
 
   @@unique([name, state, country])
 }
-
 
 model Theatre {
   id String @id @default(cuid())
@@ -213,7 +206,6 @@ model Theatre {
   @@index([cityId])
 }
 
-
 model Screen {
   id String @id @default(cuid())
 
@@ -236,16 +228,15 @@ model Screen {
   @@index([theatreId])
 }
 
-
 model Seat {
   id String @id @default(cuid())
 
   screenId String
   screen   Screen @relation(fields: [screenId], references: [id])
 
-  rowLabel  String
+  rowLabel   String
   seatNumber Int
-  label     String
+  label      String
 
   x        Float
   y        Float
@@ -264,7 +255,6 @@ model Seat {
   @@unique([screenId, rowLabel, seatNumber])
   @@index([screenId])
 }
-
 
 model Show {
   id String @id @default(cuid())
@@ -293,15 +283,14 @@ model Show {
   @@index([startTime])
 }
 
-
 model ShowSeat {
   id String @id @default(cuid())
 
   showId String
-  show   Show @relation(fields: [showId], references: [id])
+  show   Show   @relation(fields: [showId], references: [id])
 
   seatId String
-  seat   Seat @relation(fields: [seatId], references: [id])
+  seat   Seat   @relation(fields: [seatId], references: [id])
 
   price  Int
   status ShowSeatStatus @default(AVAILABLE)
@@ -316,17 +305,16 @@ model ShowSeat {
   @@index([showId, status])
 }
 
-
 model Booking {
   id String @id @default(cuid())
 
   bookingReference String @unique
 
   userId String
-  user   User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   showId String
-  show   Show @relation(fields: [showId], references: [id])
+  show   Show   @relation(fields: [showId], references: [id])
 
   // Historical snapshots
   movieTitle   String
@@ -357,7 +345,6 @@ model Booking {
   @@index([status])
 }
 
-
 model BookingSeat {
   id String @id @default(cuid())
 
@@ -378,7 +365,6 @@ model BookingSeat {
   @@index([bookingId])
   @@index([showSeatId])
 }
-
 
 model Payment {
   id String @id @default(cuid())

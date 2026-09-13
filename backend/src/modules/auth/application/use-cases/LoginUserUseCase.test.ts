@@ -135,7 +135,7 @@ describe('LoginUserUseCase', () => {
       loginResponse.execute({
         email: 'john@example.com',
         password: 'hashed-password',
-        role: Role.ADMIN,
+        role: Role.THEATRE_ADMIN,
       }),
     ).rejects.toThrow(UnauthorizedError);
   });

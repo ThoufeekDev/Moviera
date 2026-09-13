@@ -37,11 +37,6 @@ export class LoginUserUseCase {
       throw new UnauthorizedError('Invalid credentials');
     }
 
-    // const {
-    //     password,
-    //     ...safeUser
-    // } = user;
-
     const userResponse = UserMapper.toResponseDTO(user);
 
     return {

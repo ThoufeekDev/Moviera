@@ -1,17 +1,21 @@
+import { Language } from './Language';
+import { MovieCast } from './MovieCast';
+import { MovieCrew } from './MovieCrew';
 export class Movie {
   constructor(
-    // public readonly id:string,
-    public title: string,
-    public slug: string,
-    public description: string | null,
-    public duration: number,
-    public releaseDate: Date,
-    public language: string,
-    public genre: string,
-    public certificate: string,
-    public posterUrl: string | null,
-    public backdropUrl: string | null,
-    public trailerUrl: string | null,
-    public isActive: boolean,
+    public readonly title: string,
+    public readonly slug: string,
+    public readonly description: string | null,
+    public readonly duration: number,
+    public readonly releaseDate: Date,
+    public readonly languages: Language[],
+    public readonly genre: string,
+    public readonly certificate: string,
+    public readonly posterUrl: string | null,
+    public readonly backdropUrl: string | null,
+    public readonly trailerUrl: string | null,
+    public readonly isActive: boolean,
+    public readonly cast: MovieCast[],
+    public readonly crew: MovieCrew[],
   ) {}
 }

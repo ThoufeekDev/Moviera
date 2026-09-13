@@ -1,4 +1,4 @@
-import { rejects } from 'node:assert';
+
 import cloudinary from '../../config/cloudinary';
 
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
@@ -8,6 +8,7 @@ export class CloudinaryService {
       const stream = cloudinary.uploader.upload_stream(
         {
           folder,
+          resource_type:'image'
         },
         (error?: UploadApiErrorResponse, result?: UploadApiResponse) => {
           if (error) {
@@ -15,7 +16,12 @@ export class CloudinaryService {
             return;
           }
 
-          resolve(result!.secure_url);
+          if (!result) {
+            reject(new Error("Cloudinary upload failed"))
+            return
+          }
+
+          resolve(result.secure_url);
         },
       );
       stream.end(buffer);

@@ -3,7 +3,17 @@ export interface CreateMovieDTO {
   description?: string;
   duration: number;
   releaseDate: Date;
-  language: string;
+  languages: string[];
+  cast: {
+    personId: string;
+    character?: string;
+
+  }[];
+
+  crew: {
+    personId: string;
+    job: string;
+  }[];
   genre: string;
   certificate: string;
   posterUrl?: string;
