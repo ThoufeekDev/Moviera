@@ -3,6 +3,10 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './modules/auth/presentation/routes/auth.routes';
 import movieRouter from "./modules/movies/presentation/routes/movie.routes"
 import personRoutes from './modules/movies/presentation/routes/person.routes';
+import languageRoute from './modules/movies/presentation/routes/language.route';
+
+
+
 import cors from 'cors';
 import { errorHandler } from './shared/middleware/errrorHandler';
 
@@ -23,11 +27,10 @@ app.use('/auth', authRoutes);
 
 
 
-app.use('/api/movies', movieRouter)
+app.use('/movies', movieRouter)
+app.use('/persons', personRoutes)
 
-
-
-app.use('/api/persons',personRoutes)
+app.use('/language',languageRoute)
 
 
 

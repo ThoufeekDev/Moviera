@@ -1,6 +1,6 @@
-import prisma from "../../../config/database";
-import { Person } from "../domain/entities/Person";
-import { IPersonRepository } from "../domain/repository/IPersonRepository";
+import prisma from "../../../../config/database";
+import { Person } from "../../domain/entities/Person";
+import { IPersonRepository } from "../../domain/repository/IPersonRepository";
 
 export class PrismaPersonRepository implements IPersonRepository {
   async create(person: Person): Promise<Person> {

@@ -1,9 +1,9 @@
 import { Movie as PrismaMovie } from "@prisma/client";
-import { Movie } from "../domain/entities/Movie";
-import { Language } from "../domain/entities/Language";
-import { MovieCast } from "../domain/entities/MovieCast";
-import { MovieCrew } from "../domain/entities/MovieCrew";
-import { Person } from "../domain/entities/Person";
+import { Movie } from "../../domain/entities/Movie";
+import { Language } from "../../domain/entities/Language";
+import { MovieCast } from "../../domain/entities/MovieCast";
+import { MovieCrew } from "../../domain/entities/MovieCrew";
+import { Person } from "../../domain/entities/Person";
 export class MovieMapper {
   // take a prismaMovie table and converts into Domain Movie table
     

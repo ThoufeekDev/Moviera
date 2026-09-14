@@ -14,4 +14,3 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   // { id: 'analytics', label: 'Analytics', icon: '📈' },
   // { id: 'settings', label: 'Settings', icon: '⚙️' },
 ];
-

@@ -1,10 +1,10 @@
-import { Movie } from '../domain/entities/Movie';
-import { IMovieRepository } from '../domain/repository/IMovieRepository';
-import prisma from '../../../config/database';
+import { Movie } from '../../domain/entities/Movie';
+import { IMovieRepository } from '../../domain/repository/IMovieRepository';
+import prisma from '../../../../config/database';
 import { MovieMapper } from './MovieMapper';
 
-import { UpdateMovieData } from '../domain/repository/UpdateMovieData';
-import { CreateMovieData } from '../domain/repository/CreateMovieData';
+import { UpdateMovieData } from '../../domain/repository/UpdateMovieData';
+import { CreateMovieData } from '../../domain/repository/CreateMovieData';
 
 export class PrismaMovieRepository implements IMovieRepository {
   async create(data: CreateMovieData): Promise<Movie | null> {

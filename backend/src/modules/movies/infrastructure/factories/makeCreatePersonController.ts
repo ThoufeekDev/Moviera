@@ -1,6 +1,6 @@
 import { CreatePersonController } from "../../presentation/controllers/CreatePersonController";
 import { CreatePersonUseCase } from "../../application/use-cases/CreatePersonUseCase";
-import { PrismaPersonRepository } from "../PrismaPersonRepository";
+import { PrismaPersonRepository } from "../Repo/PrismaPersonRepo";
 import { CloudinaryService } from "../../../../shared/services/cloudinary.service";
 
 export function makeCreatePersonController() {

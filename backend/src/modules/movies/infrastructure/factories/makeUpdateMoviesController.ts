@@ -1,4 +1,4 @@
-import { PrismaMovieRepository } from "../PrismaMovieReposiory";
+import { PrismaMovieRepository } from "../Repo/PrismaMovieRepo";
 import { UpdateMovieUseCase } from "../../application/use-cases/UpdateMovieUseCase";
 import { UpdateMovieController } from "../../presentation/controllers/UpdateMovieController";
 

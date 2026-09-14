@@ -1,6 +1,6 @@
 import { CreateMovieController } from "../../presentation/controllers/CreateMovieController";
 import { CreateMovieUseCase } from "../../application/use-cases/CreateMovieUseCase";
-import { PrismaMovieRepository } from "../PrismaMovieReposiory";
+import { PrismaMovieRepository } from "../Repo/PrismaMovieRepo";
 import { CloudinaryService } from "../../../../shared/services/cloudinary.service";
 
 
