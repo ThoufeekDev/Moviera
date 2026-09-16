@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Certification } from '../../../../shared/enums/Certification';
 
 
 // duration → converts "169" → 169
@@ -48,69 +49,18 @@ export const createMovieSchema = z.object({
       ),
     ),
 
-  genre: z.string().min(1),
+  primaryGenreId: z.string().min(1, "Primary genre is required"),
+  
 
-  certificate: z.string().min(1),
-
+  certification: z.enum(Certification),
+cinemaFormatIds: z
+  .string()
+  .transform((value) => JSON.parse(value))
+  .pipe(
+    z.array(z.string().min(1)).min(1, "At least one cinema format is required")
+  ),
   trailerUrl: z.url().optional(),
 });
 
 
 
-
-
-
-// import { z } from 'zod';
-
-// const jsonArray = <T extends z.ZodTypeAny>(schema: T) =>
-//   z.preprocess((value) => {
-//     if (typeof value !== 'string') {
-//       return value;
-//     }
-
-//     try {
-//       return JSON.parse(value);
-//     } catch {
-//       return undefined;
-//     }
-//   }, schema);
-
-// export const createMovieSchema = z.object({
-//   title: z.string().min(1),
-
-//   description: z.string().optional(),
-
-//   duration: z.coerce.number().positive(),
-
-//   releaseDate: z.coerce.date(),
-
-//   languages: jsonArray(z.array(z.string().min(1)).min(1)),
-
-//   cast: jsonArray(
-//     z.array(
-//       z.object({
-//         personId: z.string().min(1),
-//         character: z.string().optional(),
-//       }),
-//     ),
-//   ),
-
-//   crew: jsonArray(
-//     z.array(
-//       z.object({
-//         personId: z.string().min(1),
-//         job: z.string().min(1),
-//       }),
-//     ),
-//   ),
-
-//   genre: z.string().min(1),
-
-//   certificate: z.string().min(1),
-
-//   posterUrl: z.url().optional(),
-
-//   backdropUrl: z.url().optional(),
-
-//   trailerUrl: z.url().optional(),
-// });

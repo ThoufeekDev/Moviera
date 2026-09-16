@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useFieldArray, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../../validators/createMovie.schema';
-import PersonSelector from './PersonSelector';
-import type { Person } from './person.type';
-import styles from './MovieCast.module.css';
+import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
+import PersonSelector from '../person/PersonSelector';
+import type { Person } from '../person.type';
+import styles from './movieCast.module.css';
 
 interface MovieCastProps {
   control: Control<CreateMovieFormInput>;

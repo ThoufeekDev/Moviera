@@ -1,4 +1,4 @@
-import type { Role } from "../../../shared/enums/Role";
+import type { Role } from "../../../shared/constants/Role";
 
 export interface LoginDTO {
   email: string;

@@ -46,6 +46,13 @@ enum PaymentProvider {
   STRIPE
 }
 
+enum Certification {
+  U
+  UA
+  A
+  S
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -136,17 +143,62 @@ model MovieLanguage {
   @@index([languageId])
 }
 
+model Genre {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  movies Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieCinemaFormat {
+  id             String @id @default(cuid())
+  movieId        String
+  cinemaFormatId String
+
+  movie        Movie        @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  cinemaFormat CinemaFormat @relation(fields: [cinemaFormatId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, cinemaFormatId])
+  @@index([movieId])
+  @@index([cinemaFormatId])
+}
+
+model CinemaFormat {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  movies  MovieCinemaFormat[]
+  screens ScreenCinemaFormat[]
+  shows   Show[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Movie {
   id String @id @default(cuid())
 
   title       String
-  slug        String          @unique
+  slug        String   @unique
   description String?
   duration    Int
   releaseDate DateTime
-  languages   MovieLanguage[]
-  genre       String
-  certificate String
+
+  languages MovieLanguage[]
+
+  primaryGenreId String
+  primaryGenre   Genre  @relation(fields: [primaryGenreId], references: [id])
+
+  certification Certification
+
+  cinemaFormats MovieCinemaFormat[]
 
   posterUrl   String?
   backdropUrl String?
@@ -162,6 +214,8 @@ model Movie {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([primaryGenreId])
 }
 
 model City {
@@ -206,6 +260,20 @@ model Theatre {
   @@index([cityId])
 }
 
+model ScreenCinemaFormat {
+  id String @id @default(cuid())
+
+  screenId       String
+  cinemaFormatId String
+
+  screen       Screen       @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  cinemaFormat CinemaFormat @relation(fields: [cinemaFormatId], references: [id], onDelete: Cascade)
+
+  @@unique([screenId, cinemaFormatId])
+  @@index([screenId])
+  @@index([cinemaFormatId])
+}
+
 model Screen {
   id String @id @default(cuid())
 
@@ -214,6 +282,8 @@ model Screen {
 
   name String
   slug String
+
+  supportedFormats ScreenCinemaFormat[]
 
   isActive Boolean @default(true)
 
@@ -265,6 +335,9 @@ model Show {
   screenId String
   screen   Screen @relation(fields: [screenId], references: [id])
 
+  cinemaFormatId String
+  cinemaFormat   CinemaFormat @relation(fields: [cinemaFormatId], references: [id])
+
   startTime DateTime
   endTime   DateTime
 
@@ -280,6 +353,7 @@ model Show {
 
   @@index([movieId])
   @@index([screenId])
+  @@index([cinemaFormatId])
   @@index([startTime])
 }
 

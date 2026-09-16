@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../../validators/createMovie.schema';
-import Input from '../../../../../../shared/components/Input/Input';
+import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
+import Input from '../../../../../../../shared/components/Input/Input';
 import styles from './MovieMedia.module.css';
 
 interface MovieMediaProps {

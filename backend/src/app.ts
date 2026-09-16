@@ -4,8 +4,8 @@ import authRoutes from './modules/auth/presentation/routes/auth.routes';
 import movieRouter from "./modules/movies/presentation/routes/movie.routes"
 import personRoutes from './modules/movies/presentation/routes/person.routes';
 import languageRoute from './modules/movies/presentation/routes/language.route';
-
-
+import cinemaFormatRoute from './modules/movies/presentation/routes/cinemaFormat.route';
+import genreRoute from './modules/movies/presentation/routes/genre.Route';
 
 import cors from 'cors';
 import { errorHandler } from './shared/middleware/errrorHandler';
@@ -32,8 +32,9 @@ app.use('/persons', personRoutes)
 
 app.use('/language',languageRoute)
 
+app.use('/cinema-format',cinemaFormatRoute)
 
-
+app.use("/genre", genreRoute);
 
 
 

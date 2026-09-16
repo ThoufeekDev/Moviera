@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { Controller, type Control, type FieldErrors } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../../validators/createMovie.schema';
+import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
 import styles from './MovieLangugage.module.css';
 
 
-import { useLanguages } from '../../../../hooks/useLanguage';
-// const languages = [
-//   { id: '1', name: 'English' },
-//   // { id: '2', name: 'Malayalam' },
-//   // { id: '3', name: 'Hindi' },
-//   // { id: '4', name: 'Tamil' },
-//   // { id: '5', name: 'Telugu' },
-//   // { id: '6', name: 'Kannada' },
-// ];
+import { useLanguages } from '../../../../../hooks/useLanguage';
+import { useCinemaFormats } from '../../../../../hooks/useCinemaFormats';
 
 const availableFormats = ['2D', '3D', 'IMAX 3D', '4DX', 'ScreenX', 'Dolby Atmos'];
 
@@ -22,14 +15,15 @@ interface MovieLanguagesProps {
 }
 
 export default function MovieLanguages({ control, errors }: MovieLanguagesProps) {
-  const {data:languages=[],isLoading,isError} = useLanguages()
-  const [selectedFormats, setSelectedFormats] = useState<string[]>(['2D', 'Dolby Atmos']);
+  const { data: languages = [], isLoading, isError } = useLanguages()
+  const { data: cinemaFormats = [], isLoading:formatsLoading, isError:formatsError } = useCinemaFormats();
+  // const [selectedFormats, setSelectedFormats] = useState<string[]>(['2D', 'Dolby Atmos']);
 
-  const toggleFormat = (fmt: string) => {
-    setSelectedFormats((prev) =>
-      prev.includes(fmt) ? prev.filter((f) => f !== fmt) : [...prev, fmt],
-    );
-  };
+  // const toggleFormat = (fmt: string) => {
+  //   setSelectedFormats((prev) =>
+  //     prev.includes(fmt) ? prev.filter((f) => f !== fmt) : [...prev, fmt],
+  //   );
+  // };
 
   return (
     <section className={styles.sectionCard} id="languages-section">
@@ -103,19 +97,46 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
           🎬 Cinema Formats
         </div>
         <div className={styles.formatGrid}>
-          {availableFormats.map((fmt) => {
-            const isActive = selectedFormats.includes(fmt);
-            return (
-              <button
-                type="button"
-                key={fmt}
-                className={`${styles.formatTag} ${isActive ? styles.formatTagActive : ''}`}
-                onClick={() => toggleFormat(fmt)}
-              >
-                {fmt} {isActive ? '✓' : '+'}
-              </button>
-            );
-          })}
+        <Controller
+  name="cinemaFormatIds"
+  control={control}
+  render={({ field }) => (
+    <div className={styles.formatGrid}>
+      {cinemaFormats.map((format) => {
+        const checked = field.value?.includes(format.id);
+
+        return (
+          <button
+            type="button"
+            key={format.id}
+            className={`${styles.formatTag} ${
+              checked ? styles.formatTagActive : ''
+            }`}
+            onClick={() => {
+              const current = field.value ?? [];
+
+              if (checked) {
+                field.onChange(
+                  current.filter((id) => id !== format.id)
+                );
+              } else {
+                field.onChange([...current, format.id]);
+              }
+            }}
+          >
+            {format.name} {checked ? '✓' : '+'}
+          </button>
+        );
+      })}
+    </div>
+  )}
+          />
+          
+          {errors.cinemaFormatIds && (
+  <p className={styles.errorMsg}>
+    ⚠️ {errors.cinemaFormatIds.message}
+  </p>
+)}
         </div>
       </div>
     </section>

@@ -8,7 +8,7 @@ import Input from '../../../../shared/components/Input/Input';
 import AuthBrandHeader from '../../../auth/components/AuthBrandHeader';
 import { useAuthStore } from '../../../auth/store/auth.store';
 import { useState } from 'react';
-import { Role } from '../../../../shared/enums/Role';
+import { Role } from '../../../../shared/constants/Role';
 import { getErrorMessage } from '../../../../shared/utils/getErrorMessage';
 import AuthErrorBanner from '../../../auth/components/AuthErrorBanner';
 import {

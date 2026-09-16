@@ -2,7 +2,7 @@ import prisma from '../../../../config/database';
 import { Language } from '../../domain/entities/Language';
 import { ILanguageRepository } from '../../domain/repository/ILanguageRepository';
 
-export class PrismaLanugageRepository implements ILanguageRepository {
+export class PrismaLanguageRepository implements ILanguageRepository {
 //   constructor(private readonly prisma:Prisma) {}
 
   async findAll(): Promise<Language[]> {
@@ -25,6 +25,20 @@ export class PrismaLanugageRepository implements ILanguageRepository {
     if (!languageById) return null;
 
     return new Language(languageById.id, languageById.name, languageById.code);
+  }
+
+ async findByIds(ids: string[]): Promise<Language[]> {
+    const languages = await prisma.language.findMany({
+      where: {
+        id: {
+            in:ids
+        },
+       
+        }
+    })
+    
+   return languages.map((language)=>new Language(language.id,language.name,language.code))
+   
   }
 
   async findByCode(code: string): Promise<Language | null> {

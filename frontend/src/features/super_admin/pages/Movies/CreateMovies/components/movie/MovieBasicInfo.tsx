@@ -1,8 +1,9 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../../validators/createMovie.schema';
-import Input from '../../../../../../shared/components/Input/Input';
-import styles from './MovieBasicInfo.module.css';
-
+import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
+import Input from '../../../../../../../shared/components/Input/Input';
+import styles from './movieBasicInfo.module.css';
+import { Certification } from '../../../../../../../shared/constants/Certification';
+import { useGenres } from '../../../../../hooks/useGenre';
 interface MovieBasicInfoProps {
   register: UseFormRegister<CreateMovieFormInput>;
   errors: FieldErrors<CreateMovieFormInput>;
@@ -11,11 +12,22 @@ interface MovieBasicInfoProps {
 }
 
 const certificates = [
-  { code: 'U', label: 'U (Universal)' },
-  { code: 'U/A 13+', label: 'U/A 13+' },
-  { code: 'U/A 16+', label: 'U/A 16+' },
-  { code: 'A', label: 'A (Adults Only)' },
-  { code: 'S', label: 'S (Special Class)' },
+  {
+    code: Certification.U,
+    label: 'U (Universal)',
+  },
+  {
+    code: Certification.UA,
+    label: 'U/A',
+  },
+  {
+    code: Certification.A,
+    label: 'A (Adults Only)',
+  },
+  {
+    code: Certification.S,
+    label: 'S (Special Class)',
+  },
 ];
 
 const formatDuration = (mins?: unknown) => {
@@ -29,12 +41,17 @@ const formatDuration = (mins?: unknown) => {
 };
 
 export default function MovieBasicInfo({ register, errors, setValue, watch }: MovieBasicInfoProps) {
+  const {
+  data: genres = [],
+  isLoading: genresLoading,
+  isError: genresError,
+} = useGenres();
   const durationVal = watch('duration') as number | string | undefined;
   const certificateVal = watch('certificate') as string | undefined;
   const descriptionVal = (watch('description') as string) || '';
 
   const formattedDuration = formatDuration(durationVal);
-
+  
   return (
     <section className={styles.sectionCard} id="basic-info-section">
       <div className={styles.sectionHeader}>
@@ -120,15 +137,52 @@ export default function MovieBasicInfo({ register, errors, setValue, watch }: Mo
         </div>
 
         {/* Genre */}
-        <div>
-          <Input
-            id="movie-genre"
-            label="Primary Genre"
-            placeholder="e.g. Action, Sci-Fi, Thriller"
-            {...register('genre')}
-            error={errors.genre?.message}
-          />
-        </div>
+<div className={styles.fieldGroup}>
+  <label className={styles.fieldLabel}>
+    Primary Genre
+  </label>
+
+  {genresLoading && (
+    <p className={styles.helperText}>Loading genres...</p>
+  )}
+
+  {genresError && (
+    <p className={styles.errorMsg}>
+      Failed to load genres
+    </p>
+  )}
+
+  {!genresLoading && !genresError && (
+    <div className={styles.certPillGroup}>
+      {genres.map((genre) => {
+        const isSelected = watch('primaryGenreId') === genre.id;
+
+        return (
+          <button
+            type="button"
+            key={genre.id}
+            className={`${styles.certPill} ${
+              isSelected ? styles.certPillActive : ''
+            }`}
+            onClick={() => {
+              setValue('primaryGenreId', genre.id, {
+                shouldValidate: true,
+              });
+            }}
+          >
+            {genre.name}
+          </button>
+        );
+      })}
+    </div>
+  )}
+
+  {errors.primaryGenreId && (
+    <p className={styles.errorMsg}>
+      {errors.primaryGenreId.message}
+    </p>
+  )}
+</div>
 
         {/* Certificate selection */}
         <div className={styles.fieldGroup}>

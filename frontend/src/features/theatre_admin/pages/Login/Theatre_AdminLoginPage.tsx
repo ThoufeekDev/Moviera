@@ -10,7 +10,7 @@ import { getErrorMessage } from '../../../../shared/utils/getErrorMessage';
 import MovieraLogo from '../../../../components/common/MovieraLogo/MovieraLogo';
 
 import './adminLogin.css';
-import { Role } from '../../../../shared/enums/Role';
+import { Role } from '../../../../shared/constants/Role';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();

@@ -16,13 +16,18 @@ export const createMovie = async (
         new Date(data.releaseDate).toISOString(),
     );
 
-    formData.append('genre', data.genre);
-    formData.append('certificate', data.certificate);
+    formData.append('primaryGenreId', data.primaryGenreId);
+    formData.append('certification', data.certificate);
 
     formData.append(
         'languages',
         JSON.stringify(data.languages)
     );
+
+    formData.append(
+  'cinemaFormatIds',
+  JSON.stringify(data.cinemaFormatIds)
+);
 
     formData.append(
         'cast',
@@ -45,6 +50,7 @@ export const createMovie = async (
     }
 
     const response = await api.post('/movies', formData);
+    
     console.log('response after creating the movie',response)
     return response.data;
     

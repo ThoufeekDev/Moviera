@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 
-import MovieBasicInfo from './components/MovieBasicInfo';
-import MovieLanguages from './components/MovieLanguage';
-import MovieMedia from './components/MovieMedia';
-import MovieCast from './components/MovieCast';
-import MovieCrew from './components/MovieCrew';
+import MovieBasicInfo from './components/movie/MovieBasicInfo';
+import MovieLanguages from './components/movie/MovieLanguage';
+import MovieMedia from './components/movie/MovieMedia';
+import MovieCast from './components/movie/MovieCast';
+import MovieCrew from './components/movie/MovieCrew';
 
 import {
   createMovieSchema,
@@ -16,15 +16,41 @@ import {
 } from '../../../validators/createMovie.schema';
 import { createMovie } from '../../../services/createMovie.service';
 import styles from './SuperAdminCreateMoviePage.module.css';
-
+import { Certification } from '../../../../../shared/constants/Certification';
 const steps = [
-  { id: 0, title: 'Basic Info', fields: ['title', 'description', 'duration', 'releaseDate', 'genre', 'certificate'] as const },
-  { id: 1, title: 'Languages & Formats', fields: ['languages'] as const },
-  { id: 2, title: 'Media & Visuals', fields: ['poster', 'backdrop', 'trailerUrl'] as const },
-  { id: 3, title: 'Cast', fields: ['cast'] as const },
-  { id: 4, title: 'Crew', fields: ['crew'] as const },
+  {
+    id: 0,
+    title: 'Basic Info',
+    fields: [
+      'title',
+      'description',
+      'duration',
+      'releaseDate',
+      'primaryGenreId',
+      'certificate',
+    ] as const,
+  },
+  {
+    id: 1,
+    title: 'Languages & Formats',
+    fields: ['languages', 'cinemaFormatIds'] as const,
+  },
+  {
+    id: 2,
+    title: 'Media & Visuals',
+    fields: ['poster', 'backdrop', 'trailerUrl'] as const,
+  },
+  {
+    id: 3,
+    title: 'Cast',
+    fields: ['cast'] as const,
+  },
+  {
+    id: 4,
+    title: 'Crew',
+    fields: ['crew'] as const,
+  },
 ];
-
 export default function SuperAdminCreateMoviePage() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
@@ -48,9 +74,10 @@ export default function SuperAdminCreateMoviePage() {
       description: '',
       duration: undefined,
       releaseDate: '',
-      genre: '',
-      certificate: '',
+      primaryGenreId: '',
+      certificate:undefined,
       languages: [],
+      cinemaFormatIds:[],
       cast: [],
       crew: [],
       trailerUrl: '',

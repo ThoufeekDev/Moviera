@@ -13,7 +13,9 @@ export class CreateMovieController {
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
-
+    
+    console.log("BODY:", req.body);
+console.log("FILES:", req.files);
     const posterFile = files?.poster?.[0];
     const backdropFile = files?.backdrop?.[0];
 

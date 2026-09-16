@@ -3,22 +3,36 @@ import { IMovieRepository } from '../../domain/repository/IMovieRepository';
 import prisma from '../../../../config/database';
 import { MovieMapper } from './MovieMapper';
 
-import { UpdateMovieData } from '../../domain/repository/UpdateMovieData';
-import { CreateMovieData } from '../../domain/repository/CreateMovieData';
+import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
+import { CreateMovieData } from '../../domain/types/CreateMovieData';
 
 export class PrismaMovieRepository implements IMovieRepository {
   async create(data: CreateMovieData): Promise<Movie | null> {
-    const { languages, cast, crew, ...movieData } = data;
+    // we are desturctuing the data lang,cast,crew are the differenct table
+    const { languageIds, cinemaFormatIds, cast, crew, ...movieData } = data;
 
     const createdMovie = await prisma.movie.create({
       data: {
         ...movieData,
-
+        // the languages refers to that relation field.
         languages: {
-          create: languages.map((languageId) => ({
+          // create means prisma will create records in the movieLanugage table
+          // prismas convenient way of saying INSERT INTO MovieLanguage ...
+          // Find the existing Language record whose id equals languageId,
+          // and connect this new MovieLanguage record to it."
+          create: languageIds.map((languageId) => ({
             language: {
               connect: {
                 id: languageId,
+              },
+            },
+          })),
+        },
+        cinemaFormats: {
+          create: cinemaFormatIds.map((cinemaFormatId) => ({
+            cinemaFormat: {
+              connect: {
+                id: cinemaFormatId,
               },
             },
           })),
@@ -47,12 +61,25 @@ export class PrismaMovieRepository implements IMovieRepository {
         },
       },
 
+      // includes means When you fetch
+      //  the Movie, also fetch its related data.
+
+      // !After creating them, return the created Movie together with the requested relations.
+      // !When you return the result of this create operation, include these related records in the returned object
       include: {
+        primaryGenre:true,
         languages: {
           include: {
             language: true,
           },
         },
+
+          cinemaFormats: {
+          include: {
+            cinemaFormat: true,
+          },
+        },
+
 
         cast: {
           include: {
@@ -75,9 +102,15 @@ export class PrismaMovieRepository implements IMovieRepository {
     const movie = await prisma.movie.findUnique({
       where: { id },
       include: {
+        primaryGenre:true,
         languages: {
           include: {
             language: true,
+          },
+        },
+        cinemaFormats: {
+          include: {
+            cinemaFormat: true,
           },
         },
         cast: {
@@ -100,9 +133,15 @@ export class PrismaMovieRepository implements IMovieRepository {
     const movie = await prisma.movie.findUnique({
       where: { slug },
       include: {
+        primaryGenre:true,
         languages: {
           include: {
             language: true,
+          },
+        },
+        cinemaFormats: {
+          include: {
+            cinemaFormat: true,
           },
         },
         cast: {
@@ -127,9 +166,15 @@ export class PrismaMovieRepository implements IMovieRepository {
         isActive: true,
       },
       include: {
+        primaryGenre:true,
         languages: {
           include: {
             language: true,
+          },
+        },
+        cinemaFormats: {
+          include: {
+            cinemaFormat: true,
           },
         },
         cast: {
@@ -151,7 +196,7 @@ export class PrismaMovieRepository implements IMovieRepository {
     return allMovies.map((movie) => MovieMapper.toDomain(movie));
   }
 
-  async updateMovie(id: string, movie: UpdateMovieData): Promise<Movie> {
+  async updateMovie(id: string, movie: UpdateMovieData):Promise<any> {
     // Put every remaining property into a new object called movieData.
     const { languages, cast, crew, ...movieData } = movie;
 
@@ -253,6 +298,6 @@ export class PrismaMovieRepository implements IMovieRepository {
       },
     });
 
-    return MovieMapper.toDomain(updatedMovie!);
+    return ""
   }
 }

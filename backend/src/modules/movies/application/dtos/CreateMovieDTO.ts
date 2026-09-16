@@ -1,3 +1,5 @@
+import { Certification } from "../../../../shared/enums/Certification";
+
 export interface CreateMovieDTO {
   title: string;
   description?: string;
@@ -14,8 +16,9 @@ export interface CreateMovieDTO {
     personId: string;
     job: string;
   }[];
-  genre: string;
-  certificate: string;
+  primaryGenreId: string;
+  certification: Certification;
+  cinemaFormatIds:string[]
   posterUrl?: string;
   backdropUrl?: string;
   trailerUrl?: string;

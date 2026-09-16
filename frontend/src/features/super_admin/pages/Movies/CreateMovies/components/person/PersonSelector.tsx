@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { usePersons } from '../../../../hooks/usePerson';
+import { usePersons } from '../../../../../hooks/usePerson';
 import styles from './PersonSelector.module.css';
 import CreatePersonModal from './CreatePersonModal';
-import type { Person } from './person.type';
+import type { Person } from '../person.type';
 
 interface PersonSelectorProps {
   onSelect: (person: Person) => void;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-
+import { Certification } from '../../../shared/constants/Certification';
 const imageFileSchema = z
   .instanceof(File, {
     message: 'Image is required',
@@ -41,11 +41,24 @@ export const createMovieSchema = z.object({
       'Invalid release date',
     ),
 
-  genre: z.string().trim().min(1, 'Genre is required'),
+ primaryGenreId: z
+  .string()
+  .min(1, "Primary genre is required"),
 
-  certificate: z.string().trim().min(1, 'Certificate is required'),
+  certificate: z.enum([
+  Certification.U,
+  Certification.UA,
+  Certification.A,
+  Certification.S,
+], {
+  error: 'Certificate is required',
+}),
 
   languages: z.array(z.string().min(1)).min(1, 'Select at least one language'),
+
+  cinemaFormatIds: z
+  .array(z.string().min(1))
+  .min(1, 'Select at least one cinema format'),
 
   poster: imageFileSchema,
 

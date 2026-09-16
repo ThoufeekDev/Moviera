@@ -1,6 +1,9 @@
 import { Language } from './Language';
 import { MovieCast } from './MovieCast';
 import { MovieCrew } from './MovieCrew';
+import { Genre } from './Genre';
+import { CinemaFormat } from './CinemaFormat';
+import { Certification } from '../../../../shared/enums/Certification';
 export class Movie {
   constructor(
     public readonly title: string,
@@ -9,8 +12,9 @@ export class Movie {
     public readonly duration: number,
     public readonly releaseDate: Date,
     public readonly languages: Language[],
-    public readonly genre: string,
-    public readonly certificate: string,
+    public readonly primaryGenre: Genre,
+     public readonly certification: Certification,
+    public readonly cinemaFormats:CinemaFormat[],
     public readonly posterUrl: string | null,
     public readonly backdropUrl: string | null,
     public readonly trailerUrl: string | null,

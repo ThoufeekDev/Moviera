@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useCreatePerson } from '../../../../hooks/usePerson';
-import type { Person } from './person.type';
+import { useCreatePerson } from '../../../../../hooks/usePerson';
+import type { Person } from '../person.type';
 
 interface CreatePersonModalProps {
   initialName: string;

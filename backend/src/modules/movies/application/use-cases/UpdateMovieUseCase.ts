@@ -4,7 +4,7 @@ import { Movie } from '../../domain/entities/Movie';
 import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
 import { generateSlug } from '../../../../shared/utils/generateSlug';
 import { ConflictError } from '../../../../shared/exceptions/ConflictError';
-import { UpdateMovieData } from '../../domain/repository/UpdateMovieData';
+import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 export class UpdateMovieUseCase {
   constructor(private readonly movieRepository: IMovieRepository) {}
 

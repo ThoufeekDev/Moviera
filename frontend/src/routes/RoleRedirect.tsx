@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../features/auth/store/auth.store';
 import Loader from '../components/common/Loader';
-import { Role } from '../shared/enums/Role';
+import { Role } from '../shared/constants/Role';
 
 export default function RoleRedirect() {
   const { user, isAuthenticated, isCheckingAuth } = useAuthStore();
