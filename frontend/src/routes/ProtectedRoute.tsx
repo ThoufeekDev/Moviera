@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../features/auth/store/auth.store';
 import Loader from '../components/common/Loader';
-import { Role } from '../shared/enums/Role';
+import { Role } from '../shared/constants/Role';
 import RoleRedirect from './RoleRedirect';
 interface Props {
   children: React.ReactNode;

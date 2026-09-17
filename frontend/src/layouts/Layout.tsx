@@ -1,7 +1,6 @@
 import React, { useState, type ReactNode } from 'react';
 
 import Sidebar from '../features/theatre_admin/components/Sidebar/Sidebar';
-
 import './layout.css';
 
 interface LayoutProps {

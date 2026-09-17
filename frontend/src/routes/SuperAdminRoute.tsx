@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../features/auth/store/auth.store";
 import Loader from "../components/common/Loader";
 import type {ReactNode} from "react"
-import { Role } from "../shared/enums/Role";
+import { Role } from "../shared/constants/Role";
 interface Props {
     children:ReactNode
 }

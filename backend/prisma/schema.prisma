@@ -13,7 +13,6 @@ enum Role {
   SUPER_ADMIN
 }
 
-
 enum SeatType {
   REGULAR
   PREMIUM
@@ -47,12 +46,18 @@ enum PaymentProvider {
   STRIPE
 }
 
+enum Certification {
+  U
+  UA
+  A
+  S
+}
 
 model User {
   id String @id @default(cuid())
 
   name     String
-  email    String @unique
+  email    String  @unique
   password String?
   phone    String? @unique
 
@@ -75,31 +80,147 @@ model User {
   @@index([role])
 }
 
+model Person {
+  id       String  @id @default(cuid())
+  name     String
+  imageUrl String?
+  imagePublicId String?
+
+  castRoles MovieCast[]
+  crewRoles MovieCrew[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieCast {
+  id        String  @id @default(cuid())
+  movieId   String
+  personId  String
+  character String?
+
+  movie  Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, personId, character])
+  @@index([movieId])
+  @@index([personId])
+}
+
+model MovieCrew {
+  id       String @id @default(cuid())
+  movieId  String
+  personId String
+  job      String
+
+  movie  Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([movieId])
+  @@index([personId])
+}
+
+model Language {
+  id   String @id @default(cuid())
+  name String @unique
+  code String @unique
+
+  movies MovieLanguage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieLanguage {
+  id         String @id @default(cuid())
+  movieId    String
+  languageId String
+
+  movie    Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, languageId])
+  @@index([movieId])
+  @@index([languageId])
+}
+
+model Genre {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  movies Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieCinemaFormat {
+  id             String @id @default(cuid())
+  movieId        String
+  cinemaFormatId String
+
+  movie        Movie        @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  cinemaFormat CinemaFormat @relation(fields: [cinemaFormatId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, cinemaFormatId])
+  @@index([movieId])
+  @@index([cinemaFormatId])
+}
+
+model CinemaFormat {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  movies  MovieCinemaFormat[]
+  screens ScreenCinemaFormat[]
+  shows   Show[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model Movie {
   id String @id @default(cuid())
 
   title       String
-  slug        String @unique
+  slug        String   @unique
   description String?
   duration    Int
   releaseDate DateTime
-  language    String
-  genre       String
-  certificate String
+
+  languages MovieLanguage[]
+
+  primaryGenreId String
+  primaryGenre   Genre  @relation(fields: [primaryGenreId], references: [id])
+
+  certification Certification
+
+  cinemaFormats MovieCinemaFormat[]
 
   posterUrl   String?
+  posterPublicId String?
+
   backdropUrl String?
+  backdropPublicId String?
   trailerUrl  String?
 
   isActive Boolean @default(true)
 
   shows Show[]
 
+  cast MovieCast[]
+
+  crew MovieCrew[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
+  @@index([primaryGenreId])
+}
 
 model City {
   id String @id @default(cuid())
@@ -118,7 +239,6 @@ model City {
 
   @@unique([name, state, country])
 }
-
 
 model Theatre {
   id String @id @default(cuid())
@@ -144,6 +264,19 @@ model Theatre {
   @@index([cityId])
 }
 
+model ScreenCinemaFormat {
+  id String @id @default(cuid())
+
+  screenId       String
+  cinemaFormatId String
+
+  screen       Screen       @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  cinemaFormat CinemaFormat @relation(fields: [cinemaFormatId], references: [id], onDelete: Cascade)
+
+  @@unique([screenId, cinemaFormatId])
+  @@index([screenId])
+  @@index([cinemaFormatId])
+}
 
 model Screen {
   id String @id @default(cuid())
@@ -153,6 +286,8 @@ model Screen {
 
   name String
   slug String
+
+  supportedFormats ScreenCinemaFormat[]
 
   isActive Boolean @default(true)
 
@@ -167,16 +302,15 @@ model Screen {
   @@index([theatreId])
 }
 
-
 model Seat {
   id String @id @default(cuid())
 
   screenId String
   screen   Screen @relation(fields: [screenId], references: [id])
 
-  rowLabel  String
+  rowLabel   String
   seatNumber Int
-  label     String
+  label      String
 
   x        Float
   y        Float
@@ -196,7 +330,6 @@ model Seat {
   @@index([screenId])
 }
 
-
 model Show {
   id String @id @default(cuid())
 
@@ -205,6 +338,9 @@ model Show {
 
   screenId String
   screen   Screen @relation(fields: [screenId], references: [id])
+
+  cinemaFormatId String
+  cinemaFormat   CinemaFormat @relation(fields: [cinemaFormatId], references: [id])
 
   startTime DateTime
   endTime   DateTime
@@ -221,18 +357,18 @@ model Show {
 
   @@index([movieId])
   @@index([screenId])
+  @@index([cinemaFormatId])
   @@index([startTime])
 }
-
 
 model ShowSeat {
   id String @id @default(cuid())
 
   showId String
-  show   Show @relation(fields: [showId], references: [id])
+  show   Show   @relation(fields: [showId], references: [id])
 
   seatId String
-  seat   Seat @relation(fields: [seatId], references: [id])
+  seat   Seat   @relation(fields: [seatId], references: [id])
 
   price  Int
   status ShowSeatStatus @default(AVAILABLE)
@@ -247,17 +383,16 @@ model ShowSeat {
   @@index([showId, status])
 }
 
-
 model Booking {
   id String @id @default(cuid())
 
   bookingReference String @unique
 
   userId String
-  user   User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   showId String
-  show   Show @relation(fields: [showId], references: [id])
+  show   Show   @relation(fields: [showId], references: [id])
 
   // Historical snapshots
   movieTitle   String
@@ -288,7 +423,6 @@ model Booking {
   @@index([status])
 }
 
-
 model BookingSeat {
   id String @id @default(cuid())
 
@@ -309,7 +443,6 @@ model BookingSeat {
   @@index([bookingId])
   @@index([showSeatId])
 }
-
 
 model Payment {
   id String @id @default(cuid())

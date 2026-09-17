@@ -6,29 +6,23 @@ import { authenticateUser } from "../../../../shared/middleware/authenticateUser
 import { authorizeRoles } from "../../../../shared/middleware/authorizeRoles";
 import { Role } from "../../../../shared/enums/Role";
 
+// * Factories
+import { buildMoviesModule } from "../../movies.module";
 
+const moviesModule = buildMoviesModule();
 
-// Factories 
-
-import { makeCreateMovieController } from '../../infrastructure/factories/makeCreateMoviesController';
-import { makeGetMovieController } from "../../infrastructure/factories/makeGetMoviesController";
-import { makeGetMovieByIdController } from "../../infrastructure/factories/makeGetMoviesIdController";
-import { makeUpdateMovieController } from "../../infrastructure/factories/makeUpdateMoviesController";
+import { upload } from "../../../../shared/middleware/upload.middleware";
 import { updateMovieSchema } from "../validators/updateMovieValidator";
 
 const movieRoute = Router();
 
-const createMovieController = makeCreateMovieController();
-const getMovieController = makeGetMovieController();
-const getMovieByIdController = makeGetMovieByIdController();
-const getUpdateMovieController = makeUpdateMovieController();
 
 
+movieRoute.post('/',upload.fields([{ name: "poster", maxCount:1},{name:"backdrop",maxCount:1}]), validate(createMovieSchema),moviesModule.createMovieController.handle)
+movieRoute.get('/', moviesModule.getMovieController.handle)
 
 
-movieRoute.post('/',authenticateUser,authorizeRoles(Role.SUPER_ADMIN), validate(createMovieSchema), createMovieController.handle)
-movieRoute.get('/', getMovieController.handle)
-movieRoute.get('/:id', getMovieByIdController.handle)
-movieRoute.patch('/:id',getUpdateMovieController.handle)
+movieRoute.get('/:id', moviesModule.getMovieByIdController.handle)
+movieRoute.patch('/:id', upload.fields([{ name: "poster", maxCount: 1 },{name:'backdrop',maxCount:1}]),validate(updateMovieSchema),moviesModule.updateMovieController.handle)
 
 export default movieRoute;

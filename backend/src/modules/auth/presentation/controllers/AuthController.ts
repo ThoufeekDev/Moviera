@@ -71,6 +71,9 @@ export class AuthController {
 
     const result = await loginUserUseCase.execute(validatedData);
 
+    console.log("after login result",result);
+    
+
     setAuthCookies(res, result.user.id, result.user.role);
 
     return successResponse(res, 200, true, 'Login succesful', result.user);
