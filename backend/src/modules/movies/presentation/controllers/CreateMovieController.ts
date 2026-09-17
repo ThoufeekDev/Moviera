@@ -20,20 +20,27 @@ console.log("FILES:", req.files);
     const backdropFile = files?.backdrop?.[0];
 
     let posterUrl: string | undefined;
-    let backdropUrl: string | undefined;
+    let posterPublicId: string | undefined;
 
+    let backdropUrl: string | undefined;
+    let backdropPublicId: string | undefined;
     if (posterFile) {
-      posterUrl = await this.cloudinaryService.uploadImage(
+     const poster = await this.cloudinaryService.uploadImage(
         posterFile.buffer,
         'moviera/movies/posters',
-      );
+     );
+      posterUrl = poster.secureUrl;
+      posterPublicId = poster.publicId;
     }
 
     if (backdropFile) {
-      backdropUrl = await this.cloudinaryService.uploadImage(
+      const backdrop = await this.cloudinaryService.uploadImage(
         backdropFile.buffer,
         'moviera/movies/backdrops',
       );
+
+        backdropUrl = backdrop.secureUrl;
+        backdropPublicId = backdrop.publicId;
     }
 
     const movie = await this.createMovieUseCase.execute({
@@ -44,7 +51,9 @@ console.log("FILES:", req.files);
 
       releaseDate: new Date(req.body.releaseDate),
       posterUrl,
+      posterPublicId,
       backdropUrl,
+      backdropPublicId
     });
 
     successResponse(res, 201, true, 'Movie created successfully', movie);

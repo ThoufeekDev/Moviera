@@ -84,6 +84,7 @@ model Person {
   id       String  @id @default(cuid())
   name     String
   imageUrl String?
+  imagePublicId String?
 
   castRoles MovieCast[]
   crewRoles MovieCrew[]
@@ -201,7 +202,10 @@ model Movie {
   cinemaFormats MovieCinemaFormat[]
 
   posterUrl   String?
+  posterPublicId String?
+
   backdropUrl String?
+  backdropPublicId String?
   trailerUrl  String?
 
   isActive Boolean @default(true)

@@ -5,6 +5,7 @@ import { MovieMapper } from './MovieMapper';
 
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 import { CreateMovieData } from '../../domain/types/CreateMovieData';
+import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
 
 export class PrismaMovieRepository implements IMovieRepository {
   async create(data: CreateMovieData): Promise<Movie | null> {
@@ -162,9 +163,6 @@ export class PrismaMovieRepository implements IMovieRepository {
 
   async findAll(): Promise<Movie[]> {
     const allMovies = await prisma.movie.findMany({
-      where: {
-        isActive: true,
-      },
       include: {
         primaryGenre:true,
         languages: {
@@ -196,23 +194,48 @@ export class PrismaMovieRepository implements IMovieRepository {
     return allMovies.map((movie) => MovieMapper.toDomain(movie));
   }
 
-  async updateMovie(id: string, movie: UpdateMovieData):Promise<any> {
+
+  /**
+   * 
+   *  
+   *  !Implement @transaction on UpdateMovie 
+   *  ? The main idea is to make all these operation part of one database
+   *  * Movie Update
+   *  * Languages
+   *  * Cinema formats
+   *  * Cast 
+   *  * Crew
+   *  
+   * ^ Wat is transaction ? 
+   * * treat multiple database operations as one single unit of work
+   * ^ The Rule is Eaither everything success or nothing is changed
+   *  ! This is often called atomicity
+   *  
+   * ^ why i here use transaction look at my 
+   * &updateMovie() is not updating just one table
+   * * one patch can updates all of these ...
+   * 
+   * &tx means
+   * ! Start a transaction. Everything I execute using tx 
+   * ! belongs to this transaction 
+   * 
+   */
+
+  async updateMovie(id: string, movie: UpdateMovieData):Promise<Movie> {
     // Put every remaining property into a new object called movieData.
-    const { languages, cast, crew, ...movieData } = movie;
+    const { languageIds, cinemaFormatIds, cast, crew, ...movieData } = movie;
+    
 
-    //   await prisma.movie.update({
-    //     where: {
-    //       id,
-    //     },
-    //     data: {
-    //       ...movieData,
-    //     },
-    //       });
+    // ? why Everything inside transaction 
+    // ? must use the transaction client tx
+    return prisma.$transaction(async (tx) => {
 
-    // uupdate Movie table only when normal Movie firlds exist
+    // !tx is just a vairable name chose for transaction client
 
+
+   // ? uupdate Movie table only when normal Movie firlds exist
     if (Object.keys(movieData).length > 0) {
-      await prisma.movie.update({
+      await tx.movie.update({
         where: { id },
         data: movieData,
       });
@@ -220,16 +243,16 @@ export class PrismaMovieRepository implements IMovieRepository {
 
     // ! 2. Update MovieLanguage only when lanugaes was provided
 
-    if (languages !== undefined) {
-      await prisma.movieLanguage.deleteMany({
+    if (languageIds!== undefined) {
+      await tx.movieLanguage.deleteMany({
         where: {
           movieId: id,
         },
       });
 
-      if (languages.length > 0) {
-        await prisma.movieLanguage.createMany({
-          data: languages.map((languageId) => ({
+      if (languageIds.length > 0) {
+        await tx.movieLanguage.createMany({
+          data: languageIds.map((languageId) => ({
             movieId: id,
             languageId: languageId,
           })),
@@ -237,17 +260,37 @@ export class PrismaMovieRepository implements IMovieRepository {
       }
     }
 
+    // * Cinema format update
+
+    if (cinemaFormatIds!== undefined) {
+      await tx.movieCinemaFormat.deleteMany({
+        where: {
+            movieId:id
+          }
+      })
+      
+      if (cinemaFormatIds.length > 0) {
+        await tx.movieCinemaFormat.createMany({
+          data: cinemaFormatIds.map((cinemaFormatId) => ({
+            movieId: id,
+            cinemaFormatId,
+           
+          }))
+         })
+      }
+    }
+
     // ! Updte MovieCast only when cast was provided
 
     if (cast !== undefined) {
-      await prisma.movieCast.deleteMany({
+      await tx.movieCast.deleteMany({
         where: {
           movieId: id,
         },
       });
 
       if (cast.length > 0) {
-        await prisma.movieCast.createMany({
+        await tx.movieCast.createMany({
           data: cast.map((item) => ({
             movieId: id,
             personId: item.personId,
@@ -258,14 +301,14 @@ export class PrismaMovieRepository implements IMovieRepository {
     }
 
     if (crew !== undefined) {
-      await prisma.movieCrew.deleteMany({
+      await tx.movieCrew.deleteMany({
         where: {
           movieId: id,
         },
       });
 
       if (crew.length > 0) {
-        await prisma.movieCrew.createMany({
+        await tx.movieCrew.createMany({
           data: crew.map((item) => ({
             movieId: id,
             personId: item.personId,
@@ -274,16 +317,22 @@ export class PrismaMovieRepository implements IMovieRepository {
         });
       }
     }
-
-    const updatedMovie = await prisma.movie.findUnique({
+      
+       const updatedMovie = await tx.movie.findUnique({
       where: {
         id,
       },
       include: {
+        primaryGenre:true,
         languages: {
           include: {
             language: true,
           },
+        },
+        cinemaFormats: {
+          include: {
+            cinemaFormat:true
+          }
         },
         cast: {
           include: {
@@ -298,6 +347,17 @@ export class PrismaMovieRepository implements IMovieRepository {
       },
     });
 
-    return ""
+          if (!updatedMovie) {
+      throw new NotFoundError("Movie not found");
+    }
+    return MovieMapper.toDomain(updatedMovie);
+
+
+   
+    })
+
+
+
+
   }
 }

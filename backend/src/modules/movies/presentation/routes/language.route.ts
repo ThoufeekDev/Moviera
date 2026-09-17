@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { makeGetLanguageContoller } from "../../infrastructure/factories/makeGetLanguageController";
 import { buildMoviesModule } from "../../movies.module";
 const moviesModule = buildMoviesModule();
 

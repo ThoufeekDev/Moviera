@@ -8,7 +8,9 @@ export interface CreateMovieData {
   releaseDate: Date;
   primaryGenreId: string;
   posterUrl: string | null;
+  posterPublicId: string | null;
   backdropUrl: string | null;
+  backdropPublicId: string | null;
   trailerUrl: string | null;
   isActive: boolean;
 

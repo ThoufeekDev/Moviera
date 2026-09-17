@@ -17,10 +17,11 @@ export class CreatePersonController {
         let imageUrl: string | undefined;
 
         if (file) {
-            imageUrl = await this.cloudinaryService.uploadImage(
+            const image = await this.cloudinaryService.uploadImage(
                 file.buffer,
                 'moviera/people'
             )
+            imageUrl = image.secureUrl;
         }
 
         const person = await this.createPersonUseCase.execute({name,imageUrl});

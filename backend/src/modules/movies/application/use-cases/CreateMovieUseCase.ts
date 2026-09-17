@@ -63,7 +63,9 @@ export class CreateMovieUseCase {
       primaryGenreId: data.primaryGenreId,
       certification:data.certification,
       posterUrl: data.posterUrl ?? null,
+      posterPublicId:data.posterPublicId ?? null,
       backdropUrl: data.backdropUrl ?? null,
+      backdropPublicId:data.backdropPublicId??null,
       trailerUrl: data.trailerUrl ?? null,
       isActive: true,
     

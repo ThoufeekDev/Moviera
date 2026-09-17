@@ -5,70 +5,146 @@ import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
 import { generateSlug } from '../../../../shared/utils/generateSlug';
 import { ConflictError } from '../../../../shared/exceptions/ConflictError';
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
+import { IGenreRepository } from '../../domain/repository/IGenreRepository';
+import { AppError } from '../../../../shared/exceptions/AppError';
+import { ILanguageRepository } from '../../domain/repository/ILanguageRepository';
+import { IPersonRepository } from '../../domain/repository/IPersonRepository';
+import { ICinemaFormatRepository } from '../../domain/repository/ICinemaFormatRepository';
+
+import { UpdateMovieResult } from '../../domain/types/UpdateMovieResult';
+
+
 export class UpdateMovieUseCase {
-  constructor(private readonly movieRepository: IMovieRepository) {}
+  constructor(
+    private readonly movieRepository: IMovieRepository,
+    private readonly genreRepository: IGenreRepository,
+    private readonly languageRepository: ILanguageRepository,
+    private readonly cinemaFormatRepository: ICinemaFormatRepository,
+    private readonly personRepository:IPersonRepository,
+  ) { }
+  
 
-    async execute(id: string, movie: UpdateMovieDTO): Promise<Movie> {
-      const existingMovie = await this.movieRepository.findById(id);
 
-      if (!existingMovie) throw new NotFoundError('Movie not found');
+  async execute(id: string, movie: UpdateMovieDTO): Promise<UpdateMovieResult> {
+    const existingMovie = await this.movieRepository.findById(id);
 
-      const updateData:UpdateMovieData = {
-         ...movie
-      }
+    if (!existingMovie) throw new NotFoundError('Movie not found');
 
-      // let slug = existingMovie.slug;
+    const updateData: UpdateMovieData = {
+      ...movie,
+    };
 
-      // Only generate a new slug when title changes
+    // * check if primaryGenreId was provided
 
-      if (movie.title && movie.title !== existingMovie.title) {
-       const slug = generateSlug(movie.title);
-
-        // checking whether another movie already uses the slug
-
-        const movieWithSlug = await this.movieRepository.findBySlug(slug);
-
-        if (movieWithSlug && movieWithSlug.slug !== existingMovie.slug)
-          throw new ConflictError('Movie already exists');
-
-          updateData.slug = slug;
-      }
-
-      // ?? nullish coalescing Operator
-
-      // we hear use nullish operator
-      // why we use nullish operation  if the left is not null use that
-      //                               if the left is null then use the right side
-
-      // const { languages, cast, crew, ...movieData } = movie;
-      // if (Object.keys(movieData).length > 0) {
-      //   movieData.slug = slug;
-      // }
-      // const updatedData: Partial<Movie> = {
-      //   ...movieData,
-      //   slug,
-      // };
-
-      return this.movieRepository.updateMovie(id, updateData);
-      
-
-      //  const updatedData: Partial<Movie> = {
-      //    title: movie.title ?? existingMovie.title,
-      //    slug,
-      //    description: movie.description ?? existingMovie.description,
-      //    duration: movie.duration ?? existingMovie.duration,
-      //    releaseDate: movie.releaseDate ?? existingMovie.releaseDate,
-      //   //  language: movie.language ?? existingMovie.language,
-      //    genre: movie.genre ?? existingMovie.genre,
-      //    certificate: movie.certificate ?? existingMovie.certificate,
-      //    posterUrl: movie.posterUrl ?? existingMovie.posterUrl,
-      //    backdropUrl: movie.backdropUrl ?? existingMovie.backdropUrl,
-      //    trailerUrl: movie.trailerUrl ?? existingMovie.trailerUrl,
-      //    isActive: movie.isActive ?? existingMovie.isActive,
-      //  };
-
-      // return this.movieRepository.updateMovie(id, updatedData);
+    if (movie.primaryGenreId) {
+      const genre = await this.genreRepository.findById(movie.primaryGenreId);
+      if (!genre) throw new AppError('Invalid or inactive genre', 400);
     }
 
+    // * check if languageIds was provided
 
+    if (movie.languageIds) {
+      const languages = await this.languageRepository.findByIds(movie.languageIds);
+
+      if (languages.length !== movie.languageIds.length)
+        throw new AppError('One Or more languages are invalid or inactive', 400);
+    }
+
+    // * check if cinemaFormats was provided
+
+    if (movie.cinemaFormatIds) {
+      const cinemaFormats = await this.cinemaFormatRepository.findByIds(movie.cinemaFormatIds);
+
+      if (cinemaFormats.length !== movie.cinemaFormatIds.length) {
+        throw new AppError('One or more cinema formats are invalid or inactive', 400);
+      }
+    }
+
+    /**
+     * 
+     *   !the movie.cast is actually like an array of infos
+     *  ? it contains cast = {[id:"sdhsdl",personId:"fsdfsds",role:"director"]}
+     */
+
+    // ! code commented this code is has a problem what if there is 10 crew and 15 members
+    // ! on every loop it hits the db
+// if (movie.cast) {
+//   for (const castMember of movie.cast) {
+//     const person = await this.personRepository.findById(
+//       castMember.personId
+//     );
+
+//     if (!person) {
+//       throw new AppError(
+//         `Person not found: ${castMember.personId}`,
+//         400
+//       );
+//     }
+//   }
+// }
+
+// if (movie.crew) {
+//   for (const crewMember of movie.crew) {
+//     const person = await this.personRepository.findById(
+//       crewMember.personId
+//     );
+
+//     if (!person) {
+//       throw new AppError(
+//         `Person not found: ${crewMember.personId}`,
+//         400
+//       );
+//     }
+//   }
+    // }
+    
+
+    // ^ The better soluction is pass those in ids in array
+
+    if (movie.crew || movie.cast) {
+      const personIds = [
+        ...(movie.cast?.map((item) => item.personId) ?? []),
+        ...(movie.crew?.map((item)=>item.personId)?? []),
+      ]
+      
+      const persons = await this.personRepository.findByIds(personIds);
+      // ^The Set is useful because the same person could theoretically 
+      // ^appear in both cast and crew. We don't want duplicates to make
+      // ^ our count comparison incorrect.
+      
+      if (persons?.length !== new Set(personIds).size) {
+        throw new AppError("one or more cast or crew persons are invalid",400)
+      }
+      }
+    // let slug = existingMovie.slug;
+
+    // Only generate a new slug when title changes
+
+    if (movie.title && movie.title !== existingMovie.title) {
+      const slug = generateSlug(movie.title);
+
+      // checking whether another movie already uses the slug
+
+      const movieWithSlug = await this.movieRepository.findBySlug(slug);
+
+      if (movieWithSlug && movieWithSlug.slug !== existingMovie.slug)
+        throw new ConflictError('Movie already exists');
+
+      updateData.slug = slug;
+    }
+
+    // ?? nullish coalescing Operator
+
+    // we hear use nullish operator
+    // why we use nullish operation  if the left is not null use that
+    //                               if the left is null then use the right side
+
+    const updatedMovie = await this.movieRepository.updateMovie(id, updateData);
+    
+    return {
+      movie: updatedMovie,
+      oldPosterPublicId: existingMovie.posterPublicId,
+      oldBackdropPublicId:existingMovie.backdropPublicId
+    }
+  }
 }

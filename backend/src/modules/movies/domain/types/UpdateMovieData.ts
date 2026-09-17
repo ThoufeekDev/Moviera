@@ -1,17 +1,25 @@
+import { Certification } from "../../../../shared/enums/Certification";
+
 export interface UpdateMovieData {
   title?: string;
   slug?: string;
   description?: string | null;
   duration?: number;
   releaseDate?: Date;
-  genre?: string;
-  certificate?: string;
+  primaryGenreId?: string;
+  certification?: Certification;
+
   posterUrl?: string | null;
+  posterPublicId?: string;
   backdropUrl?: string | null;
+  backdropPublicId?: string;
   trailerUrl?: string | null;
+
   isActive?: boolean;
 
-  languages?: string[];
+  languageIds?: string[];
+
+  cinemaFormatIds?: string[];
 
   cast?: {
     personId: string;

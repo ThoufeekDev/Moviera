@@ -27,6 +27,8 @@ import { GetMovieController } from './presentation/controllers/GetMovieControlle
 import { GetMovieUseCase } from './application/use-cases/GetMoviesUseCase';
 
 import { CloudinaryService } from '../../shared/services/cloudinary.service';
+import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
+import { UpdateMovieUseCase } from './application/use-cases/UpdateMovieUseCase';
 
 export function buildMoviesModule() {
   // * Repositories
@@ -77,6 +79,18 @@ export function buildMoviesModule() {
     new GetCinemaFormatUseCase(cinemaFormatRepository),
   );
     
+    const updateMovieController = new UpdateMovieController(
+        new UpdateMovieUseCase(
+            movieRepository,
+            genreRepository,
+            languageRepository,
+            cinemaFormatRepository,
+            personRepository
+
+        ),
+        cloudinaryService
+    )
+    
     const getGenreController = new GetGenreController(
   new GetGenresUseCase(genreRepository)
 );
@@ -89,7 +103,8 @@ export function buildMoviesModule() {
     getPersonByIdController,
     getPersonController,
     getLanguageController,
-      getCinemaFormatController,
-    getGenreController
+    getCinemaFormatController,
+    getGenreController,
+    updateMovieController
   };
 }

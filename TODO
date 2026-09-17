@@ -15,7 +15,7 @@
 ✘ Apple OAuth — Cancelled
 ☐ Implement Forgot Password on Login Page
 ☐ Implement Role-Based Access Control
-☐ Implement Super Admin Authorization
+✔ Implement Super Admin Authorization & Authentication @done(26-09-16 23:23)
 ☐ Implement Theatre Admin Authorization
 
 ## User Application
@@ -32,9 +32,10 @@
 ✔ Create Movie — Super Admin
 ✔ Get All Movies — Public
 ✔ Get Movie by ID — Public
+✔ Get By Lanugage - Super Admin @done(26-09-16 23:25)
 ☐ Update Movie — Super Admin @started(26-09-07 00:47)
 ☐ Deactivate Movie — Super Admin
-☐ Add Movie Module Tests
+✘ Add Movie Module Tests @cancelled(26-09-17 11:26)
 
 ## Theatre Module
 
@@ -115,3 +116,31 @@
 ☐ API Documentation
 ☐ Health Check Endpoint
 ☐ Production Security Review
+
+
+
+
+## Week 1  Super ADMIN 
+☐ Super Admin Login system
+☐ Admin can add Movies
+☐ Admin Can update Movies
+☐ List All Movies 
+
+## Week 2 ADMIN 
+☐ Admin Login System
+☐ Admin Can create theatre
+☐ Admin Can customize the seat based on their layout
+☐ admin can create screen 
+
+## Week 3 ADmin 
+☐ admin can create shows
+☐ admin can create seats
+☐ admin can manage bookings
+
+## Week 4 Users
+☐ User can Login
+☐ Landing Page 
+☐ Use can see current Available running movies
+☐ User can book the movies 
+
+

@@ -26,6 +26,25 @@ export class PrismaPersonRepository implements IPersonRepository {
     return new Person(person.id, person.name, person.imageUrl);
   }
 
+async findByIds(ids: string[]): Promise<Person[]> {
+  const persons = await prisma.person.findMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+  });
+
+  return persons.map(
+    (person) =>
+      new Person(
+        person.id,
+        person.name,
+        person.imageUrl
+      )
+  );
+}
+
   async findByName(name: string): Promise<Person | null> {
     const person = await prisma.person.findFirst({
       where: {

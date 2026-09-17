@@ -1,10 +1,17 @@
+import { Certification } from "../../../../shared/enums/Certification";
+
 export interface UpdateMovieDTO {
   title?: string;
   description?: string;
   duration?: number;
   releaseDate?: Date;
-  slug?: string;
-  languages?: string[];
+
+  primaryGenreId?: string;
+  certification?: Certification;
+
+  languageIds?: string[];
+  cinemaFormatIds?: string[];
+
   cast?: {
     personId: string;
     character?: string;
@@ -14,10 +21,12 @@ export interface UpdateMovieDTO {
     personId: string;
     job: string;
   }[];
-  genre?: string;
-  certificate?: string;
+
   posterUrl?: string;
+  posterPublicId?: string;
   backdropUrl?: string;
+  backdropPublicId?: string;
   trailerUrl?: string;
+
   isActive?: boolean;
 }

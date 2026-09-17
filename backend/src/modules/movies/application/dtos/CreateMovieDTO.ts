@@ -20,6 +20,8 @@ export interface CreateMovieDTO {
   certification: Certification;
   cinemaFormatIds:string[]
   posterUrl?: string;
+  posterPublicId: string;
   backdropUrl?: string;
+  backdropPublicId: string;
   trailerUrl?: string;
 }
