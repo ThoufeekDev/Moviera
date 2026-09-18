@@ -101,6 +101,7 @@ export class MovieMapper {
   
  
     return new Movie(
+      movie.id,
       movie.title,
       movie.slug,
       movie.description,

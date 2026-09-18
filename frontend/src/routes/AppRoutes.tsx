@@ -49,8 +49,13 @@ import ComingSoon from '../shared/components/coming-soon/ComingSoon';
 import SuperAdminLayout from '../features/super-admin/layouts/SuperAdminLayout';
 import MovieManagementPage from '../features/super-admin/pages/movies-management/MovieManagementPage';
 
-// import SuperAdminCreateMoviePage from '../features/super-admin/pages/movies-management/MovieManagement/create-movie/SuperAdminCreateMoviePage';
-import CreateMoviePage from '../features/super-admin/pages/movies-management/create-movie/CreateMoviePage';
+const CreateMoviePage = lazy(
+  () => import('../features/super-admin/pages/movies-management/create-movie/CreateMoviePage')
+);
+
+const MovieDetailsPage = lazy(
+  () => import('../features/super-admin/pages/movies-management/movie-details/MovieDetailsPage')
+);
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -170,6 +175,7 @@ export default function AppRoutes() {
 
             <Route path="movies" element={<MovieManagementPage />} />
             <Route path="movies/create" element={<CreateMoviePage />} />
+            <Route path="movies/:id" element={<MovieDetailsPage />} />
           </Route>
 
           {/* 404 */}

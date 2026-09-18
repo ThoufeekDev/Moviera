@@ -1,0 +1,394 @@
+.card {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background: linear-gradient(135deg, #1f0910 0%, #3b0c17 40%, #751025 100%);
+  border: 1px solid rgba(248, 68, 100, 0.35);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.005);
+  box-shadow: 0 16px 40px rgba(248, 68, 100, 0.4), 0 4px 18px rgba(0, 0, 0, 0.6);
+  border-color: rgba(248, 68, 100, 0.7);
+}
+
+/* Left: Floating 3D Poster Card */
+.posterWrapper {
+  position: relative;
+  width: 140px;
+  min-width: 140px;
+  margin: 12px;
+  border-radius: 12px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #12141d;
+}
+
+.poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.card:hover .poster {
+  transform: scale(1.06);
+}
+
+.posterPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2a0b14 0%, #12141d 100%);
+  color: #a0a5b5;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.placeholderIcon {
+  width: 36px;
+  height: 36px;
+  opacity: 0.6;
+}
+
+.posterBadges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(10, 10, 16, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.02em;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.activeBadge {
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.5);
+}
+
+.activeBadge .statusDot {
+  background-color: #34d399;
+  box-shadow: 0 0 8px #34d399;
+}
+
+.inactiveBadge {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.inactiveBadge .statusDot {
+  background-color: #f87171;
+}
+
+/* Right: Content Area */
+.content {
+  padding: 14px 16px 14px 4px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.certBadge {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(4px);
+}
+
+.metaTagsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.genreTag {
+  background: linear-gradient(135deg, #f84464 0%, #d82c4b 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 3px 10px;
+  border-radius: 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(248, 68, 100, 0.4);
+}
+
+.durationTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #f3f4f6;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.formatGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.formatTag {
+  background: rgba(18, 20, 29, 0.7);
+  border: 1px solid rgba(248, 68, 100, 0.35);
+  color: #ffd1db;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.languages {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #f3f4f6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metaLabel {
+  color: #ffa3b5;
+  font-weight: 700;
+}
+
+.descriptionSnippet {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #e5e7eb;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footerRow {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.releaseInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f9fafb;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.releaseInfo strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Obsidian Glass Action Buttons */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.viewButton {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #11131c 0%, #1c1f2e 100%);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(248, 68, 100, 0.5);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+}
+
+.viewButton:hover {
+  background: linear-gradient(135deg, #181b28 0%, #25293d 100%);
+  border-color: #f84464;
+  box-shadow: 0 4px 16px rgba(248, 68, 100, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8);
+  transform: translateY(-1px);
+}
+
+.viewButton:hover .btnIcon {
+  transform: translateX(2px);
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #11131c;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.editButton:hover {
+  background: #1c1f2e;
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+.toggleButton {
+  background: #11131c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.deactivateBtn {
+  color: #ff8787;
+  border: 1px solid rgba(255, 135, 135, 0.4);
+}
+
+.deactivateBtn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #f87171;
+}
+
+.activateBtn {
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.4);
+}
+
+.activateBtn:hover {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: #34d399;
+}
+
+.iconSm {
+  width: 14px;
+  height: 14px;
+}
+
+.btnIcon {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 580px) {
+  .card {
+    flex-direction: column;
+  }
+
+  .posterWrapper {
+    width: calc(100% - 24px);
+    margin: 12px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .content {
+    padding: 0 16px 16px;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .viewButton,
+  .editButton,
+  .toggleButton {
+    flex: 1;
+    justify-content: center;
+  }
+}

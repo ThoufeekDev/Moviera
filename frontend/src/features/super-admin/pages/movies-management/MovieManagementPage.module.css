@@ -1,0 +1,63 @@
+.page {
+    padding: 32px;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.header p {
+    margin-top: 6px;
+    color: #6b7280;
+}
+
+.toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.searchInput,
+.filter {
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+}
+
+.searchInput {
+    flex: 1;
+}
+
+.movieList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .movieList {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emptyState {
+    padding: 48px;
+    text-align: center;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+}
+
+.emptyState h2 {
+    margin-bottom: 8px;
+}
+
+.emptyState p {
+    color: #6b7280;
+}

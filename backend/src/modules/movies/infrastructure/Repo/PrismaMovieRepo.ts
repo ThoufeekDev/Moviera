@@ -228,133 +228,148 @@ export class PrismaMovieRepository implements IMovieRepository {
 
     // ? why Everything inside transaction 
     // ? must use the transaction client tx
-    return prisma.$transaction(async (tx) => {
+    prisma.$transaction(async (tx) => {
+       
+  const existingMovie = await tx.movie.findUnique({
+  where: { id },
+  select: { id: true },
+});
 
-    // !tx is just a vairable name chose for transaction client
+if (!existingMovie) {
+  throw new NotFoundError("Movie not found");
+}
+
+      // !tx is just a vairable name chose for transaction client
 
 
-   // ? uupdate Movie table only when normal Movie firlds exist
-    if (Object.keys(movieData).length > 0) {
-      await tx.movie.update({
-        where: { id },
-        data: movieData,
-      });
-    }
-
-    // ! 2. Update MovieLanguage only when lanugaes was provided
-
-    if (languageIds!== undefined) {
-      await tx.movieLanguage.deleteMany({
-        where: {
-          movieId: id,
-        },
-      });
-
-      if (languageIds.length > 0) {
-        await tx.movieLanguage.createMany({
-          data: languageIds.map((languageId) => ({
-            movieId: id,
-            languageId: languageId,
-          })),
+      // ? uupdate Movie table only when normal Movie firlds exist
+      if (Object.keys(movieData).length > 0) {
+        await tx.movie.update({
+          where: { id },
+          data: movieData,
         });
       }
-    }
 
-    // * Cinema format update
+      // ! 2. Update MovieLanguage only when lanugaes was provided
 
-    if (cinemaFormatIds!== undefined) {
-      await tx.movieCinemaFormat.deleteMany({
-        where: {
-            movieId:id
-          }
-      })
-      
-      if (cinemaFormatIds.length > 0) {
-        await tx.movieCinemaFormat.createMany({
-          data: cinemaFormatIds.map((cinemaFormatId) => ({
+      if (languageIds !== undefined) {
+        await tx.movieLanguage.deleteMany({
+          where: {
             movieId: id,
-            cinemaFormatId,
+          },
+        });
+
+        if (languageIds.length > 0) {
+          await tx.movieLanguage.createMany({
+            data: languageIds.map((languageId) => ({
+              movieId: id,
+              languageId: languageId,
+            })),
+          });
+        }
+      }
+
+      // * Cinema format update
+
+      if (cinemaFormatIds !== undefined) {
+        await tx.movieCinemaFormat.deleteMany({
+          where: {
+            movieId: id
+          }
+        })
+      
+        if (cinemaFormatIds.length > 0) {
+          await tx.movieCinemaFormat.createMany({
+            data: cinemaFormatIds.map((cinemaFormatId) => ({
+              movieId: id,
+              cinemaFormatId,
            
-          }))
-         })
+            }))
+          })
+        }
       }
-    }
 
-    // ! Updte MovieCast only when cast was provided
+      // ! Updte MovieCast only when cast was provided
 
-    if (cast !== undefined) {
-      await tx.movieCast.deleteMany({
-        where: {
-          movieId: id,
-        },
-      });
-
-      if (cast.length > 0) {
-        await tx.movieCast.createMany({
-          data: cast.map((item) => ({
+      if (cast !== undefined) {
+        await tx.movieCast.deleteMany({
+          where: {
             movieId: id,
-            personId: item.personId,
-            character: item.character ?? null,
-          })),
+          },
         });
+
+        if (cast.length > 0) {
+          await tx.movieCast.createMany({
+            data: cast.map((item) => ({
+              movieId: id,
+              personId: item.personId,
+              character: item.character ?? null,
+            })),
+          });
+        }
       }
-    }
 
-    if (crew !== undefined) {
-      await tx.movieCrew.deleteMany({
-        where: {
-          movieId: id,
-        },
-      });
-
-      if (crew.length > 0) {
-        await tx.movieCrew.createMany({
-          data: crew.map((item) => ({
+      if (crew !== undefined) {
+        await tx.movieCrew.deleteMany({
+          where: {
             movieId: id,
-            personId: item.personId,
-            job: item.job,
-          })),
+          },
         });
+
+        if (crew.length > 0) {
+          await tx.movieCrew.createMany({
+            data: crew.map((item) => ({
+              movieId: id,
+              personId: item.personId,
+              job: item.job,
+            })),
+          });
+        }
       }
-    }
-      
-       const updatedMovie = await tx.movie.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        primaryGenre:true,
-        languages: {
-          include: {
-            language: true,
-          },
-        },
-        cinemaFormats: {
-          include: {
-            cinemaFormat:true
-          }
-        },
-        cast: {
-          include: {
-            person: true,
-          },
-        },
-        crew: {
-          include: {
-            person: true,
-          },
-        },
-      },
+   
     });
 
-          if (!updatedMovie) {
-      throw new NotFoundError("Movie not found");
-    }
-    return MovieMapper.toDomain(updatedMovie);
+
+    const updatedMovie = await this.findById(id);
+    if (!updatedMovie) throw new NotFoundError("Movie not found");
+    return updatedMovie;
+
+    //        const updatedMovie = await tx.movie.findUnique({
+    //   where: {
+    //     id,
+    //   },
+    //   include: {
+    //     primaryGenre:true,
+    //     languages: {
+    //       include: {
+    //         language: true,
+    //       },
+    //     },
+    //     cinemaFormats: {
+    //       include: {
+    //         cinemaFormat:true
+    //       }
+    //     },
+    //     cast: {
+    //       include: {
+    //         person: true,
+    //       },
+    //     },
+    //     crew: {
+    //       include: {
+    //         person: true,
+    //       },
+    //     },
+    //   },
+    // });
+
+    //       if (!updatedMovie) {
+    //   throw new NotFoundError("Movie not found");
+    // }
+    // return MovieMapper.toDomain(updatedMovie);
 
 
-   
-    })
+    
 
 
 

@@ -6,6 +6,7 @@ import { CinemaFormat } from './CinemaFormat';
 import { Certification } from '../../../../shared/enums/Certification';
 export class Movie {
   constructor(
+    public readonly id:string,
     public readonly title: string,
     public readonly slug: string,
     public readonly description: string | null,
