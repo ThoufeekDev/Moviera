@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../features/auth/store/auth.store';
-import Loader from '../shared/components/common/Loader';
+import { useAuthStore } from '../features/auth/stores/auth.store';
+import Loader from '../shared/components/Loader/Loader';
 import type { ReactNode } from 'react';
-
+import { Role } from '../shared/constants/Role';
 interface Props {
   children: ReactNode;
 }
@@ -15,10 +15,10 @@ export default function TheatreAdminRoute({ children }: Props) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/theatre-admin/login" replace = {true} />;
+    return <Navigate to="/theatre-admin/login" replace  />;
   }
 
-  if (user?.role !== 'THEATRE_ADMIN') {
+  if (user?.role !== Role.THEATRE_ADMIN) {
     return <Navigate to="/" replace />;
   }
 

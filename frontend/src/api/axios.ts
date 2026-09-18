@@ -1,7 +1,9 @@
 import axios from 'axios';
+
 import { refreshAccessToken } from '../features/auth/services/auth.service';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  
 
   withCredentials: true,
 });

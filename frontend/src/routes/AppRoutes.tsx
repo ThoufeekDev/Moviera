@@ -1,28 +1,28 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-import Loader from '../shared/components/common/Loader';
+import Loader from '../shared/components/Loader/Loader';
 
 // Lazy Loaded Pages
-const LoginPage = lazy(() => import('../features/auth/pages/Login/LoginPage'));
+const LoginPage = lazy(() => import('../features/auth/pages/login/LoginPage'));
 
-const UserRegisterPage = lazy(() => import('../features/auth/pages/Register/UserRegisterPage'));
+const UserRegisterPage = lazy(() => import('../features/auth/pages/register/UserRegisterPage'));
 
-const VerifyOtpPage = lazy(() => import('../features/auth/pages/VerifyOtp/VerifyOtpPage'));
+const VerifyOtpPage = lazy(() => import('../features/auth/pages/verify-otp/VerifyOtpPage'));
 
-const HomePage = lazy(() => import('../features/auth/pages/Home/HomePage'));
+const HomePage = lazy(() => import('../features/auth/pages/home/HomePage'));
 
-const GatewayPage = lazy(() => import('../features/onboarding/RegisterSelectionPage'));
+const GatewayPage = lazy(() => import('../features/onboarding/GateWay'));
 
-const AdminLoginPage = lazy(() => import('../features/theatre-admin/pages/Login/Theatre_AdminLoginPage'));
+const AdminLoginPage = lazy(() => import('../features/theatre-admin/pages/login/TheatreAdminLoginPage'));
 
 
 const AdminRegisterPage = lazy(
-  () => import('../features/theatre-admin/pages/Register/AdminRegisterPage'),
+  () => import('../features/theatre-admin/pages/register/TheatreAdminRegisterPage'),
 );
 
 const AdminDashboardPage = lazy(
-  () => import('../features/theatre-admin/pages/Dashboard/AdminDashboardPage'),
+  () => import('../features/theatre-admin/pages/dashboard/TheatreAdminDashboardPage'),
 );
 
 
@@ -36,22 +36,16 @@ const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
 // Route Components
 
-// import AdminRoute from './AdminProtectedRoute';
-// import AdminPublicRoute from './AdminPublicRoute';
-// import SuperAdminRoute from './SuperAdminRoute';
-// import AdminRedirect from './AdminRedirect';
-
-
 import TheatreAdminRoute from './TheatreAdminRoute';
 import RoleRedirect from './RoleRedirect';
 import TheatreAdminPublicRoute from './TheatreAdminPublicRoute';
-import AdminLayoutWrapper from './AdminLayoutWrapper';
-import AdminOnboardingRoute from './AdminOnboardingRoute';
+import TheatreAdminLayoutWrapper from './TheatreAdminLayoutWrapper';
+
 import PublicRoute from './PublicRoute';
 import ProtectedRoute from './ProtectedRoute';
 import SuperAdminRoute from './SuperAdminRoute';
 
-import ComingSoon from '../shared/components/ComingSoon/ComingSoon';
+import ComingSoon from '../shared/components/coming-soon/ComingSoon';
 import SuperAdminLayout from '../features/super-admin/layouts/SuperAdminLayout';
 import MovieManagementPage from '../features/super-admin/pages/movies-management/MovieManagementPage';
 
@@ -121,9 +115,9 @@ export default function AppRoutes() {
           <Route
             path="/theatre-admin/login"
             element={
-              <TheatreAdminRoute>
+              <TheatreAdminPublicRoute>
                 <AdminLoginPage />
-              </TheatreAdminRoute>
+              </TheatreAdminPublicRoute>
             }
           />
 
@@ -134,9 +128,9 @@ export default function AppRoutes() {
           <Route
             element={
               <TheatreAdminRoute>
-                <AdminOnboardingRoute>
-                  <AdminLayoutWrapper />
-                </AdminOnboardingRoute>
+            
+                  <TheatreAdminLayoutWrapper />
+             
               </TheatreAdminRoute>
             }
           >

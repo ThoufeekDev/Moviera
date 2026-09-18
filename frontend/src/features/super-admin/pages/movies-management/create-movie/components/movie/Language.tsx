@@ -1,11 +1,11 @@
 
 import { Controller, type Control, type FieldErrors } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
+import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
 // import styles from './Langugage.module.css';
 import styles from "./Language.module.css"
 
-import { useLanguages } from '../../../../../hooks/useLanguage';
-import { useCinemaFormats } from '../../../../../hooks/useCinemaFormats';
+import { useLanguages } from '../../../hooks/useLanguage';
+import { useCinemaFormats } from '../../../hooks/useCinemaFormats';
 
 
 interface MovieLanguagesProps {
@@ -14,15 +14,8 @@ interface MovieLanguagesProps {
 }
 
 export default function MovieLanguages({ control, errors }: MovieLanguagesProps) {
-  const { data: languages = [], isLoading, isError } = useLanguages()
-  const { data: cinemaFormats = [], isLoading:formatsLoading, isError:formatsError } = useCinemaFormats();
-  // const [selectedFormats, setSelectedFormats] = useState<string[]>(['2D', 'Dolby Atmos']);
-
-  // const toggleFormat = (fmt: string) => {
-  //   setSelectedFormats((prev) =>
-  //     prev.includes(fmt) ? prev.filter((f) => f !== fmt) : [...prev, fmt],
-  //   );
-  // };
+  const { data: languages = [] } = useLanguages()
+  const { data: cinemaFormats = [] } = useCinemaFormats();
 
   return (
     <section className={styles.sectionCard} id="languages-section">

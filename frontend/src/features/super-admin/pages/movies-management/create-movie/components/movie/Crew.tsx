@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFieldArray, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
+import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
 import PersonSelector from '../person/PersonSelector';
 import type { Person } from '../person.types';
 import styles from './Crew.module.css';

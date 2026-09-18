@@ -1,10 +1,10 @@
 import api from '../../../api/axios';
 
-import type { LoginDTO } from '../dtos/login.dto';
-import type { RegisterDTO } from '../dtos/register.dto';
-import type { ResendOtp } from '../dtos/resent_otp.dto';
-import type { VerifyOtpDTO } from '../dtos/verify-otp.dto';
 
+import type { LoginDTO } from '../types/dto/Login.dto';
+import type { RegisterDTO } from '../types/dto/Register.dto';
+import type { VerifyOtpDTO } from '../types/dto/VerifyOtp.dto';
+import type { ResendOtp } from '../types/dto/ResendOtp.dto';
 export const registerUser = async (data: RegisterDTO) => {
   const response = await api.post('/auth/register', data);
 

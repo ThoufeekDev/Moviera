@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "../features/auth/store/auth.store";
-import Loader from "../shared/components/common/Loader";
+import { useAuthStore } from "../features/auth/stores/auth.store";
+import Loader from "../shared/components/Loader/Loader";
 import type {ReactNode} from "react"
 import { Role } from "../shared/constants/Role";
 interface Props {

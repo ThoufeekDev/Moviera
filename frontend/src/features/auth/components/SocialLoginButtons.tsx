@@ -1,6 +1,6 @@
 // features/auth/components/SocialLoginButtons.tsx
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "../stores/auth.store";
 export default function SocialLoginButtons() {
   const googleLogin = useAuthStore((state) => state.googleLogin)
 

@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../features/auth/store/auth.store';
-import Loader from '../shared/components/common/Loader';
+import { useAuthStore } from '../features/auth/stores/auth.store';
+import Loader from '../shared/components/Loader/Loader';
 import { Role } from '../shared/constants/Role';
 
 export default function RoleRedirect() {
@@ -23,6 +23,6 @@ export default function RoleRedirect() {
 
     case Role.USER:
     default:
-      return <Navigate to="/" replace />;
+      return <Navigate to="/user/login" replace />;
   }
 }

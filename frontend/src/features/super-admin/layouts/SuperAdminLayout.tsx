@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../../../shared/components/Sidebar/Sidebar';
-import { superAdminSidebarItems } from '../config/superAdminSidebar.config';
+import { superAdminSidebarItems } from '../config/super-admin-sidebar.config';
 import styles from './SuperAdminLayout.module.css';
 
 export default function SuperAdminLayout() {

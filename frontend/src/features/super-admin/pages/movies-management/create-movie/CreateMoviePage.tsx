@@ -13,8 +13,8 @@ import {
   createMovieSchema,
   type CreateMovieFormInput,
   type CreateMovieFormData,
-} from '../../../validators/createMovie.schema';
-import { createMovie } from '../../../services/createMovie.service';
+} from '../validators/createMovie.schema';
+import { createMovie } from '../services/createMovie.service';
 import styles from './CreateMoviePage.module.css';
 
 const steps = [

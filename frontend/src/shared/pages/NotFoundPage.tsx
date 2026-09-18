@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import MovieraLogo from '../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../components/moviera-logo/MovieraLogo';
 import './NotFoundPage.css';
 
 export default function NotFoundPage() {

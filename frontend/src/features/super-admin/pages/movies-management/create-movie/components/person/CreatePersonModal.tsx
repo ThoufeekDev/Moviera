@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useCreatePerson } from '../../../../../hooks/usePerson';
-import type { Person } from '../person.type';
-
+// import { useCreatePerson } from '../../../../../../hooks/usePerson';
+import { useCreatePerson } from '../../../hooks/usePerson';
+import type { Person } from '../person.types';
+// import styles from "./CreatePersonModal.module.css"
 interface CreatePersonModalProps {
   initialName: string;
   onClose: () => void;

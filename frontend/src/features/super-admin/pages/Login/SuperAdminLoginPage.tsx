@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '../../../../shared/components/Button/Button';
 import Input from '../../../../shared/components/Input/Input';
 import AuthBrandHeader from '../../../auth/components/AuthBrandHeader';
-import { useAuthStore } from '../../../auth/store/auth.store';
+import { useAuthStore } from '../../../auth/stores/auth.store';
 import { useState } from 'react';
 import { Role } from '../../../../shared/constants/Role';
 import { getErrorMessage } from '../../../../shared/utils/getErrorMessage';
@@ -14,7 +14,7 @@ import AuthErrorBanner from '../../../auth/components/AuthErrorBanner';
 import {
   superAdminLoginSchema,
   type SuperAdminLoginFormData,
-} from '../../validators/superAdminLogin.schema';
+} from './validators/superAdminLogin.schema';
 
 import './SuperAdminLoginPage.module.css';
 

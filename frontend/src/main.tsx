@@ -1,19 +1,23 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import App from './app';
+import { QueryClientProvider } from '@tanstack/react-query';
+
+import queryClient from './shared/lib/queryClient';
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import App from './App';
 import './styles/globals.css';
 
 
 
-const qeuryClient = new QueryClient()
+// const qeuryClient = new QueryClient()
 
-import { GoogleOAuthProvider } from "@react-oauth/google";
+
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+// const clientId = env.googleClientId;
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     
-    <QueryClientProvider client={qeuryClient}>
+    <QueryClientProvider client={queryClient}>
     <GoogleOAuthProvider clientId={clientId}>
       <App />
     </GoogleOAuthProvider>
