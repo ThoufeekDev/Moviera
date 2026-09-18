@@ -1,8 +1,8 @@
 import React from 'react';
-import { SIDEBAR_ITEMS } from '../../../../data/mockData';
+import { SIDEBAR_ITEMS } from '../../../../mocks/mockData';
 import './sidebar.css';
 import { useAuthStore } from '../../../auth/store/auth.store';
-import MovieraLogo from '../../../../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../../../../shared/components/common/MovieraLogo/MovieraLogo';
 
 interface SidebarProps {
   activeTab: string;

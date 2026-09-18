@@ -7,7 +7,7 @@ import { useAuthStore } from '../../../auth/store/auth.store';
 import { loginSchema, type LoginFormData } from '../../../auth/validators/login.schema';
 
 import { getErrorMessage } from '../../../../shared/utils/getErrorMessage';
-import MovieraLogo from '../../../../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../../../../shared/components/common/MovieraLogo/MovieraLogo';
 
 import './adminLogin.css';
 import { Role } from '../../../../shared/constants/Role';

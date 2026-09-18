@@ -1,4 +1,4 @@
-import MovieraLogo from '../../../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../../../shared/components/common/MovieraLogo/MovieraLogo';
 
 interface AuthBrandHeaderProps {
   title: string;

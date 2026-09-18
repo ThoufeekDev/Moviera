@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../features/auth/store/auth.store';
-import Loader from '../components/common/Loader';
+import Loader from '../shared/components/common/Loader';
 import { Role } from '../shared/constants/Role';
 
 interface Props {

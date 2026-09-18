@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 
-import MovieBasicInfo from './components/movie/MovieBasicInfo';
-import MovieLanguages from './components/movie/MovieLanguage';
-import MovieMedia from './components/movie/MovieMedia';
-import MovieCast from './components/movie/MovieCast';
-import MovieCrew from './components/movie/MovieCrew';
+import MovieBasicInfo from './components/movie/BasicInfo';
+import MovieLanguages from './components/movie/Language';
+import MovieMedia from './components/movie/Media';
+import MovieCast from './components/movie/Cast';
+import MovieCrew from './components/movie/Crew';
 
 import {
   createMovieSchema,
@@ -15,8 +15,8 @@ import {
   type CreateMovieFormData,
 } from '../../../validators/createMovie.schema';
 import { createMovie } from '../../../services/createMovie.service';
-import styles from './SuperAdminCreateMoviePage.module.css';
-import { Certification } from '../../../../../shared/constants/Certification';
+import styles from './CreateMoviePage.module.css';
+
 const steps = [
   {
     id: 0,

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import MovieraLogo from '../../../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../common/MovieraLogo/MovieraLogo';
 import type { SidebarItem, SidebarProps } from './types';
 import styles from './Sidebar.module.css';
 

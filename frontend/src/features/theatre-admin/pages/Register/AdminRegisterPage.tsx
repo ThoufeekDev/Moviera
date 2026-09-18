@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Turnstile } from 'react-turnstile';
 import { getErrorMessage } from '../../../../shared/utils/getErrorMessage';
-import MovieraLogo from '../../../../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../../../../shared/components/common/MovieraLogo/MovieraLogo';
 import './AdminRegister.css';
 
 import { registerUser } from '../../../auth/services/auth.service';

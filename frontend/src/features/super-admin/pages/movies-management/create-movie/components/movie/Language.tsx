@@ -1,13 +1,12 @@
-import { useState } from 'react';
+
 import { Controller, type Control, type FieldErrors } from 'react-hook-form';
 import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
-import styles from './MovieLangugage.module.css';
-
+// import styles from './Langugage.module.css';
+import styles from "./Language.module.css"
 
 import { useLanguages } from '../../../../../hooks/useLanguage';
 import { useCinemaFormats } from '../../../../../hooks/useCinemaFormats';
 
-const availableFormats = ['2D', '3D', 'IMAX 3D', '4DX', 'ScreenX', 'Dolby Atmos'];
 
 interface MovieLanguagesProps {
   control: Control<CreateMovieFormInput>;

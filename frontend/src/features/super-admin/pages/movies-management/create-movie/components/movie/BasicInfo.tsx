@@ -1,7 +1,9 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
 import Input from '../../../../../../../shared/components/Input/Input';
-import styles from './movieBasicInfo.module.css';
+// import styles from "./BasicInfo.module.css"
+import styles from './BasicInfo.module.css';
+
 import { Certification } from '../../../../../../../shared/constants/Certification';
 import { useGenres } from '../../../../../hooks/useGenre';
 interface MovieBasicInfoProps {

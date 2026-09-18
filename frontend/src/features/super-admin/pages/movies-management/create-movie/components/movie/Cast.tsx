@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { useFieldArray, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
 import type { CreateMovieFormInput } from '../../../../../validators/createMovie.schema';
 import PersonSelector from '../person/PersonSelector';
-import type { Person } from '../person.type';
-import styles from './MovieCrew.module.css';
+import type { Person } from '../person.types';
+import styles from './Cast.module.css';
 
-interface MovieCrewProps {
+interface MovieCastProps {
   control: Control<CreateMovieFormInput>;
   register: UseFormRegister<CreateMovieFormInput>;
   errors?: FieldErrors<CreateMovieFormInput>;
 }
 
-export default function MovieCrew({ control, register, errors }: MovieCrewProps) {
+export default function MovieCast({ control, register, errors }: MovieCastProps) {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'crew',
+    name: 'cast',
   });
 
   const [selectedPeople, setSelectedPeople] = useState<Person[]>([]);
@@ -30,7 +30,7 @@ export default function MovieCrew({ control, register, errors }: MovieCrewProps)
 
     append({
       personId: person.id,
-      job: 'Director',
+      character: '',
     });
   };
 
@@ -39,54 +39,56 @@ export default function MovieCrew({ control, register, errors }: MovieCrewProps)
   };
 
   return (
-    <section className={styles.sectionCard} id="crew-section">
+    <section className={styles.sectionCard} id="cast-section">
       <div className={styles.sectionHeader}>
         <div className={styles.headerIcon}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-            <circle cx="12" cy="13" r="4"></circle>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
         </div>
         <div className={styles.headerText}>
-          <h2>Movie Crew & Technicians</h2>
-          <p>Add directors, producers, music composers, writers, and cinematographers.</p>
+          <h2>Movie Cast</h2>
+          <p>Add lead actors, supporting cast, and their respective character names.</p>
         </div>
       </div>
 
       <div className={styles.selectorWrapper}>
-        <PersonSelector onSelect={handlePersonSelect} placeholder="Search director or crew (e.g. Lokesh Kanagaraj, Jithu Joseph)..." />
+        <PersonSelector onSelect={handlePersonSelect} placeholder="Search actor name (e.g. Mohanlal, Mammootty)..." />
       </div>
 
-      {errors?.crew?.message && (
+      {errors?.cast?.message && (
         <p className={styles.errorMsg} style={{ marginTop: '0.75rem', marginBottom: '0.75rem', color: '#dc2626' }}>
-          ⚠️ {errors.crew.message}
+          ⚠️ {errors.cast.message}
         </p>
       )}
 
       {fields.length > 0 ? (
-        <div className={styles.crewGrid}>
+        <div className={styles.castGrid}>
           {fields.map((field, index) => {
             const person = selectedPeople.find((p) => p.id === field.personId);
 
             return (
-              <div key={field.id} className={styles.crewCard}>
-                <input type="hidden" {...register(`crew.${index}.personId`)} />
+              <div key={field.id} className={styles.castCard}>
+                <input type="hidden" {...register(`cast.${index}.personId`)} />
 
                 {person?.imageUrl ? (
                   <img src={person.imageUrl} alt={person.name} className={styles.avatar} />
                 ) : (
                   <div className={styles.avatarPlaceholder}>
-                    {person?.name ? person.name.charAt(0).toUpperCase() : 'C'}
+                    {person?.name ? person.name.charAt(0).toUpperCase() : 'A'}
                   </div>
                 )}
 
                 <div className={styles.cardInfo}>
-                  <span className={styles.personName}>{person?.name || 'Crew Member'}</span>
+                  <span className={styles.personName}>{person?.name || 'Actor'}</span>
                   <input
                     type="text"
-                    className={styles.jobInput}
-                    placeholder="Job Role (e.g. Director, Music)"
-                    {...register(`crew.${index}.job`)}
+                    className={styles.characterInput}
+                    placeholder="Character Name (e.g. Ranga)"
+                    {...register(`cast.${index}.character`)}
                   />
                 </div>
 
@@ -94,7 +96,7 @@ export default function MovieCrew({ control, register, errors }: MovieCrewProps)
                   type="button"
                   className={styles.removeBtn}
                   onClick={() => handleRemove(index)}
-                  title="Remove crew member"
+                  title="Remove cast member"
                 >
                   ✕
                 </button>
@@ -104,7 +106,7 @@ export default function MovieCrew({ control, register, errors }: MovieCrewProps)
         </div>
       ) : (
         <div className={styles.emptyState}>
-          🎬 No crew members added yet. Search and select crew members above to add them.
+          🎭 No cast members added yet. Search and select actors above to feature them.
         </div>
       )}
     </section>

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-import Loader from '../components/common/Loader';
+import Loader from '../shared/components/common/Loader';
 
 // Lazy Loaded Pages
 const LoginPage = lazy(() => import('../features/auth/pages/Login/LoginPage'));
@@ -14,23 +14,23 @@ const HomePage = lazy(() => import('../features/auth/pages/Home/HomePage'));
 
 const GatewayPage = lazy(() => import('../features/onboarding/RegisterSelectionPage'));
 
-const AdminLoginPage = lazy(() => import('../features/theatre_admin/pages/Login/Theatre_AdminLoginPage'));
+const AdminLoginPage = lazy(() => import('../features/theatre-admin/pages/Login/Theatre_AdminLoginPage'));
 
 
 const AdminRegisterPage = lazy(
-  () => import('../features/theatre_admin/pages/Register/AdminRegisterPage'),
+  () => import('../features/theatre-admin/pages/Register/AdminRegisterPage'),
 );
 
 const AdminDashboardPage = lazy(
-  () => import('../features/theatre_admin/pages/Dashboard/AdminDashboardPage'),
+  () => import('../features/theatre-admin/pages/Dashboard/AdminDashboardPage'),
 );
 
 
 // SUPER_ADMIN PAGES
 
-const SuperAdminLoginPage = lazy(() => import('../features/super_admin/pages/Login/SuperAdminLoginPage'))
+const SuperAdminLoginPage = lazy(() => import('../features/super-admin/pages/Login/SuperAdminLoginPage'))
 
-const SuperAdminDashboardPage = lazy(()=>import("../features/super_admin/pages/Dashboard/SuperAdminDashboardPage"))
+const SuperAdminDashboardPage = lazy(()=>import("../features/super-admin/pages/Dashboard/SuperAdminDashboardPage"))
 
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
@@ -52,10 +52,11 @@ import ProtectedRoute from './ProtectedRoute';
 import SuperAdminRoute from './SuperAdminRoute';
 
 import ComingSoon from '../shared/components/ComingSoon/ComingSoon';
-import SuperAdminLayout from '../features/super_admin/layouts/SuperAdminLayout';
-import SuperAdminMoviesPage from '../features/super_admin/pages/Movies/SuperAdminMoviesPage';
+import SuperAdminLayout from '../features/super-admin/layouts/SuperAdminLayout';
+import MovieManagementPage from '../features/super-admin/pages/movies-management/MovieManagementPage';
 
-import SuperAdminCreateMoviePage from '../features/super_admin/pages/Movies/CreateMovies/SuperAdminCreateMoviePage';
+// import SuperAdminCreateMoviePage from '../features/super-admin/pages/movies-management/MovieManagement/create-movie/SuperAdminCreateMoviePage';
+import CreateMoviePage from '../features/super-admin/pages/movies-management/create-movie/CreateMoviePage';
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -173,8 +174,8 @@ export default function AppRoutes() {
           >
             <Route index element={<SuperAdminDashboardPage />} />
 
-            <Route path="movies" element={<SuperAdminMoviesPage />} />
-            <Route path="movies/create" element={<SuperAdminCreateMoviePage />} />
+            <Route path="movies" element={<MovieManagementPage />} />
+            <Route path="movies/create" element={<CreateMoviePage />} />
           </Route>
 
           {/* 404 */}

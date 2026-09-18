@@ -1,4 +1,4 @@
-export default function SuperAdminMoviesPage() {
+export default function MovieManagementPage() {
   return (
     <div>
       <h1>Movies</h1>

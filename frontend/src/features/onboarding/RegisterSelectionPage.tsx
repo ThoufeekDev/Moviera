@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import MovieraLogo from '../../components/common/MovieraLogo/MovieraLogo';
+import MovieraLogo from '../../shared/components/common/MovieraLogo/MovieraLogo';
 import './gateWay.css';
 
 export default function GatewayPage() {
