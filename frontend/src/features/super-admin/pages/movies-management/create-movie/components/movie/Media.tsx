@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
 import Input from '../../../../../../../shared/components/Input/Input';
 import styles from './Media.module.css';
 
 interface MovieMediaProps {
-  register: UseFormRegister<CreateMovieFormInput>;
-  setValue: UseFormSetValue<CreateMovieFormInput>;
-  errors: FieldErrors<CreateMovieFormInput>;
-  watch?: UseFormWatch<CreateMovieFormInput>;
+  register: UseFormRegister<any>;
+  setValue: UseFormSetValue<any>;
+  errors: FieldErrors<any>;
+  watch?: UseFormWatch<any>;
 }
 
 export default function MovieMedia({ register, setValue, errors, watch }: MovieMediaProps) {
@@ -116,7 +115,7 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
             )}
           </div>
 
-          {errors.poster && <p className={styles.errorMsg}>⚠️ {errors.poster.message as string}</p>}
+          {errors.poster?.message && <p className={styles.errorMsg}>⚠️ {String(errors.poster.message)}</p>}
         </div>
 
         {/* Backdrop Upload Card */}
@@ -166,7 +165,7 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
             )}
           </div>
 
-          {errors.backdrop && <p className={styles.errorMsg}>⚠️ {errors.backdrop.message as string}</p>}
+          {errors.backdrop?.message && <p className={styles.errorMsg}>⚠️ {String(errors.backdrop.message)}</p>}
         </div>
       </div>
 
@@ -178,7 +177,7 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
           label="YouTube Official Trailer URL"
           placeholder="https://www.youtube.com/watch?v=..."
           {...register('trailerUrl')}
-          error={errors.trailerUrl?.message}
+          error={errors.trailerUrl?.message ? String(errors.trailerUrl.message) : undefined}
         />
 
         {embedUrl && (

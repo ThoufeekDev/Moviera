@@ -1,5 +1,5 @@
 
-import Loader from '../../../../shared/components/Loader/Loader';
+import ContentLoader from '../../../../shared/components/ContentLoader/ContentLoader';
 import MovieCard from './movie-details/components/MovieCard';
 import { useMovies } from './hooks/useMovies';
 import styles from "./MovieManagementPage.module.css"
@@ -29,7 +29,9 @@ export default function MovieManagementPage() {
     refetch
    } = useMovies();
   
-  if (isLoading) return <Loader />
+  
+  
+  if (isLoading) return <ContentLoader text="Movies" subtext="Loading movie collection..." />;
   
 if (isError) {
   return (

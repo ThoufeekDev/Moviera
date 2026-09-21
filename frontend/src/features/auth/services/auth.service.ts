@@ -39,6 +39,8 @@ export const getProfile = async () => {
 };
 
 export const refreshAccessToken = async () => {
+  console.log('refreshAccessToken triggered');
+  
 await api.post('/auth/refresh-token');
   
 };

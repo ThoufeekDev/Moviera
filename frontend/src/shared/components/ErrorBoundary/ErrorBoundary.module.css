@@ -1,0 +1,486 @@
+/* Cinematic Moviera Error Boundary Styles */
+
+.errorContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: #0b0e17;
+  color: #f3f4f6;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Background Ambient Glows & Grid */
+.bgGlow1 {
+  position: absolute;
+  top: -15%;
+  left: -10%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 68, 100, 0.22) 0%, rgba(248, 68, 100, 0) 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: pulseGlow 8s ease-in-out infinite alternate;
+}
+
+.bgGlow2 {
+  position: absolute;
+  bottom: -15%;
+  right: -10%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, rgba(124, 58, 237, 0) 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: pulseGlow 10s ease-in-out infinite alternate-reverse;
+}
+
+.filmGridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Main Content Wrapper */
+.contentWrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 640px;
+  width: 100%;
+  gap: 1.5rem;
+  animation: scaleFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Brand Header */
+.brandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.errorBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(248, 68, 100, 0.12);
+  border: 1px solid rgba(248, 68, 100, 0.3);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f84464;
+  backdrop-filter: blur(8px);
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #f84464;
+  box-shadow: 0 0 10px #f84464;
+  animation: blinkDot 1.5s ease-in-out infinite;
+}
+
+/* Main Error Card (Glassmorphism) */
+.errorCard {
+  width: 100%;
+  background: rgba(17, 22, 36, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(248, 68, 100, 0.4);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(248, 68, 100, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-sizing: border-box;
+}
+
+/* Film Reel Animated Graphic */
+.emblemContainer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.reelGlowRing {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 68, 100, 0.3) 0%, transparent 70%);
+  animation: reelPulse 3s ease-in-out infinite alternate;
+}
+
+.reelIllustration {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 20px rgba(248, 68, 100, 0.25));
+}
+
+.reelSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.spinningOuterReel {
+  transform-origin: 60px 60px;
+  animation: spinReel 12s linear infinite;
+}
+
+.spinningSpokes {
+  transform-origin: 60px 60px;
+  animation: spinReelReverse 20s linear infinite;
+}
+
+/* Sparkles / Ambient particles */
+.sparkle1, .sparkle2 {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #f84464;
+  box-shadow: 0 0 10px #f84464;
+}
+
+.sparkle1 {
+  top: 10px;
+  right: 10px;
+  animation: floatParticle 3s ease-in-out infinite alternate;
+}
+
+.sparkle2 {
+  bottom: 15px;
+  left: 12px;
+  animation: floatParticle 4s ease-in-out 1s infinite alternate-reverse;
+}
+
+/* Text Styling */
+.textContent {
+  max-width: 480px;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.25;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Action Group Buttons */
+.actionGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  outline: none;
+  user-select: none;
+}
+
+.btnIcon {
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(248, 68, 100, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.btnPrimary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 70%
+  );
+  transform: rotate(30deg) translateY(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(248, 68, 100, 0.5);
+  background: linear-gradient(135deg, #fa5775 0%, #e03250 100%);
+}
+
+.btnPrimary:hover::after {
+  transform: rotate(30deg) translateY(100%);
+}
+
+.btnPrimary:hover .btnIcon {
+  transform: rotate(180deg);
+}
+
+.btnSecondary {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.btnOutline {
+  background: transparent;
+  color: #9ca3af;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btnOutline:hover {
+  background: rgba(248, 68, 100, 0.08);
+  color: #f84464;
+  border-color: rgba(248, 68, 100, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Technical Details Collapsible */
+.detailsContainer {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-top: 1.25rem;
+}
+
+.detailsToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.detailsToggle:hover {
+  color: #f84464;
+}
+
+.detailsToggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chevronIcon {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.detailsBody {
+  margin-top: 0.75rem;
+  background: #060810;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: left;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.detailsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.errorType {
+  font-family: 'Fira Code', 'Roboto Mono', monospace;
+  font-size: 0.78rem;
+  color: #ef4444;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.copyBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.stackTrace {
+  margin: 0;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: #6b7280;
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Footer Note */
+.footerNote {
+  font-size: 0.75rem;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+/* Keyframe Animations */
+@keyframes spinReel {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinReelReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes reelPulse {
+  0% { transform: scale(0.95); opacity: 0.4; }
+  100% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(0) scale(1); opacity: 0.5; }
+  100% { transform: translateY(-12px) scale(1.2); opacity: 1; }
+}
+
+@keyframes scaleFadeIn {
+  0% { opacity: 0; transform: scale(0.92) translateY(12px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .errorCard {
+    padding: 1.75rem 1.25rem;
+    border-radius: 18px;
+  }
+  
+  .title {
+    font-size: 1.35rem;
+  }
+
+  .description {
+    font-size: 0.85rem;
+  }
+
+  .actionGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+  
+  .brandHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+}

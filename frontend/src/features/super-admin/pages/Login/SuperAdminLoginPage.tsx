@@ -21,8 +21,8 @@ import './SuperAdminLoginPage.module.css';
 export default function SuperAdminLoginPage() {
     const { login, isLoading } = useAuthStore();
     const [authError, setAuthError] = useState('');
-  const navigate = useNavigate();
-
+     const navigate = useNavigate()
+   
   const {
     register,
     handleSubmit,
@@ -46,7 +46,12 @@ export default function SuperAdminLoginPage() {
        setAuthError(getErrorMessage(error));
       console.error('Login error:', error);
     }
-  };
+    };
+//   if (true) {
+//   throw new Error('Error Boundary test');
+  // }
+  
+  
 
   return (
     <div className="login-container">

@@ -19,7 +19,6 @@ export default function MovieCard({ movie, onToggleStatus }: MovieCardProps) {
   const hours = Math.floor(movie.duration / 60);
   const mins = movie.duration % 60;
   const durationText = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-console.log("Movie status:", movie.id, movie.isActive);
   return (
     <article className={styles.card}>
       {/* Left: Poster */}

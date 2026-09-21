@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useMovieById } from "../hooks/useMovieById";
-import Loader from "../../../../../shared/components/Loader/Loader";
+import ContentLoader from "../../../../../shared/components/ContentLoader/ContentLoader";
 import styles from "./MovieDetailsPage.module.css";
 import api from "../../../../../api/axios";
 import { useToggleMovieStatus } from "../hooks/useToggleMovieStatus";
@@ -14,11 +14,7 @@ export default function MovieDetailsPage() {
   // const [isTogglingStatus, setIsTogglingStatus] = useState(false);
   const {mutate:toggleMovieStatus,isPending:isTogglingStatus} = useToggleMovieStatus()
   if (isLoading) {
-    return (
-      <div className={styles.loaderContainer}>
-        <Loader />
-      </div>
-    );
+    return <ContentLoader text="Movie Details" subtext="Fetching movie details..." />;
   }
 
   if (isError || !movie) {

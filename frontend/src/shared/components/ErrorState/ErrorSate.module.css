@@ -1,0 +1,261 @@
+/* Moviera ErrorState Component Styles */
+
+.errorStateWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #f3f4f6;
+  position: relative;
+  overflow: hidden;
+  animation: scaleFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Variant Styles */
+.variantCard {
+  background: rgba(17, 22, 36, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(248, 68, 100, 0.35);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    0 12px 36px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(248, 68, 100, 0.06);
+  margin: 1rem 0;
+}
+
+.variantFull {
+  min-height: 65vh;
+  padding: 3rem 2rem;
+  background: radial-gradient(circle at center, rgba(17, 22, 36, 0.8) 0%, rgba(11, 14, 23, 0.95) 100%);
+  border-radius: 24px;
+}
+
+.variantInline {
+  padding: 1.25rem 1.5rem;
+  background: rgba(248, 68, 100, 0.05);
+  border: 1px solid rgba(248, 68, 100, 0.2);
+  border-radius: 14px;
+}
+
+/* Background Ambient Glow */
+.glowBackground {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 68, 100, 0.15) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: ambientPulse 6s ease-in-out infinite alternate;
+}
+
+/* Icon Container & Animations */
+.iconContainer {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.variantInline .iconContainer {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 0.85rem;
+}
+
+.iconHalo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 68, 100, 0.25) 0%, transparent 70%);
+  animation: haloPulse 2.5s ease-in-out infinite alternate;
+}
+
+.iconBadge {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background: rgba(248, 68, 100, 0.1);
+  border: 1px solid rgba(248, 68, 100, 0.25);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f84464;
+  box-shadow: 0 8px 20px rgba(248, 68, 100, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.errorStateWrapper:hover .iconBadge {
+  transform: scale(1.05) rotate(-3deg);
+}
+
+.svgIcon {
+  width: 36px;
+  height: 36px;
+}
+
+.variantInline .svgIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.warningDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background-color: #f84464;
+  border: 2px solid #111624;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #f84464;
+  animation: blinkDot 1.5s ease-in-out infinite;
+}
+
+/* Content Text */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 440px;
+}
+
+.title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.variantInline .title {
+  font-size: 1.1rem;
+}
+
+.message {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  line-height: 1.55;
+  margin: 0 0 1.5rem 0;
+}
+
+.variantInline .message {
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+
+/* Retry Button */
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #f84464 0%, #d62947 100%);
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 6px 18px rgba(248, 68, 100, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.retryBtn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 70%
+  );
+  transform: rotate(30deg) translateY(-100%);
+  transition: transform 0.6s ease;
+}
+
+.retryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(248, 68, 100, 0.45);
+  background: linear-gradient(135deg, #fa5775 0%, #e03250 100%);
+}
+
+.retryBtn:hover::after {
+  transform: rotate(30deg) translateY(100%);
+}
+
+.retryIcon {
+  transition: transform 0.3s ease;
+}
+
+.retryBtn:hover .retryIcon {
+  transform: rotate(180deg);
+}
+
+.retryBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Animations */
+@keyframes scaleFadeIn {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ambientPulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.9; }
+}
+
+@keyframes haloPulse {
+  0% { opacity: 0.4; transform: scale(0.95); }
+  100% { opacity: 0.8; transform: scale(1.08); }
+}
+
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+@media (max-width: 480px) {
+  .variantCard {
+    padding: 1.75rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .message {
+    font-size: 0.85rem;
+  }
+
+  .retryBtn {
+    width: 100%;
+  }
+}

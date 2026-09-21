@@ -1,7 +1,4 @@
-
-import { Controller, type Control, type FieldErrors } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
-// import styles from './Langugage.module.css';
+import { Controller,type FieldErrors } from 'react-hook-form';
 import styles from "./Language.module.css"
 
 import { useLanguages } from '../../../hooks/useLanguage';
@@ -9,13 +6,22 @@ import { useCinemaFormats } from '../../../hooks/useCinemaFormats';
 
 
 interface MovieLanguagesProps {
-  control: Control<CreateMovieFormInput>;
-  errors: FieldErrors<CreateMovieFormInput>;
+  control: any;
+  errors?: FieldErrors<any> | any;
 }
 
 export default function MovieLanguages({ control, errors }: MovieLanguagesProps) {
   const { data: languages = [] } = useLanguages()
   const { data: cinemaFormats = [] } = useCinemaFormats();
+
+  const getErrorString = (err?: any): string | null => {
+    if (!err) return null;
+    if (typeof err.message === 'string') return err.message;
+    return null;
+  };
+
+  const langErr = getErrorString(errors?.languages);
+  const formatErr = getErrorString(errors?.cinemaFormatIds);
 
   return (
     <section className={styles.sectionCard} id="languages-section">
@@ -55,11 +61,11 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
                     className={styles.hiddenCheckbox}
                     checked={checked || false}
                     onChange={(event) => {
-                      const current = field.value ?? [];
+                      const current: string[] = field.value ?? [];
                       if (event.target.checked) {
                         field.onChange([...current, language.id]);
                       } else {
-                        field.onChange(current.filter((id) => id !== language.id));
+                        field.onChange(current.filter((id: string) => id !== language.id));
                       }
                     }}
                   />
@@ -79,8 +85,8 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
         )}
       />
 
-      {errors.languages && (
-        <p className={styles.errorMsg}>⚠️ {errors.languages.message}</p>
+      {langErr && (
+        <p className={styles.errorMsg}>⚠️ {langErr}</p>
       )}
 
       {/* Screen Formats */}
@@ -89,46 +95,46 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
           🎬 Cinema Formats
         </div>
         <div className={styles.formatGrid}>
-        <Controller
-  name="cinemaFormatIds"
-  control={control}
-  render={({ field }) => (
-    <div className={styles.formatGrid}>
-      {cinemaFormats.map((format) => {
-        const checked = field.value?.includes(format.id);
+          <Controller
+            name="cinemaFormatIds"
+            control={control}
+            render={({ field }) => (
+              <div className={styles.formatGrid}>
+                {cinemaFormats.map((format) => {
+                  const checked = field.value?.includes(format.id);
 
-        return (
-          <button
-            type="button"
-            key={format.id}
-            className={`${styles.formatTag} ${
-              checked ? styles.formatTagActive : ''
-            }`}
-            onClick={() => {
-              const current = field.value ?? [];
+                  return (
+                    <button
+                      type="button"
+                      key={format.id}
+                      className={`${styles.formatTag} ${
+                        checked ? styles.formatTagActive : ''
+                      }`}
+                      onClick={() => {
+                        const current: string[] = field.value ?? [];
 
-              if (checked) {
-                field.onChange(
-                  current.filter((id) => id !== format.id)
-                );
-              } else {
-                field.onChange([...current, format.id]);
-              }
-            }}
-          >
-            {format.name} {checked ? '✓' : '+'}
-          </button>
-        );
-      })}
-    </div>
-  )}
+                        if (checked) {
+                          field.onChange(
+                            current.filter((id: string) => id !== format.id)
+                          );
+                        } else {
+                          field.onChange([...current, format.id]);
+                        }
+                      }}
+                    >
+                      {format.name} {checked ? '✓' : '+'}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           />
-          
-          {errors.cinemaFormatIds && (
-  <p className={styles.errorMsg}>
-    ⚠️ {errors.cinemaFormatIds.message}
-  </p>
-)}
+
+          {formatErr && (
+            <p className={styles.errorMsg}>
+              ⚠️ {formatErr}
+            </p>
+          )}
         </div>
       </div>
     </section>

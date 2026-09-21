@@ -14,7 +14,7 @@ export const successResponse = <T>(
   });
 };
 
-export const errorResponse = (res: Response, statusCode: number, message: string) => {
+export const errorResponse = (res: Response, statusCode: number,sucess:boolean, message: string) => {
   return res.status(statusCode).json({
     success: false,
     message,

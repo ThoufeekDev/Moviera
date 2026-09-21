@@ -18,11 +18,11 @@ const movieRoute = Router();
 
 
 
-movieRoute.post('/',upload.fields([{ name: "poster", maxCount:1},{name:"backdrop",maxCount:1}]), validate(createMovieSchema),moviesModule.createMovieController.handle)
+movieRoute.post('/',upload.fields([{ name: "poster", maxCount:1},{name:"backdrop",maxCount:1}]), authenticateUser,authorizeRoles(Role.SUPER_ADMIN),validate(createMovieSchema),moviesModule.createMovieController.handle)
 movieRoute.get('/', moviesModule.getMovieController.handle)
 
 
 movieRoute.get('/:id', moviesModule.getMovieByIdController.handle)
-movieRoute.patch('/:id', upload.fields([{ name: "poster", maxCount: 1 },{name:'backdrop',maxCount:1}]),validate(updateMovieSchema),moviesModule.updateMovieController.handle)
+movieRoute.patch('/:id', upload.fields([{ name: "poster", maxCount: 1 },{name:'backdrop',maxCount:1}]),authenticateUser,authorizeRoles(Role.SUPER_ADMIN),validate(updateMovieSchema),moviesModule.updateMovieController.handle)
 
-export default movieRoute;
+export default movieRoute;  

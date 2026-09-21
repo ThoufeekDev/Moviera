@@ -29,7 +29,7 @@ describe('AuthController - Login', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.user.email).toBe('john@example.com');
+    expect(response.body.data.email).toBe('john@example.com');
     expect(response.header['set-cookie']).toBeDefined();
   });
 });

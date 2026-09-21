@@ -1,18 +1,17 @@
 import { useState } from 'react';
-import { useFieldArray, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
+import { useFieldArray, type FieldErrors } from 'react-hook-form';
 import PersonSelector from '../person/PersonSelector';
 import type { Person } from '../person.types';
 import styles from './Cast.module.css';
 
 interface MovieCastProps {
-  control: Control<CreateMovieFormInput>;
-  register: UseFormRegister<CreateMovieFormInput>;
-  errors?: FieldErrors<CreateMovieFormInput>;
+  control: any;
+  register: any;
+  errors?: FieldErrors<any> | any;
 }
 
 export default function MovieCast({ control, register, errors }: MovieCastProps) {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<{ cast: { personId: string; character?: string }[] }>({
     control,
     name: 'cast',
   });
@@ -38,6 +37,8 @@ export default function MovieCast({ control, register, errors }: MovieCastProps)
     remove(index);
   };
 
+  const castErrorMessage = typeof (errors?.cast as any)?.message === 'string' ? (errors?.cast as any).message : null;
+
   return (
     <section className={styles.sectionCard} id="cast-section">
       <div className={styles.sectionHeader}>
@@ -59,9 +60,9 @@ export default function MovieCast({ control, register, errors }: MovieCastProps)
         <PersonSelector onSelect={handlePersonSelect} placeholder="Search actor name (e.g. Mohanlal, Mammootty)..." />
       </div>
 
-      {errors?.cast?.message && (
+      {castErrorMessage && (
         <p className={styles.errorMsg} style={{ marginTop: '0.75rem', marginBottom: '0.75rem', color: '#dc2626' }}>
-          ⚠️ {errors.cast.message}
+          ⚠️ {castErrorMessage}
         </p>
       )}
 

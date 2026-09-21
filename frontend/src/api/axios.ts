@@ -1,10 +1,9 @@
+import { normalizeApiError } from './normalizeApiError';
 import axios from 'axios';
 
 import { refreshAccessToken } from '../features/auth/services/auth.service';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  
-
   withCredentials: true,
 });
 
@@ -70,8 +69,7 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry &&
       originalRequest.url !== '/auth/refresh-token' &&
-      originalRequest.url !== '/auth/login' &&
-      originalRequest.url !== '/auth/profile'
+      originalRequest.url !== '/auth/login'
     ) {
       // ==================================
       // PREVENT INFINITE RETRY LOOP
@@ -128,13 +126,13 @@ api.interceptors.response.use(
 
         console.log('Refresh token expired');
 
-        return Promise.reject(refreshError);
+        return Promise.reject(normalizeApiError(refreshError));
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(normalizeApiError(error));
   },
 );
 

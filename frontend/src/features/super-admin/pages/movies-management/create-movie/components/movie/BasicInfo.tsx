@@ -1,16 +1,15 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
 import Input from '../../../../../../../shared/components/Input/Input';
-// import styles from "./BasicInfo.module.css"
 import styles from './BasicInfo.module.css';
 
 import { Certification } from '../../../../../../../shared/constants/Certification';
 import { useGenres } from '../../../hooks/useGenre';
+
 interface MovieBasicInfoProps {
-  register: UseFormRegister<CreateMovieFormInput>;
-  errors: FieldErrors<CreateMovieFormInput>;
-  setValue: UseFormSetValue<CreateMovieFormInput>;
-  watch: UseFormWatch<CreateMovieFormInput>;
+  register: UseFormRegister<any>;
+  errors: FieldErrors<any>;
+  setValue: UseFormSetValue<any>;
+  watch: UseFormWatch<any>;
 }
 
 const certificates = [
@@ -42,18 +41,33 @@ const formatDuration = (mins?: unknown) => {
   return `${h}h ${m}m`;
 };
 
-export default function MovieBasicInfo({ register, errors, setValue, watch }: MovieBasicInfoProps) {
+export default function MovieBasicInfo({
+  register,
+  errors,
+  setValue,
+  watch,
+}: MovieBasicInfoProps) {
   const {
-  data: genres = [],
-  isLoading: genresLoading,
-  isError: genresError,
-} = useGenres();
-  const durationVal = watch('duration') as number | string | undefined;
-  const certificateVal = watch('certificate') as string | undefined;
-  const descriptionVal = (watch('description') as string) || '';
+    data: genres = [],
+    isLoading: genresLoading,
+    isError: genresError,
+  } = useGenres();
 
+  const descriptionVal = watch ? watch('description') : '';
+  const durationVal = watch ? watch('duration') : undefined;
   const formattedDuration = formatDuration(durationVal);
-  
+  const certificateVal = watch ? watch('certificate') : undefined;
+
+  const getErrorString = (err?: any): string | null => {
+    if (!err) return null;
+    if (typeof err.message === 'string') return err.message;
+    return null;
+  };
+
+  const descErr = getErrorString(errors.description);
+  const genreErr = getErrorString(errors.primaryGenreId);
+  const certErr = getErrorString(errors.certificate);
+
   return (
     <section className={styles.sectionCard} id="basic-info-section">
       <div className={styles.sectionHeader}>
@@ -103,8 +117,8 @@ export default function MovieBasicInfo({ register, errors, setValue, watch }: Mo
             {...register('description')}
           />
 
-          {errors.description && (
-            <p className={styles.errorMsg}>{errors.description.message}</p>
+          {descErr && (
+            <p className={styles.errorMsg}>{descErr}</p>
           )}
         </div>
 
@@ -139,52 +153,52 @@ export default function MovieBasicInfo({ register, errors, setValue, watch }: Mo
         </div>
 
         {/* Genre */}
-<div className={styles.fieldGroup}>
-  <label className={styles.fieldLabel}>
-    Primary Genre
-  </label>
+        <div className={styles.fieldGroup}>
+          <label className={styles.fieldLabel}>
+            Primary Genre
+          </label>
 
-  {genresLoading && (
-    <p className={styles.helperText}>Loading genres...</p>
-  )}
+          {genresLoading && (
+            <p className={styles.helperText}>Loading genres...</p>
+          )}
 
-  {genresError && (
-    <p className={styles.errorMsg}>
-      Failed to load genres
-    </p>
-  )}
+          {genresError && (
+            <p className={styles.errorMsg}>
+              Failed to load genres
+            </p>
+          )}
 
-  {!genresLoading && !genresError && (
-    <div className={styles.certPillGroup}>
-      {genres.map((genre) => {
-        const isSelected = watch('primaryGenreId') === genre.id;
+          {!genresLoading && !genresError && (
+            <div className={styles.certPillGroup}>
+              {genres.map((genre) => {
+                const isSelected = watch('primaryGenreId') === genre.id;
 
-        return (
-          <button
-            type="button"
-            key={genre.id}
-            className={`${styles.certPill} ${
-              isSelected ? styles.certPillActive : ''
-            }`}
-            onClick={() => {
-              setValue('primaryGenreId', genre.id, {
-                shouldValidate: true,
-              });
-            }}
-          >
-            {genre.name}
-          </button>
-        );
-      })}
-    </div>
-  )}
+                return (
+                  <button
+                    type="button"
+                    key={genre.id}
+                    className={`${styles.certPill} ${
+                      isSelected ? styles.certPillActive : ''
+                    }`}
+                    onClick={() => {
+                      setValue('primaryGenreId', genre.id, {
+                        shouldValidate: true,
+                      });
+                    }}
+                  >
+                    {genre.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-  {errors.primaryGenreId && (
-    <p className={styles.errorMsg}>
-      {errors.primaryGenreId.message}
-    </p>
-  )}
-</div>
+          {genreErr && (
+            <p className={styles.errorMsg}>
+              {genreErr}
+            </p>
+          )}
+        </div>
 
         {/* Certificate selection */}
         <div className={styles.fieldGroup}>
@@ -211,8 +225,8 @@ export default function MovieBasicInfo({ register, errors, setValue, watch }: Mo
             })}
           </div>
 
-          {errors.certificate && (
-            <p className={styles.errorMsg}>{errors.certificate.message}</p>
+          {certErr && (
+            <p className={styles.errorMsg}>{certErr}</p>
           )}
         </div>
       </div>

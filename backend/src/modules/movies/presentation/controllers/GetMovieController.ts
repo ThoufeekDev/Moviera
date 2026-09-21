@@ -10,7 +10,7 @@ export class GetMovieController {
 
      handle = async(req:Request,res:Response)=>{
          const allMovies = await this.getMovieUseCase.execute();
-         console.log('list all movies',allMovies)
+        //  console.log('list all movies',allMovies)
 
         return successResponse(res,200,true,"All Movie fetch sucesfully",allMovies)
     }

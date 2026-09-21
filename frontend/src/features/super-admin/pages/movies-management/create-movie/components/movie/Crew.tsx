@@ -1,18 +1,17 @@
 import { useState } from 'react';
-import { useFieldArray, type Control, type FieldErrors, type UseFormRegister } from 'react-hook-form';
-import type { CreateMovieFormInput } from '../../../validators/createMovie.schema';
+import { useFieldArray, type FieldErrors } from 'react-hook-form';
 import PersonSelector from '../person/PersonSelector';
 import type { Person } from '../person.types';
 import styles from './Crew.module.css';
 
 interface MovieCrewProps {
-  control: Control<CreateMovieFormInput>;
-  register: UseFormRegister<CreateMovieFormInput>;
-  errors?: FieldErrors<CreateMovieFormInput>;
+  control: any;
+  register: any;
+  errors?: FieldErrors<any> | any;
 }
 
 export default function MovieCrew({ control, register, errors }: MovieCrewProps) {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<{ crew: { personId: string; job: string }[] }>({
     control,
     name: 'crew',
   });
@@ -38,6 +37,8 @@ export default function MovieCrew({ control, register, errors }: MovieCrewProps)
     remove(index);
   };
 
+  const crewErrorMessage = typeof (errors?.crew as any)?.message === 'string' ? (errors?.crew as any).message : null;
+
   return (
     <section className={styles.sectionCard} id="crew-section">
       <div className={styles.sectionHeader}>
@@ -57,9 +58,9 @@ export default function MovieCrew({ control, register, errors }: MovieCrewProps)
         <PersonSelector onSelect={handlePersonSelect} placeholder="Search director or crew (e.g. Lokesh Kanagaraj, Jithu Joseph)..." />
       </div>
 
-      {errors?.crew?.message && (
+      {crewErrorMessage && (
         <p className={styles.errorMsg} style={{ marginTop: '0.75rem', marginBottom: '0.75rem', color: '#dc2626' }}>
-          ⚠️ {errors.crew.message}
+          ⚠️ {crewErrorMessage}
         </p>
       )}
 

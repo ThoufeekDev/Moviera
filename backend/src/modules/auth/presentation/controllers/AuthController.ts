@@ -74,7 +74,7 @@ export class AuthController {
     console.log("after login result",result);
     
 
-    setAuthCookies(res, result.user.id, result.user.role);
+    await setAuthCookies(res, result.user.id, result.user.role);
 
     return successResponse(res, 200, true, 'Login succesful', result.user);
   }
@@ -111,24 +111,28 @@ export class AuthController {
   async refreshToken(req: Request, res: Response): Promise<void> {
     const refreshToken = req.cookies.refreshToken;
 
+    console.log("refresh token on backend check is ", refreshToken);
+
     if (!refreshToken) {
       throw new UnauthorizedError('Refresh token missing');
     }
 
-    const refreshTokenUseCase = new RefreshTokenUseCase();
-
-    const { accessToken } = await refreshTokenUseCase.execute(refreshToken);
-
-    setAccessTokenCookie(res, accessToken);
-
-    successResponse(res, 200, true, 'Access token refreshed');
+    try {
+      const refreshTokenUseCase = new RefreshTokenUseCase();
+      const { accessToken } = await refreshTokenUseCase.execute(refreshToken);
+      console.log('so the access token is ', accessToken);
+      setAccessTokenCookie(res, accessToken);
+      successResponse(res, 200, true, 'Access token refreshed');
+    } catch (error) {
+      throw new UnauthorizedError('Invalid or expired refresh token');
+    }
   }
 
   // logout method
 
   async logout(req: Request, res: Response): Promise<void> {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken', { httpOnly: true, sameSite: 'lax' });
+    res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'lax' });
 
     successResponse(res, 200, true, 'Logged out successfully');
   }

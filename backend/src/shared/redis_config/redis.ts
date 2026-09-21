@@ -5,3 +5,8 @@ export const redis = new Redis({
   port: Number(env.REDIS_PORT),
   maxRetriesPerRequest: null,
 });
+
+redis.on('error', (err) => {
+  console.error('Redis Connection Error:', err);
+});
+
