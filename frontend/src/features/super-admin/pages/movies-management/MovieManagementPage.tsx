@@ -5,7 +5,7 @@ import { useMovies } from './hooks/useMovies';
 import styles from "./MovieManagementPage.module.css"
 import ErrorState from '../../../../shared/components/ErrorState/ErrorState';
 import { useToggleMovieStatus } from './hooks/useToggleMovieStatus';
-
+import MovieCardSkeleton from './components/skeletons/MovieCardSkeleton';
 
 
 export default function MovieManagementPage() {
@@ -31,7 +31,41 @@ export default function MovieManagementPage() {
   
   
   
-  if (isLoading) return <ContentLoader text="Movies" subtext="Loading movie collection..." />;
+  // if (isLoading) return <ContentLoader text="Movies" subtext="Loading movie collection..." />;
+
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <div>
+            <h1>Movies</h1>
+            <p>Manage all movies in Moviera.</p>
+          </div>
+        </header>
+
+        <section className={styles.toolbar}>
+          <input
+            type="search"
+            placeholder="Search movies..."
+            className={styles.searchInput}
+            disabled
+          />
+          <select className={styles.filter} disabled>
+            <option value="">All Genres</option>
+          </select>
+          <select className={styles.filter} disabled>
+            <option value="">All Status</option>
+          </select>
+        </section>
+
+        <section className={styles.movieList}>
+          {Array.from({ length: 8 }).map((_, index) => (
+            <MovieCardSkeleton key={index} />
+          ))}
+        </section>
+      </div>
+    );
+  }
   
 if (isError) {
   return (
@@ -53,7 +87,10 @@ if (isError) {
           <h1>Movies</h1>
           <p>Manage all movies in Moviera.</p>
         </div>
+        
       </header>
+
+
 
       <section className={styles.toolbar}>
         <input

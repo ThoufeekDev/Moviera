@@ -18,7 +18,7 @@ import {
 import { useMovieById } from '../hooks/useMovieById';
 import { useUpdateMovie } from '../hooks/useUpdateMovie';
 
-import ContentLoader from '../../../../../shared/components/ContentLoader/ContentLoader';
+import MovieFormSkeleton from '../components/skeletons/MovieFormSkeleton';
 import ErrorState from '../../../../../shared/components/ErrorState/ErrorState';
 
 import styles from './EditMoviePage.module.css';
@@ -204,7 +204,7 @@ export default function EditMoviePage() {
   }
 
   if (isLoading) {
-    return <ContentLoader text="Loading Movie" subtext="Fetching movie details for editing..." />;
+    return <MovieFormSkeleton />;
   }
 
   if (isError || !movie) {
