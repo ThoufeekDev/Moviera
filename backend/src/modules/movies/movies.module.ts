@@ -12,8 +12,8 @@ import { GetPersonsUseCase } from './application/use-cases/GetPersonUseCase';
 import { GetLanugageUseCase } from './application/use-cases/GetLanugageUseCase';
 import { GetCinemaFormatUseCase } from './application/use-cases/GetCinemaFormatUseCase';
 import { GetGenresUseCase } from "./application/use-cases/GetGenresUseCase";
-
-
+import { GetMovieUseCase } from './application/use-cases/GetMoviesUseCase';
+import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugController';
 
 import { GetGenreController } from "./presentation/controllers/GetGenreController";
 import { CreateMovieController } from './presentation/controllers/CreateMovieController';
@@ -24,7 +24,7 @@ import { GetPersonController } from './presentation/controllers/GetPersonControl
 import { GetLanguageController } from './presentation/controllers/GetLanguageController';
 import { GetCinemaFormatController } from './presentation/controllers/GetCinemaFormatController';
 import { GetMovieController } from './presentation/controllers/GetMovieController';
-import { GetMovieUseCase } from './application/use-cases/GetMoviesUseCase';
+import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
 
 import { CloudinaryService } from '../../shared/services/cloudinary.service';
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
@@ -93,7 +93,9 @@ export function buildMoviesModule() {
     
     const getGenreController = new GetGenreController(
   new GetGenresUseCase(genreRepository)
-);
+    );
+  
+  const getMovieBySlugController = new GetMovieBySlugController(new GetMovieBySlugUseCase(movieRepository))
 
   return {
     createMovieController,
@@ -105,6 +107,7 @@ export function buildMoviesModule() {
     getLanguageController,
     getCinemaFormatController,
     getGenreController,
-    updateMovieController
+    updateMovieController,
+    getMovieBySlugController
   };
 }

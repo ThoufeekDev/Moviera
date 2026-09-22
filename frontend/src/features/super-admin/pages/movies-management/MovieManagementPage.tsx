@@ -1,5 +1,5 @@
 
-import ContentLoader from '../../../../shared/components/ContentLoader/ContentLoader';
+
 import MovieCard from './movie-details/components/MovieCard';
 import { useMovies } from './hooks/useMovies';
 import styles from "./MovieManagementPage.module.css"

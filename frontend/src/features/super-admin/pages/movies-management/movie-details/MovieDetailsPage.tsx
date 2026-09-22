@@ -1,16 +1,18 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useMovieById } from "../hooks/useMovieById";
+// import { useMovieById } from "../hooks/useMovieById";
 import MovieDetailSkeleton from "../components/skeletons/MovieDetailSkeleton";
 import styles from "./MovieDetailsPage.module.css";
-import api from "../../../../../api/axios";
+
 import { useToggleMovieStatus } from "../hooks/useToggleMovieStatus";
-import { toggleMovieStatus } from '../services/toggleMovieStatus.service';
+// import { toggleMovieStatus } from '../services/toggleMovieStatus.service';
+import { useMovieBySlug } from "../hooks/useMovieBySlug";
 export default function MovieDetailsPage() {
 
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
+
   const navigate = useNavigate();
-  const { data: movie, isLoading, isError, refetch } = useMovieById(id);
+  const { data: movie, isLoading, isError, refetch } = useMovieBySlug(slug);
+
   // const [isTogglingStatus, setIsTogglingStatus] = useState(false);
   const {mutate:toggleMovieStatus,isPending:isTogglingStatus} = useToggleMovieStatus()
   if (isLoading) {
@@ -101,6 +103,7 @@ export default function MovieDetailsPage() {
               src={movie.backdropUrl || movie.posterUrl!}
               alt={`${movie.title} backdrop`}
               className={styles.backdropImg}
+              fetchPriority="high"
             />
           ) : (
             <div className={styles.backdropFallback} />

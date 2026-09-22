@@ -28,7 +28,8 @@ export default function MovieCard({ movie, onToggleStatus }: MovieCardProps) {
             src={movie.posterUrl}
             alt={`${movie.title} poster`}
             className={styles.poster}
-            loading="lazy"
+            fetchPriority="high"
+            
           />
         ) : (
           <div className={styles.posterPlaceholder}>
@@ -124,7 +125,7 @@ export default function MovieCard({ movie, onToggleStatus }: MovieCardProps) {
 
           <div className={styles.actions}>
             <Link
-              to={`/super-admin/movies/${movie.id}`}
+              to={`/super-admin/movies/${movie.slug}`}
               className={styles.viewButton}
             >
               <span>View Details</span>

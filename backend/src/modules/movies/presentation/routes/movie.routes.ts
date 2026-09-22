@@ -23,6 +23,7 @@ movieRoute.get('/', moviesModule.getMovieController.handle)
 
 
 movieRoute.get('/:id', moviesModule.getMovieByIdController.handle)
+movieRoute.get('/slug/:slug', moviesModule.getMovieBySlugController.handle)
 movieRoute.patch('/:id', upload.fields([{ name: "poster", maxCount: 1 },{name:'backdrop',maxCount:1}]),authenticateUser,authorizeRoles(Role.SUPER_ADMIN),validate(updateMovieSchema),moviesModule.updateMovieController.handle)
 
 export default movieRoute;  

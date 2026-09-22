@@ -176,7 +176,7 @@ export default function AppRoutes() {
 
             <Route path="movies" element={<MovieManagementPage />} />
             <Route path="movies/create" element={<CreateMoviePage />} />
-            <Route path="movies/:id" element={<MovieDetailsPage />} />
+            <Route path="movies/:slug" element={<MovieDetailsPage />} />
             <Route path="movies/:movieId/edit" element={<EditMoviePage/>} />
           </Route>
 

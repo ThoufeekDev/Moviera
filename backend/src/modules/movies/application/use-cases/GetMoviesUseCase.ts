@@ -10,8 +10,6 @@ export class GetMovieUseCase {
     async execute(): Promise<Movie[]>{
           
         return await this.movieRepository.findAll();
-   
-
   
       }
 } 
