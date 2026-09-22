@@ -1,16 +1,30 @@
 
 
 import MovieCard from './movie-details/components/MovieCard';
-import { useMovies } from './hooks/useMovies';
-import styles from "./MovieManagementPage.module.css"
+import MovieCardSkeleton from './components/skeletons/MovieCardSkeleton';
+
 import ErrorState from '../../../../shared/components/ErrorState/ErrorState';
 import { useToggleMovieStatus } from './hooks/useToggleMovieStatus';
-import MovieCardSkeleton from './components/skeletons/MovieCardSkeleton';
+
+
+import { useMovies } from './hooks/useMovies';
+import {  useState } from 'react';
+import { useDebounce } from '../../../../shared/hooks/useDebounce';
+
+import styles from "./MovieManagementPage.module.css"
+
 
 
 export default function MovieManagementPage() {
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
+  const [search, setSearch] = useState('');
 
+
+// Debounce function to limit the rate of function calls
+  const debouncedSearch = useDebounce(search,700);
+
+ 
+ 
   const handleToggleStatus = (
   movieId: string,
   currentStatus: boolean
@@ -22,13 +36,16 @@ export default function MovieManagementPage() {
   };
   
    const {
-    data: movies = [],
-    isLoading,
+    data,
+     isLoading,
+    isFetching,
     isError,
      error,
     refetch
-   } = useMovies();
+   } = useMovies({ search: debouncedSearch || undefined });
   
+  const movies = data?.movies ?? [];
+
   
   
   // if (isLoading) return <ContentLoader text="Movies" subtext="Loading movie collection..." />;
@@ -48,8 +65,16 @@ export default function MovieManagementPage() {
             type="search"
             placeholder="Search movies..."
             className={styles.searchInput}
-            disabled
+            value={search ?? ''}
+            onChange={(e)=>setSearch(e.target.value)}
+            
           />
+
+            {isFetching && (
+    <span className={styles.searchLoading}>
+      Searching...
+    </span>
+  )}
           <select className={styles.filter} disabled>
             <option value="">All Genres</option>
           </select>
@@ -96,6 +121,8 @@ if (isError) {
         <input
           type="search"
           placeholder="Search movies..."
+          value={search}
+          onChange={(e)=>setSearch(e.target.value)}
           className={styles.searchInput}
         />
 

@@ -6,6 +6,9 @@ import { MovieMapper } from './MovieMapper';
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 import { CreateMovieData } from '../../domain/types/CreateMovieData';
 import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
+import { GetMoviesQuery } from '../../application/dtos/GetMovieQuery';
+import { PaginatedMovies } from '../../application/dtos/PaginatedMovies';
+import { MovieStatus } from '../../../../shared/enums/MovieStatus';
 
 export class PrismaMovieRepository implements IMovieRepository {
   async create(data: CreateMovieData): Promise<Movie | null> {
@@ -68,14 +71,14 @@ export class PrismaMovieRepository implements IMovieRepository {
       // !After creating them, return the created Movie together with the requested relations.
       // !When you return the result of this create operation, include these related records in the returned object
       include: {
-        primaryGenre:true,
+        primaryGenre: true,
         languages: {
           include: {
             language: true,
           },
         },
 
-          cinemaFormats: {
+        cinemaFormats: {
           include: {
             cinemaFormat: true,
           },
@@ -103,7 +106,7 @@ export class PrismaMovieRepository implements IMovieRepository {
     const movie = await prisma.movie.findUnique({
       where: { id },
       include: {
-        primaryGenre:true,
+        primaryGenre: true,
         languages: {
           include: {
             language: true,
@@ -134,7 +137,7 @@ export class PrismaMovieRepository implements IMovieRepository {
     const movie = await prisma.movie.findUnique({
       where: { slug },
       include: {
-        primaryGenre:true,
+        primaryGenre: true,
         languages: {
           include: {
             language: true,
@@ -161,38 +164,124 @@ export class PrismaMovieRepository implements IMovieRepository {
     return movie ? MovieMapper.toDomain(movie) : null;
   }
 
-  async findAll(): Promise<Movie[]> {
-    const allMovies = await prisma.movie.findMany({
-      include: {
-        primaryGenre:true,
-        languages: {
-          include: {
-            language: true,
+  async findAll(query: GetMoviesQuery): Promise<PaginatedMovies> {
+    const {
+      page = 1,
+      limit = 12,
+      search,
+      status,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = query;
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      ...(search && {
+        title: {
+          contains: search,
+          mode: 'insensitive' as const,
+        },
+      }),
+
+      ...(status && {
+        isActive: status === MovieStatus.ACTIVE,
+      }),
+    };
+
+    const [movies, total] = await Promise.all([
+      prisma.movie.findMany({
+        where,
+        skip,
+        take: limit,
+
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+
+        include: {
+          primaryGenre: true,
+
+          languages: {
+            include: {
+              language: true,
+            },
+          },
+
+          cinemaFormats: {
+            include: {
+              cinemaFormat: true,
+            },
+          },
+
+          cast: {
+            include: {
+              person: true,
+            },
+          },
+
+          crew: {
+            include: {
+              person: true,
+            },
           },
         },
-        cinemaFormats: {
-          include: {
-            cinemaFormat: true,
-          },
-        },
-        cast: {
-          include: {
-            person: true,
-          },
-        },
-        crew: {
-          include: {
-            person: true,
-          },
-        },
+      }),
+
+      prisma.movie.count({
+        where,
+      }),
+    ]);
+
+    return {
+      movies: movies.map((movie) => MovieMapper.toDomain(movie)),
+
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
       },
-    });
+    };
+  
+
+
+
+    // prisma.movie.count({
+    //   where,
+    // }),
+
+    // const allMovies = await prisma.movie.findMany({
+    //   include: {
+    //     primaryGenre:true,
+    //     languages: {
+    //       include: {
+    //         language: true,
+    //       },
+    //     },
+    //     cinemaFormats: {
+    //       include: {
+    //         cinemaFormat: true,
+    //       },
+    //     },
+    //     cast: {
+    //       include: {
+    //         person: true,
+    //       },
+    //     },
+    //     crew: {
+    //       include: {
+    //         person: true,
+    //       },
+    //     },
+    //   },
+    // });
 
     /**
      * ! we map because allmovie is an array mapper toDomain takes only one args...
      */
-    return allMovies.map((movie) => MovieMapper.toDomain(movie));
-  }
+    // return allMovies.map((movie) => MovieMapper.toDomain(movie));
+}
 
 
   /**

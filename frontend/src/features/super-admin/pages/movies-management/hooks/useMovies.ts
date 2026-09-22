@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMovies } from "../services/getMovies.service";
+import { getMovies, type GetMoviesParams } from "../services/getMovies.service";
 
 
-export const useMovies = () => {
+export const useMovies = (params:GetMoviesParams) => {
     return useQuery({
-        queryKey: ['movies'],
-        queryFn:getMovies,
+        queryKey: ['movies',params],
+        queryFn:()=>getMovies(params),
     })
 }
