@@ -11,7 +11,7 @@ interface GetMoviesResponse {
             page: number,
             limit: number,
             total: number,
-            totalPage:number,
+            totalPages:number,
         }
   }
 }
@@ -27,6 +27,6 @@ export const getMovies = async (params: GetMoviesParams = {}):Promise<GetMoviesR
   const response = await api.get<GetMoviesResponse>('/movies', {
     params,
   });
-    
+
   return response.data.data;
 };

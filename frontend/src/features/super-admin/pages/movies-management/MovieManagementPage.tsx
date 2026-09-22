@@ -2,13 +2,13 @@
 
 import MovieCard from './movie-details/components/MovieCard';
 import MovieCardSkeleton from './components/skeletons/MovieCardSkeleton';
-
+import Pagination from '../../../../shared/components/Pagination';
 import ErrorState from '../../../../shared/components/ErrorState/ErrorState';
 import { useToggleMovieStatus } from './hooks/useToggleMovieStatus';
 
 
 import { useMovies } from './hooks/useMovies';
-import {  useState } from 'react';
+import {  useState,useEffect } from 'react';
 import { useDebounce } from '../../../../shared/hooks/useDebounce';
 
 import styles from "./MovieManagementPage.module.css"
@@ -18,10 +18,14 @@ import styles from "./MovieManagementPage.module.css"
 export default function MovieManagementPage() {
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
   const [search, setSearch] = useState('');
-
-
+  const [page, setPage] = useState(1);
+  const limit = 8;
 // Debounce function to limit the rate of function calls
-  const debouncedSearch = useDebounce(search,700);
+  const debouncedSearch = useDebounce(search, 700);
+  
+  useEffect(() => {
+  setPage(1);
+}, [debouncedSearch]);
 
  
  
@@ -42,9 +46,10 @@ export default function MovieManagementPage() {
     isError,
      error,
     refetch
-   } = useMovies({ search: debouncedSearch || undefined });
+   } = useMovies({page,limit, search: debouncedSearch || undefined });
   
   const movies = data?.movies ?? [];
+  const pagination = data?.pagination;
 
   
   
@@ -61,20 +66,27 @@ export default function MovieManagementPage() {
         </header>
 
         <section className={styles.toolbar}>
-          <input
-            type="search"
-            placeholder="Search movies..."
-            className={styles.searchInput}
-            value={search ?? ''}
-            onChange={(e)=>setSearch(e.target.value)}
-            
-          />
-
-            {isFetching && (
-    <span className={styles.searchLoading}>
-      Searching...
-    </span>
-  )}
+          <div className={styles.searchContainer}>
+            <svg 
+              className={styles.searchIcon} 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search movies..."
+              className={styles.searchInput}
+              value={search ?? ''}
+              onChange={(e)=>setSearch(e.target.value)}
+            />
+          </div>
           <select className={styles.filter} disabled>
             <option value="">All Genres</option>
           </select>
@@ -82,6 +94,16 @@ export default function MovieManagementPage() {
             <option value="">All Status</option>
           </select>
         </section>
+
+        {isFetching && (
+          <div className={styles.searchLoadingStatus} aria-live="polite">
+            <svg className={styles.spinnerIcon} viewBox="0 0 24 24" fill="none">
+              <circle className={styles.spinnerTrack} cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" />
+              <path className={styles.spinnerHead} d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+            <span>Loading Movies...</span>
+          </div>
+        )}
 
         <section className={styles.movieList}>
           {Array.from({ length: 8 }).map((_, index) => (
@@ -118,13 +140,27 @@ if (isError) {
 
 
       <section className={styles.toolbar}>
-        <input
-          type="search"
-          placeholder="Search movies..."
-          value={search}
-          onChange={(e)=>setSearch(e.target.value)}
-          className={styles.searchInput}
-        />
+        <div className={styles.searchContainer}>
+          <svg 
+            className={styles.searchIcon} 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search movies..."
+            value={search}
+            onChange={(e)=>setSearch(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
 
         <select className={styles.filter}>
           <option value="">All Genres</option>
@@ -136,6 +172,16 @@ if (isError) {
           <option value="inactive">Inactive</option>
         </select>
       </section>
+
+      {/* {isFetching && (
+        <div className={styles.searchLoadingStatus} aria-live="polite">
+          <svg className={styles.spinnerIcon} viewBox="0 0 24 24" fill="none">
+            <circle className={styles.spinnerTrack} cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" />
+            <path className={styles.spinnerHead} d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+          <span>Searching...</span>
+        </div>
+      )} */}
 
       {movies.length === 0 ? (
         <div className={styles.emptyState}>
@@ -154,6 +200,14 @@ if (isError) {
             />
           ))}
         </section>
+      )}
+
+      {pagination && pagination.totalPages > 1 && (
+          <Pagination
+    currentPage={pagination.page}
+    totalPages={pagination.totalPages}
+    onPageChange={setPage}
+  />
       )}
     </div>
   );
