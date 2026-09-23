@@ -14,7 +14,7 @@ import { ConflictError } from '../../../../shared/exceptions/ConflictError';
 import { UserRegisterMapper } from '../mappers/UserRegisterMapper';
 import { UserResponserRegisterDTO } from '../dtos/response/UserResponseRegisterDTO';
 import { IOtpRepository } from '../../domain/repositories/IOtpRepository';
-import { IOtpNotificationService } from '../../domain/service/IOtpNotificationService';
+import { IOtpNotificationService } from '../../domain/services/IOtpNotificationService';
 // user signup(register) useCase
 export class RegisterUserUseCase {
   // dependancy injection

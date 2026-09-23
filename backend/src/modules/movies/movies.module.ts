@@ -1,19 +1,19 @@
-import { PrismaMovieRepository } from './infrastructure/Repo/PrismaMovieRepo';
-import { PrismaGenreRepository } from './infrastructure/Repo/PrismaGenreRepo';
-import { PrismaLanguageRepository } from './infrastructure/Repo/PrismaLanguageRepo';
-import { PrismaCinemaFormatRepository } from './infrastructure/Repo/PrismaCinemaFormatRepo';
-import { PrismaPersonRepository } from './infrastructure/Repo/PrismaPersonRepo';
+import { PrismaMovieRepository } from './infrastructure/repositories/PrismaMovieRepo';
+import { PrismaGenreRepository } from './infrastructure/repositories/PrismaGenreRepo';
+import { PrismaLanguageRepository } from './infrastructure/repositories/PrismaLanguageRepo';
+import { PrismaCinemaFormatRepository } from './infrastructure/repositories/PrismaCinemaFormatRepo';
+import { PrismaPersonRepository } from './infrastructure/repositories/PrismaPersonRepo';
 
 import { CreateMovieUseCase } from './application/use-cases/CreateMovieUseCase';
 import { GetMovieByIdUseCase } from './application/use-cases/GetMovieByIdUseCase';
 import { CreatePersonUseCase } from './application/use-cases/CreatePersonUseCase';
 import { GetPersonByIdUseCase } from './application/use-cases/GetPersonByIdUseCase';
 import { GetPersonsUseCase } from './application/use-cases/GetPersonUseCase';
-import { GetLanugageUseCase } from './application/use-cases/GetLanugageUseCase';
+import { GetLanugageUseCase } from './application/use-cases/GetLanguageUseCase';
 import { GetCinemaFormatUseCase } from './application/use-cases/GetCinemaFormatUseCase';
 import { GetGenresUseCase } from "./application/use-cases/GetGenresUseCase";
 import { GetMovieUseCase } from './application/use-cases/GetMoviesUseCase';
-import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugController';
+import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugUseCase';
 
 import { GetGenreController } from "./presentation/controllers/GetGenreController";
 import { CreateMovieController } from './presentation/controllers/CreateMovieController';

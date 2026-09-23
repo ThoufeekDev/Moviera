@@ -1,5 +1,5 @@
 import { otpQueue } from "../jobs/queue";
-import { IOtpNotificationService } from "../../domain/service/IOtpNotificationService";
+import { IOtpNotificationService } from "../../domain/services/IOtpNotificationService";
 
 
 

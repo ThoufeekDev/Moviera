@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { redis } from '../redis_config/redis';
+
+import { redis } from '../infrastructure/redis/redis.client';
 
 export const otpRateLimit = async (req: Request, res: Response, next: NextFunction) => {
   const email = req.body.email;

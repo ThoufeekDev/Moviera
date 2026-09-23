@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GetLanugageUseCase } from "../../application/use-cases/GetLanugageUseCase";
+import { GetLanugageUseCase } from "../../application/use-cases/GetLanguageUseCase";
 import { successResponse } from "../../../../shared/utils/apiResponse";
 
 

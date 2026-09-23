@@ -2,7 +2,7 @@ import { ConflictError } from "../../../../shared/exceptions/ConflictError";
 import { generateOtp } from "../../../../shared/utils/generateOtp";
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 // import { redis } from "../../../../shared/redis_config/redis";
-import { ResendOTP } from "../dtos/requests/Resent-otpDTO";
+import { ResendOTP } from "../dtos/requests/ResendOtpDTO";
 import { UserResponserRegisterDTO } from "../dtos/response/UserResponseRegisterDTO";
 // import { otpQueue } from "../../../../shared/queues/otp.queue";
 import { IOtpRepository } from "../../domain/repositories/IOtpRepository";
