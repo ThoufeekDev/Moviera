@@ -19,9 +19,11 @@ export interface CreateMovieDTO {
   primaryGenreId: string;
   certification: Certification;
   cinemaFormatIds:string[]
-  posterUrl?: string;
-  posterPublicId: string;
-  backdropUrl?: string;
-  backdropPublicId: string;
   trailerUrl?: string;
+  posterFile?: {
+    buffer: Buffer;
+  }
+  backdropFile?: {
+    buffer:Buffer
+  }
 }

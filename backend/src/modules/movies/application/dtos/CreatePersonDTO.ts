@@ -1,4 +1,6 @@
 export interface CreatePersonDTO {
   name: string;
-  imageUrl?: string;
+  imageFile?: {
+    buffer:Buffer
+  };
 }

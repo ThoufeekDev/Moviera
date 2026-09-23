@@ -7,6 +7,7 @@ import { IGenreRepository } from "../../domain/repository/IGenreRepository";
 import { ICinemaFormatRepository } from "../../domain/repository/ICinemaFormatRepository";
 import { ILanguageRepository } from "../../domain/repository/ILanguageRepository";
 import { AppError } from "../../../../shared/exceptions/AppError";
+import { IStorageService } from "../../../../shared/domain/services/IStorageService";
 
 export class CreateMovieUseCase {
   // I need a movie repository. Give me one.
@@ -14,13 +15,16 @@ export class CreateMovieUseCase {
     private readonly movieRepository: IMovieRepository,
     private readonly genreRepository: IGenreRepository,
     private readonly languageRepository:ILanguageRepository,
-    private readonly cinemaFormatRepository:ICinemaFormatRepository
+    private readonly cinemaFormatRepository: ICinemaFormatRepository,
+    private readonly storageService:IStorageService,
     
   
   ) { }
 
   async execute(data: CreateMovieDTO): Promise<Movie | null> {
-    /** 
+
+
+        /** 
          * * finding is that movie exist or not
          
          */
@@ -51,6 +55,22 @@ export class CreateMovieUseCase {
       throw new ConflictError('Movie already exists');
     }
 
+    const [poster, backdrop] = await Promise.all([
+  data.posterFile
+    ? this.storageService.uploadImage(
+        data.posterFile.buffer,
+        "moviera/movies/posters",
+      )
+    : null,
+
+  data.backdropFile
+    ? this.storageService.uploadImage(
+        data.backdropFile.buffer,
+        "moviera/movies/backdrops",
+      )
+    : null,
+]);
+
 
     // return this.movieRepository.create(movie);
 
@@ -62,10 +82,10 @@ export class CreateMovieUseCase {
       releaseDate: data.releaseDate,
       primaryGenreId: data.primaryGenreId,
       certification:data.certification,
-      posterUrl: data.posterUrl ?? null,
-      posterPublicId:data.posterPublicId ?? null,
-      backdropUrl: data.backdropUrl ?? null,
-      backdropPublicId:data.backdropPublicId??null,
+      posterUrl: poster?.secureUrl ?? null,
+      posterPublicId:poster?.publicId ?? null,
+      backdropUrl: backdrop?.secureUrl ?? null,
+      backdropPublicId:backdrop?.publicId??null,
       trailerUrl: data.trailerUrl ?? null,
       isActive: true,
     

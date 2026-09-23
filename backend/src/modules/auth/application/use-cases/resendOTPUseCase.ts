@@ -1,15 +1,20 @@
 import { ConflictError } from "../../../../shared/exceptions/ConflictError";
 import { generateOtp } from "../../../../shared/utils/generateOtp";
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
-import { redis } from "../../../../shared/redis_config/redis";
+// import { redis } from "../../../../shared/redis_config/redis";
 import { ResendOTP } from "../dtos/requests/Resent-otpDTO";
 import { UserResponserRegisterDTO } from "../dtos/response/UserResponseRegisterDTO";
-import { otpQueue } from "../../../../shared/queues/otp.queue";
-
-export class recendOTPUseCase {
+// import { otpQueue } from "../../../../shared/queues/otp.queue";
+import { IOtpRepository } from "../../domain/repositories/IOtpRepository";
+import { BullMQOtpNotificationService } from "../../infrastructure/services/BullMQOtpNotificationService";
+export class ResendOtpUseCase {
    
 
-    constructor(private userRepository: IUserRepository) { }
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly otpRepository: IOtpRepository,
+    private readonly otpNotificationService:BullMQOtpNotificationService
+  ) { }
     
 
     async execute(user: ResendOTP) {
@@ -17,8 +22,6 @@ export class recendOTPUseCase {
 
 
         try {
-
-               console.log('this is the user i found', user);
 
                const existingUser = await this.userRepository.findByEmail(user.email);
 
@@ -33,24 +36,29 @@ export class recendOTPUseCase {
                const otp = generateOtp();
                const OTP_EXPIRY_SECONDS = 50;
 
-               await redis.set(`otp:${user.email}`, otp, 'EX', OTP_EXPIRY_SECONDS);
-               const otpExpireAt = Date.now() + OTP_EXPIRY_SECONDS * 1000;
-               await otpQueue.add(
-                 'send-otp-email',
-                 {
-                   email: user.email,
-                   otp,
-                 },
-                 {
-                   attempts: 3,
-                   backoff: {
-                     type: 'exponential',
-                     delay: 3000,
-                   },
-                   removeOnComplete: 1000,
-                   removeOnFail: 1000,
-                 },
-               );
+          //  await redis.set(`otp:${user.email}`, otp, 'EX', OTP_EXPIRY_SECONDS);
+          await this.otpRepository.saveOtp(user.email,otp,OTP_EXPIRY_SECONDS)
+          const otpExpireAt = Date.now() + OTP_EXPIRY_SECONDS * 1000;
+          await this.otpNotificationService.sendOtp(
+                     user.email,
+                      otp,
+             );
+              //  await otpQueue.add(
+              //    'send-otp-email',
+              //    {
+              //      email: user.email,
+              //      otp,
+              //    },
+              //    {
+              //      attempts: 3,
+              //      backoff: {
+              //        type: 'exponential',
+              //        delay: 3000,
+              //      },
+              //      removeOnComplete: 1000,
+              //      removeOnFail: 1000,
+              //    },
+              //  );
 
                return {
                  email: user.email,

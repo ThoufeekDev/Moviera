@@ -1,4 +1,4 @@
-import { redis } from '../../../../shared/redis_config/redis';
+// import { redis } from '../../../../shared/redis_config/redis';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 
 import { verifyOtpDTO } from '../dtos/requests/VerifyOtpDTO';
@@ -8,12 +8,17 @@ import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedErr
 import { BadRequestError } from '../../../../shared/exceptions/BadRequestError';
 import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
 import { UserMapper } from '../mappers/UserMapper';
+import { IOtpRepository } from '../../domain/repositories/IOtpRepository';
 
 export class VerifyOtpUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly otpRepository:IOtpRepository,
+  ) { }
 
   async execute(data: verifyOtpDTO) {
-    const storedOtp = await redis.get(`otp:${data.email}`);
+    // const storedOtp = await redis.get(`otp:${data.email}`);
+    const storedOtp = await this.otpRepository.getOtp(`otp:${data.email}`);
     if (!storedOtp) {
       throw new BadRequestError('OTP Expired');
     }
@@ -35,7 +40,8 @@ export class VerifyOtpUseCase {
       throw new UnauthorizedError('User not found');
     }
 
-    await redis.del(`otp:${data.email}`);
+    // await redis.del(`otp:${data.email}`);
+    await this.otpRepository.deleteOtp(`otp:${data.email}`)
 
     // const {password,...safeUser} = updatedUser
 

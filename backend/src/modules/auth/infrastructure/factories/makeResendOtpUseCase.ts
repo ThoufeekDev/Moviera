@@ -1,6 +1,10 @@
 import { PrismaUserRepository } from "../repositories/PrismaUserRepository";
-import {recendOTPUseCase} from "../../application/use-cases/resendOTPUseCase"
+import { ResendOtpUseCase } from "../../application/use-cases/resendOTPUseCase"
+import { RedisOtpRepository } from '../repositories/RedisOtpRepository';
+import { BullMQOtpNotificationService } from "../services/BullMQOtpNotificationService";
 export function makeResendOtpUseCase() {
     const userRepository = new PrismaUserRepository();
-    return new recendOTPUseCase(userRepository)
+    const otpRepository = new RedisOtpRepository()
+    const otpNotificationService = new BullMQOtpNotificationService();
+    return new ResendOtpUseCase(userRepository,otpRepository,otpNotificationService)
 }

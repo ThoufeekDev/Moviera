@@ -2,14 +2,19 @@ import { Certification } from "../../../../shared/enums/Certification";
 
 export interface UpdateMovieDTO {
   title?: string;
+
   description?: string;
+
   duration?: number;
+
   releaseDate?: Date;
 
   primaryGenreId?: string;
+
   certification?: Certification;
 
   languageIds?: string[];
+
   cinemaFormatIds?: string[];
 
   cast?: {
@@ -22,10 +27,14 @@ export interface UpdateMovieDTO {
     job: string;
   }[];
 
-  posterUrl?: string;
-  posterPublicId?: string;
-  backdropUrl?: string;
-  backdropPublicId?: string;
+  posterFile?: {
+    buffer: Buffer;
+  };
+
+  backdropFile?: {
+    buffer: Buffer;
+  };
+
   trailerUrl?: string;
 
   isActive?: boolean;

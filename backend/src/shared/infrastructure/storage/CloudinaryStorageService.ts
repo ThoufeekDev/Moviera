@@ -1,15 +1,17 @@
-import cloudinary from '../../config/cloudinary';
+
+import cloudinary from '../../../config/cloudinary';
 import {
   UploadApiErrorResponse,
   UploadApiResponse,
 } from 'cloudinary';
+import { IStorageService } from '../../domain/services/IStorageService';
 
 export interface CloudinaryUploadResult {
   secureUrl: string;
   publicId: string;
 }
 
-export class CloudinaryService {
+export class CloudinaryStorageService implements IStorageService {
   async uploadImage(
     buffer: Buffer,
     folder: string,

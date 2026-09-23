@@ -26,9 +26,9 @@ import { GetCinemaFormatController } from './presentation/controllers/GetCinemaF
 import { GetMovieController } from './presentation/controllers/GetMovieController';
 import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
 
-import { CloudinaryService } from '../../shared/services/cloudinary.service';
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
 import { UpdateMovieUseCase } from './application/use-cases/UpdateMovieUseCase';
+import { CloudinaryStorageService } from '../../shared/infrastructure/storage/CloudinaryStorageService';
 
 export function buildMoviesModule() {
   // * Repositories
@@ -40,7 +40,9 @@ export function buildMoviesModule() {
   const personRepository = new PrismaPersonRepository();
 
   // ^ clodinary
-  const cloudinaryService = new CloudinaryService();
+
+  const storageService = new CloudinaryStorageService()
+   
 
   // * Controllers
 
@@ -50,8 +52,9 @@ export function buildMoviesModule() {
       genreRepository,
       languageRepository,
       cinemaFormatRepository,
-    ),
-    cloudinaryService,
+      storageService,
+    )
+    
   );
 
   const getMovieController = new GetMovieController(new GetMovieUseCase(movieRepository));
@@ -61,8 +64,7 @@ export function buildMoviesModule() {
   );
 
   const createPersonController = new CreatePersonController(
-    new CreatePersonUseCase(personRepository),
-    cloudinaryService,
+    new CreatePersonUseCase(personRepository,storageService)
   );
 
   const getPersonByIdController = new GetPersonByIdController(
@@ -85,10 +87,9 @@ export function buildMoviesModule() {
             genreRepository,
             languageRepository,
             cinemaFormatRepository,
-            personRepository
-
-        ),
-        cloudinaryService
+            personRepository,
+            storageService
+        )
     )
     
     const getGenreController = new GetGenreController(
