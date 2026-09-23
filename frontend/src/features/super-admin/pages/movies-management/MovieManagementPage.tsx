@@ -15,10 +15,14 @@ import styles from "./MovieManagementPage.module.css"
 
 
 
+
 export default function MovieManagementPage() {
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+
+
+   
   const limit = 8;
 // Debounce function to limit the rate of function calls
   const debouncedSearch = useDebounce(search, 700);
@@ -27,7 +31,7 @@ export default function MovieManagementPage() {
   setPage(1);
 }, [debouncedSearch]);
 
- 
+
  
   const handleToggleStatus = (
   movieId: string,
@@ -46,9 +50,13 @@ export default function MovieManagementPage() {
     isError,
      error,
     refetch
-   } = useMovies({page,limit, search: debouncedSearch || undefined });
+   } = useMovies({ page, limit, search: debouncedSearch || undefined });
+  
+
   
   const movies = data?.movies ?? [];
+  console.log("movies length is",movies.length);
+  
   const pagination = data?.pagination;
 
   
@@ -89,6 +97,7 @@ export default function MovieManagementPage() {
           </div>
           <select className={styles.filter} disabled>
             <option value="">All Genres</option>
+           
           </select>
           <select className={styles.filter} disabled>
             <option value="">All Status</option>
@@ -162,9 +171,9 @@ if (isError) {
           />
         </div>
 
-        <select className={styles.filter}>
-          <option value="">All Genres</option>
-        </select>
+ <select className={styles.filter}>
+  <option value="">All Genres</option>
+</select>
 
         <select className={styles.filter}>
           <option value="">All Status</option>
