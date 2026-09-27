@@ -1,63 +1,76 @@
-import { Prisma } from "@prisma/client";
-import { Movie } from "../../domain/entities/Movie";
-import { Language } from "../../domain/entities/Language";
-import { MovieCast } from "../../domain/entities/MovieCast";
-import { MovieCrew } from "../../domain/entities/MovieCrew";
-import { Person } from "../../domain/entities/Person";
+import { Prisma } from '@prisma/client';
+import { Movie } from '../../domain/entities/Movie';
+import { Language } from '../../domain/entities/Language';
+import { MovieCast } from '../../domain/entities/MovieCast';
+import { MovieCrew } from '../../domain/entities/MovieCrew';
+import { Person } from '../../domain/entities/Person';
 import { CinemaFormat } from '../../domain/entities/CinemaFormat';
-import { Genre } from "../../domain/entities/Genre";
-import { Certification } from "../../../../shared/enums/Certification";
+import { Genre } from '../../domain/entities/Genre';
+import { Certification } from '../../../../shared/enums/Certification';
 type MovieWithRelations = Prisma.MovieGetPayload<{
   include: {
-    primaryGenre: true,
+    primaryGenre: true;
+    genres: {
+      include: {
+        genre: true;
+      };
+    };
     languages: {
       include: {
-        language: true,
-      },
-    },
+        language: true;
+      };
+    };
     cinemaFormats: {
       include: {
-        cinemaFormat: true,
-      },
-    },
+        cinemaFormat: true;
+      };
+    };
     cast: {
       include: {
-        person: true,
-      },
-    },
+        person: true;
+      };
+    };
     crew: {
       include: {
-        person: true,
-      },
-    },
-  },
+        person: true;
+      };
+    };
+  };
 }>;
-
 
 export class MovieMapper {
   // take a prismaMovie table and converts into Domain Movie table
-  
 
-  static toDomain(movie:MovieWithRelations):Movie {
-    
+  static toDomain(movie: MovieWithRelations): Movie {
     const languages = movie.languages.map(
-      (movieLanguage) => 
+      (movieLanguage) =>
         new Language(
-        movieLanguage.language.id,
-        movieLanguage.language.name,
-        movieLanguage.language.code
-      
-      )
-    )
+          movieLanguage.language.id,
+          movieLanguage.language.name,
+          movieLanguage.language.code,
+        ),
+    );
 
     const primaryGenre = new Genre(
-  movie.primaryGenre.id,
-  movie.primaryGenre.name,
-  movie.primaryGenre.slug,
-  movie.primaryGenre.isActive,
-  movie.primaryGenre.createdAt,
-  movie.primaryGenre.updatedAt
-);
+      movie.primaryGenre.id,
+      movie.primaryGenre.name,
+      movie.primaryGenre.slug,
+      movie.primaryGenre.isActive,
+      movie.primaryGenre.createdAt,
+      movie.primaryGenre.updatedAt,
+    );
+
+    const genres = movie.genres.map(
+      (movieGenre) =>
+        new Genre(
+          movieGenre.genre.id,
+          movieGenre.genre.name,
+          movieGenre.genre.slug,
+          movieGenre.genre.isActive,
+          movieGenre.genre.createdAt,
+          movieGenre.genre.updatedAt,
+        ),
+    );
 
     const cinemaFormats = movie.cinemaFormats.map(
       (movieCinemaFormat) =>
@@ -67,39 +80,28 @@ export class MovieMapper {
           movieCinemaFormat.cinemaFormat.slug,
           movieCinemaFormat.cinemaFormat.isActive,
           movieCinemaFormat.cinemaFormat.createdAt,
-          movieCinemaFormat.cinemaFormat.updatedAt
-        )
+          movieCinemaFormat.cinemaFormat.updatedAt,
+        ),
     );
 
     const cast = movie.cast.map(
-      (movieCast) => 
-      new MovieCast(
-        movieCast.id,
-        new Person(
-          movieCast.person.id,
-          movieCast.person.name,
-          movieCast.person.imageUrl
+      (movieCast) =>
+        new MovieCast(
+          movieCast.id,
+          new Person(movieCast.person.id, movieCast.person.name, movieCast.person.imageUrl),
+          movieCast.character,
         ),
-        movieCast.character,
-        )
-    )
+    );
 
     const crew = movie.crew.map(
-      (movieCrew) => 
-      new MovieCrew(
-        movieCrew.id,
-        new Person(
-          movieCrew.person.id,
-          movieCrew.person.name,
-          movieCrew.person.imageUrl
+      (movieCrew) =>
+        new MovieCrew(
+          movieCrew.id,
+          new Person(movieCrew.person.id, movieCrew.person.name, movieCrew.person.imageUrl),
+          movieCrew.job,
         ),
-        movieCrew.job,
+    );
 
-      )
-    )
-
-  
- 
     return new Movie(
       movie.id,
       movie.title,
@@ -109,6 +111,7 @@ export class MovieMapper {
       movie.releaseDate,
       languages,
       primaryGenre,
+      genres,
       Certification[movie.certification],
       cinemaFormats,
       movie.posterUrl,
@@ -120,11 +123,10 @@ export class MovieMapper {
       cast,
       crew,
     );
-    
   }
 
-    static toPersistence(movie: Movie) {
-        return {
+  static toPersistence(movie: Movie) {
+    return {
       title: movie.title,
       slug: movie.slug,
       description: movie.description,
@@ -132,12 +134,12 @@ export class MovieMapper {
       releaseDate: movie.releaseDate,
       primaryGenreId: movie.primaryGenre.id,
       certification: movie.certification,
-          posterUrl: movie.posterUrl,
+      posterUrl: movie.posterUrl,
       posterPublicId: movie.posterPublicId,
-          backdropUrl: movie.backdropUrl,
+      backdropUrl: movie.backdropUrl,
       backdropPublicId: movie.backdropPublicId,
       trailerUrl: movie.trailerUrl,
       isActive: movie.isActive,
-        };
-    }
+    };
+  }
 }

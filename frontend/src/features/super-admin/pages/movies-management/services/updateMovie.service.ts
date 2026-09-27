@@ -9,6 +9,9 @@ export const updateMovie = async (id: string, data: UpdateMovieFormData) => {
   if (data.duration) formData.append('duration', String(data.duration));
   if (data.releaseDate) formData.append('releaseDate', new Date(data.releaseDate).toISOString());
   if (data.primaryGenreId) formData.append('primaryGenreId', data.primaryGenreId);
+  if (data.genreIds) {
+  formData.append('genreIds', JSON.stringify(data.genreIds));
+}
   if (data.certificate) formData.append('certification', data.certificate);
   if (data.languages) formData.append('languages', JSON.stringify(data.languages));
   if (data.cinemaFormatIds) formData.append('cinemaFormatIds', JSON.stringify(data.cinemaFormatIds));

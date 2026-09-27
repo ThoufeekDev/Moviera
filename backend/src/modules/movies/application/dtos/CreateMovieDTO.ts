@@ -17,6 +17,7 @@ export interface CreateMovieDTO {
     job: string;
   }[];
   primaryGenreId: string;
+  genreIds:string[]
   certification: Certification;
   cinemaFormatIds:string[]
   trailerUrl?: string;

@@ -7,6 +7,7 @@ export interface CreateMovieData {
   duration: number;
   releaseDate: Date;
   primaryGenreId: string;
+  genreIds: string[];
   posterUrl: string | null;
   posterPublicId: string | null;
   backdropUrl: string | null;

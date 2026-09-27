@@ -14,6 +14,7 @@ export class Movie {
     public readonly releaseDate: Date,
     public readonly languages: Language[],
     public readonly primaryGenre: Genre,
+    public readonly genres:Genre[],
      public readonly certification: Certification,
     public readonly cinemaFormats:CinemaFormat[],
     public readonly posterUrl: string | null,

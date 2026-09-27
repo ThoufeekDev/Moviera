@@ -257,6 +257,14 @@ export default function MovieDetailsPage() {
               <span className={styles.infoValue}>{movie.primaryGenre?.name || "N/A"}</span>
             </div>
             <div className={styles.infoTile}>
+  <span className={styles.infoLabel}>Genres</span>
+  <span className={styles.infoValue}>
+    {movie.genres?.length
+      ? movie.genres.map((genre) => genre.name).join(", ")
+      : "N/A"}
+  </span>
+</div>
+            <div className={styles.infoTile}>
               <span className={styles.infoLabel}>Duration</span>
               <span className={styles.infoValue}>{durationText}</span>
             </div>

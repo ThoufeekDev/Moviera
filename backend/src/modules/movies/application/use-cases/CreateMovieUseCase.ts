@@ -34,6 +34,19 @@ export class CreateMovieUseCase {
     const genre =  await this.genreRepository.findById(data.primaryGenreId);
     if (!genre) throw new AppError("Invalid or Inactive genre", 400);
 
+    const genres = await this.genreRepository.findByIds(data.genreIds);
+
+    if (genres.length !== new Set(data.genreIds).size) {
+       throw new AppError("One or more genres are invalid or inactive",400)
+    }
+
+    if (!data.genreIds.includes(data.primaryGenreId)) {
+  throw new AppError(
+    "Primary genre must be included in genreIds",
+    400
+  );
+}
+
 
 
     const languages = await this.languageRepository.findByIds(data.languages);
@@ -81,6 +94,7 @@ export class CreateMovieUseCase {
       duration: data.duration,
       releaseDate: data.releaseDate,
       primaryGenreId: data.primaryGenreId,
+      genreIds:data.genreIds,
       certification:data.certification,
       posterUrl: poster?.secureUrl ?? null,
       posterPublicId:poster?.publicId ?? null,

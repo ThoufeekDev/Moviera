@@ -13,7 +13,7 @@ import { MovieStatus } from '../../../../shared/enums/MovieStatus';
 export class PrismaMovieRepository implements IMovieRepository {
   async create(data: CreateMovieData): Promise<Movie | null> {
     // we are desturctuing the data lang,cast,crew are the differenct table
-    const { languageIds, cinemaFormatIds, cast, crew, ...movieData } = data;
+    const { languageIds,genreIds, cinemaFormatIds, cast, crew, ...movieData } = data;
 
     const createdMovie = await prisma.movie.create({
       data: {
@@ -31,6 +31,15 @@ export class PrismaMovieRepository implements IMovieRepository {
               },
             },
           })),
+        },
+                genres: {
+          create: genreIds.map((genreId) => ({
+            genre: {
+              connect: {
+                 id:genreId,
+               }
+             }
+          }))
         },
         cinemaFormats: {
           create: cinemaFormatIds.map((cinemaFormatId) => ({
@@ -96,7 +105,15 @@ export class PrismaMovieRepository implements IMovieRepository {
             person: true,
           },
         },
+
+              genres: {
+        include: {
+          genre:true
+        }
+      }
       },
+
+
     });
 
     return MovieMapper.toDomain(createdMovie);
@@ -127,6 +144,11 @@ export class PrismaMovieRepository implements IMovieRepository {
             person: true,
           },
         },
+        genres: {
+          include: {
+            genre:true
+          }
+        }
       },
     });
 
@@ -158,6 +180,12 @@ export class PrismaMovieRepository implements IMovieRepository {
             person: true,
           },
         },
+                      genres: {
+        include: {
+          genre:true
+        }
+      }
+
       },
     });
 
@@ -225,6 +253,11 @@ export class PrismaMovieRepository implements IMovieRepository {
               person: true,
             },
           },
+                        genres: {
+        include: {
+          genre:true
+        }
+      },
         },
       }),
 
@@ -312,7 +345,7 @@ export class PrismaMovieRepository implements IMovieRepository {
 
   async updateMovie(id: string, movie: UpdateMovieData):Promise<Movie> {
     // Put every remaining property into a new object called movieData.
-    const { languageIds, cinemaFormatIds, cast, crew, ...movieData } = movie;
+    const { languageIds, cinemaFormatIds,genreIds, cast, crew, ...movieData } = movie;
     
 
     // ? why Everything inside transaction 
@@ -334,6 +367,21 @@ await prisma.$transaction(
         data: movieData,
       });
     }
+
+    if (genreIds !== undefined) {
+  await tx.movieGenre.deleteMany({
+    where: { movieId: id },
+  });
+
+  if (genreIds.length > 0) {
+    await tx.movieGenre.createMany({
+      data: genreIds.map((genreId) => ({
+        movieId: id,
+        genreId,
+      })),
+    });
+  }
+}
 
     if (languageIds !== undefined) {
       await tx.movieLanguage.deleteMany({

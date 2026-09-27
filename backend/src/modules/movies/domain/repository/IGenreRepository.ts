@@ -7,6 +7,8 @@ export interface IGenreRepository {
 
      // ! validating the genre while creating or updating the movie
     findById(id: string): Promise<Genre | null>
+
+    findByIds(ids:string[]):Promise<Genre[]>
     
     // ! useful for reference-data/seed logic and internal lookups
     findBySlug(slug:string):Promise<Genre | null>

@@ -1,11 +1,3 @@
-// export interface Genre {
-//   id: string;
-//   name: string;
-//   slug: string;
-//   isActive: boolean;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
 
 export class Genre {
   constructor(

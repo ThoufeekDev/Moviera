@@ -47,6 +47,7 @@ export interface Movie {
   releaseDate: string;
   languages: MovieLanguage[];
   primaryGenre: MovieGenre;
+  genres:MovieGenre[],
   certification: string;
   cinemaFormats: MovieCinemaFormat[];
   posterUrl: string | null;

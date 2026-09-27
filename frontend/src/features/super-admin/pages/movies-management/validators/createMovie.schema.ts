@@ -52,7 +52,11 @@ export const createMovieSchema = z.object({
   Certification.S,
 ], {
   error: 'Certificate is required',
-}),
+  }),
+  
+  genreIds: z
+  .array(z.string().min(1))
+  .min(1, 'Select at least one genre'),
 
   languages: z.array(z.string().min(1)).min(1, 'Select at least one language'),
 

@@ -11,6 +11,8 @@ export interface UpdateMovieDTO {
 
   primaryGenreId?: string;
 
+  genreIds?: string[];
+
   certification?: Certification;
 
   languageIds?: string[];

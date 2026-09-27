@@ -42,6 +42,27 @@ export class UpdateMovieUseCase {
       if (!genre) throw new AppError('Invalid or inactive genre', 400);
     }
 
+    if (movie.genreIds) {
+      const genres = await this.genreRepository.findByIds(movie.genreIds);
+
+      if (genres.length !== new Set(movie.genreIds).size) {
+        throw new AppError('One or more genres are invalid or inactive',400)
+      }
+
+      const primaryGenreId = movie.primaryGenreId ?? existingMovie.primaryGenre.id
+
+      if (!movie.genreIds.includes(primaryGenreId)) {
+        throw new AppError('Primary genre must be included in genreIds',400)
+      }
+    }
+
+    // ^ if priaary genre is also being updated
+    // ^ it must be included in the selected genres,
+
+    if (movie.primaryGenreId && !movie.genreIds?.includes(movie.primaryGenreId)) {
+      throw new AppError('Primary genre must be included in genreId',400)
+    }
+
     // * check if languageIds was provided
 
     if (movie.languageIds) {

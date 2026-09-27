@@ -36,12 +36,12 @@
 ✔ Update Movie — Super Admin @started(26-09-07 00:47) @done(26-09-22 03:00) @lasted(2w1d2h13m6s)
 ✔ Active & Deactivate Movie — Super Admin @done(26-09-22 03:00)
 ✘ Add Movie Module Tests @cancelled(26-09-17 11:26)
-☐ Implement Search with debouncing concept
-☐ filter by Genre & Status
-☐ implement Pagination
+✔ Implement Search with debouncing concept @done(26-09-24 14:38)
+✘ filter by Genre & Status @cancelled(26-09-24 14:38)
+✔ implement Pagination @done(26-09-24 14:38)
 
 ## Theatre Module
-☐ Theatre Admin Login 
+☐ Theatre Admin Login @started(26-09-24 14:38)
 ☐ Create Theatre — Theatre Admin
 ☐ Get All Theatres — Public
 ☐ Get Theatre by ID — Public

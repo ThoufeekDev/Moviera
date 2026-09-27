@@ -50,6 +50,12 @@ export const createMovieSchema = z.object({
     ),
 
   primaryGenreId: z.string().min(1, "Primary genre is required"),
+  genreIds: z
+  .string()
+  .transform((value) => JSON.parse(value))
+  .pipe(
+    z.array(z.string().min(1)).min(1, 'At least one genre is required')
+  ),
   
 
   certification: z.enum(Certification),

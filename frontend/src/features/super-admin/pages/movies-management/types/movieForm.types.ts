@@ -5,6 +5,7 @@ export interface MovieFormValues {
   duration: unknown;
   releaseDate: string;
   primaryGenreId: string;
+  genreIds:string[]
   certificate: Certification;
   languages: string[];
   cinemaFormatIds: string[];

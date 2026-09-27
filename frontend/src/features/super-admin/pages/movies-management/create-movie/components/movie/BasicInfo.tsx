@@ -152,53 +152,132 @@ export default function MovieBasicInfo({
           />
         </div>
 
-        {/* Genre */}
-        <div className={styles.fieldGroup}>
-          <label className={styles.fieldLabel}>
-            Primary Genre
-          </label>
+{/* Genres */}
+<div className={styles.fieldGroup}>
+  <label className={styles.fieldLabel}>
+    Genres
+  </label>
 
-          {genresLoading && (
-            <p className={styles.helperText}>Loading genres...</p>
-          )}
+  <p className={styles.helperText}>
+    Select all genres that apply to this movie.
+  </p>
 
-          {genresError && (
-            <p className={styles.errorMsg}>
-              Failed to load genres
-            </p>
-          )}
+  {genresLoading && (
+    <p className={styles.helperText}>Loading genres...</p>
+  )}
 
-          {!genresLoading && !genresError && (
-            <div className={styles.certPillGroup}>
-              {genres.map((genre) => {
-                const isSelected = watch('primaryGenreId') === genre.id;
+  {genresError && (
+    <p className={styles.errorMsg}>
+      Failed to load genres
+    </p>
+  )}
 
-                return (
-                  <button
-                    type="button"
-                    key={genre.id}
-                    className={`${styles.certPill} ${
-                      isSelected ? styles.certPillActive : ''
-                    }`}
-                    onClick={() => {
-                      setValue('primaryGenreId', genre.id, {
-                        shouldValidate: true,
-                      });
-                    }}
-                  >
-                    {genre.name}
-                  </button>
+  {!genresLoading && !genresError && (
+    <div className={styles.certPillGroup}>
+      {genres.map((genre) => {
+        const selectedGenreIds = watch('genreIds') || [];
+        const isSelected = selectedGenreIds.includes(genre.id);
+
+        return (
+          <button
+            type="button"
+            key={genre.id}
+            className={`${styles.certPill} ${
+              isSelected ? styles.certPillActive : ''
+            }`}
+            onClick={() => {
+              const currentGenreIds = watch('genreIds') || [];
+
+              if (currentGenreIds.includes(genre.id)) {
+                setValue(
+                  'genreIds',
+                  currentGenreIds.filter(
+                    (id: string) => id !== genre.id
+                  ),
+                  {
+                    shouldValidate: true,
+                  }
                 );
-              })}
-            </div>
-          )}
+              } else {
+                setValue(
+                  'genreIds',
+                  [...currentGenreIds, genre.id],
+                  {
+                    shouldValidate: true,
+                  }
+                );
+              }
+            }}
+          >
+            {genre.name}
+          </button>
+        );
+      })}
+    </div>
+  )}
 
-          {genreErr && (
-            <p className={styles.errorMsg}>
-              {genreErr}
-            </p>
-          )}
+  {getErrorString(errors.genreIds) && (
+    <p className={styles.errorMsg}>
+      {getErrorString(errors.genreIds)}
+    </p>
+  )}
         </div>
+        
+        {/* Primary Genre */}
+<div className={styles.fieldGroup}>
+  <label className={styles.fieldLabel}>
+    Primary Genre
+  </label>
+
+  <p className={styles.helperText}>
+    Choose the main genre of this movie.
+  </p>
+
+  {!genresLoading && !genresError && (
+    <div className={styles.certPillGroup}>
+      {genres.map((genre) => {
+        const primaryGenreId = watch('primaryGenreId');
+        const isSelected = primaryGenreId === genre.id;
+
+        return (
+          <button
+            type="button"
+            key={genre.id}
+            className={`${styles.certPill} ${
+              isSelected ? styles.certPillActive : ''
+            }`}
+            onClick={() => {
+              const currentGenreIds = watch('genreIds') || [];
+
+              setValue('primaryGenreId', genre.id, {
+                shouldValidate: true,
+              });
+
+              // Primary genre must always exist in genreIds
+              if (!currentGenreIds.includes(genre.id)) {
+                setValue(
+                  'genreIds',
+                  [...currentGenreIds, genre.id],
+                  {
+                    shouldValidate: true,
+                  }
+                );
+              }
+            }}
+          >
+            {genre.name}
+          </button>
+        );
+      })}
+    </div>
+  )}
+
+  {genreErr && (
+    <p className={styles.errorMsg}>
+      {genreErr}
+    </p>
+  )}
+</div>
 
         {/* Certificate selection */}
         <div className={styles.fieldGroup}>

@@ -23,6 +23,17 @@ export class PrismaGenreRepository implements IGenreRepository{
           })
     }
 
+    async findByIds(ids: string[]): Promise<Genre[]> {
+        return prisma.genre.findMany({
+            where: {
+                id: {
+                    in:ids
+                },
+                isActive:true
+            }
+        })
+    }
+
     async findBySlug(slug: string): Promise<Genre | null> {
         return prisma.genre.findUnique({
             where: {

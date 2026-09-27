@@ -7,6 +7,7 @@ export interface UpdateMovieData {
   duration?: number;
   releaseDate?: Date;
   primaryGenreId?: string;
+  genreIds?: string[];
   certification?: Certification;
 
   posterUrl?: string | null;

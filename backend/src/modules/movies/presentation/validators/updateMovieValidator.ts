@@ -12,6 +12,12 @@ export const updateMovieSchema = z.object({
 
   primaryGenreId: z.string().min(1).optional(),
 
+  genreIds: z
+  .string()
+  .transform((value) => JSON.parse(value))
+  .pipe(z.array(z.string().min(1)))
+  .optional(),
+
   certification: z.enum(Certification).optional(),
 
   languageIds: z

@@ -17,8 +17,8 @@ enum SeatType {
   REGULAR
   PREMIUM
   RECLINER
-  COUPLE
   WHEELCHAIR
+  SOFA
 }
 
 enum ShowSeatStatus {
@@ -29,6 +29,7 @@ enum ShowSeatStatus {
 enum BookingStatus {
   PENDING_PAYMENT
   CONFIRMED
+  PAYMENT_FAILED
   CANCELLED
   EXPIRED
 }
@@ -53,6 +54,25 @@ enum Certification {
   S
 }
 
+model TheatreAdminAssignment {
+  id String @id @default(cuid())
+
+  userId    String
+  theatreId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  theatre Theatre @relation(fields: [theatreId], references: [id])
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, theatreId])
+  @@index([userId])
+  @@index([theatreId])
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -74,6 +94,8 @@ model User {
 
   bookings Booking[]
 
+  theatreAssignments TheatreAdminAssignment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -81,9 +103,9 @@ model User {
 }
 
 model Person {
-  id       String  @id @default(cuid())
-  name     String
-  imageUrl String?
+  id            String  @id @default(cuid())
+  name          String
+  imageUrl      String?
   imagePublicId String?
 
   castRoles MovieCast[]
@@ -150,10 +172,26 @@ model Genre {
   slug     String  @unique
   isActive Boolean @default(true)
 
-  movies Movie[]
+  primaryMovies Movie[]
+
+  movies MovieGenre[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model MovieGenre {
+  id String @id @default(cuid())
+
+  movieId String
+  genreId String
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, genreId])
+  @@index([movieId])
+  @@index([genreId])
 }
 
 model MovieCinemaFormat {
@@ -167,20 +205,6 @@ model MovieCinemaFormat {
   @@unique([movieId, cinemaFormatId])
   @@index([movieId])
   @@index([cinemaFormatId])
-}
-
-model CinemaFormat {
-  id       String  @id @default(cuid())
-  name     String  @unique
-  slug     String  @unique
-  isActive Boolean @default(true)
-
-  movies  MovieCinemaFormat[]
-  screens ScreenCinemaFormat[]
-  shows   Show[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Movie {
@@ -197,16 +221,17 @@ model Movie {
   primaryGenreId String
   primaryGenre   Genre  @relation(fields: [primaryGenreId], references: [id])
 
+  genres        MovieGenre[]
   certification Certification
 
   cinemaFormats MovieCinemaFormat[]
 
-  posterUrl   String?
+  posterUrl      String?
   posterPublicId String?
 
-  backdropUrl String?
+  backdropUrl      String?
   backdropPublicId String?
-  trailerUrl  String?
+  trailerUrl       String?
 
   isActive Boolean @default(true)
 
@@ -256,13 +281,32 @@ model Theatre {
 
   screens Screen[]
 
+  adminAssignments TheatreAdminAssignment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([cityId, name])
   @@unique([cityId, slug])
   @@index([cityId])
+  @@index([latitude, longitude])
 }
+
+model CinemaFormat {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  movies  MovieCinemaFormat[]
+  screens ScreenCinemaFormat[]
+  shows   Show[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// it connects screen - cinemaFormat
 
 model ScreenCinemaFormat {
   id String @id @default(cuid())
@@ -287,7 +331,7 @@ model Screen {
   name String
   slug String
 
-  supportedFormats ScreenCinemaFormat[]
+  cinemaFormats ScreenCinemaFormat[]
 
   isActive Boolean @default(true)
 
@@ -305,12 +349,12 @@ model Screen {
 model Seat {
   id String @id @default(cuid())
 
-  screenId String
+  screenId String // which screen does this seat belong to 
   screen   Screen @relation(fields: [screenId], references: [id])
 
-  rowLabel   String
-  seatNumber Int
-  label      String
+  rowLabel   String // A 
+  seatNumber Int // 1
+  label      String // A1
 
   x        Float
   y        Float
@@ -325,21 +369,22 @@ model Seat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([screenId, label])
+  // This protects the database from accidentally creating
+  // duplicate seats in the same screen.
+  // @@unique([screenId, label])
   @@unique([screenId, rowLabel, seatNumber])
-  @@index([screenId])
 }
 
 model Show {
   id String @id @default(cuid())
 
-  movieId String
+  movieId String // which movie is playing 
   movie   Movie  @relation(fields: [movieId], references: [id])
 
-  screenId String
+  screenId String // where is it playing
   screen   Screen @relation(fields: [screenId], references: [id])
 
-  cinemaFormatId String
+  cinemaFormatId String // how is it beign shown 
   cinemaFormat   CinemaFormat @relation(fields: [cinemaFormatId], references: [id])
 
   startTime DateTime
@@ -361,6 +406,13 @@ model Show {
   @@index([startTime])
 }
 
+// Show 1 → Avatar → 6:00 PM
+// Show 2 → Avatar → 9:00 PM
+// The physical seat A1 is the same seat, but it needs separate
+// availability/pricing for each show:
+
+// seat for a particular movie show 
+// which seats are available
 model ShowSeat {
   id String @id @default(cuid())
 
@@ -378,20 +430,19 @@ model ShowSeat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([showId, seatId])
-  @@index([showId])
+  @@index([showId, seatId])
   @@index([showId, status])
 }
 
 model Booking {
   id String @id @default(cuid())
 
-  bookingReference String @unique
+  bookingReference String @unique // customer-friendly booking id for ex:MOV-8x92KD
 
-  userId String
+  userId String // who booked it ? thoufeek 
   user   User   @relation(fields: [userId], references: [id])
 
-  showId String
+  showId String // what show did they book ? avatar - 7.30
   show   Show   @relation(fields: [showId], references: [id])
 
   // Historical snapshots
@@ -423,13 +474,15 @@ model Booking {
   @@index([status])
 }
 
+// why do we need booking seat when booking already exists
+// on booking can contain mulitple seats 
 model BookingSeat {
   id String @id @default(cuid())
 
-  bookingId String
+  bookingId String // which booking
   booking   Booking @relation(fields: [bookingId], references: [id])
 
-  showSeatId String
+  showSeatId String // which specific show seat
   showSeat   ShowSeat @relation(fields: [showSeatId], references: [id])
 
   // Historical snapshots
@@ -459,6 +512,7 @@ model Payment {
   providerOrderId   String?
   providerPaymentId String?
 
+  // becaus if the customer click pay twise wihtout idempotency protecttion ,backend could potentially create dupicate payment operations
   idempotencyKey String @unique
 
   createdAt DateTime @default(now())

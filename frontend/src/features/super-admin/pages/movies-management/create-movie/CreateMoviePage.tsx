@@ -75,6 +75,7 @@ export default function SuperAdminCreateMoviePage() {
       duration: undefined,
       releaseDate: '',
       primaryGenreId: '',
+      genreIds:[],
       certificate:undefined,
       languages: [],
       cinemaFormatIds:[],

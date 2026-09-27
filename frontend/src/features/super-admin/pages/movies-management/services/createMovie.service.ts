@@ -17,6 +17,10 @@ export const createMovie = async (
     );
 
     formData.append('primaryGenreId', data.primaryGenreId);
+    formData.append(
+  'genreIds',
+  JSON.stringify(data.genreIds)
+);
     formData.append('certification', data.certificate);
 
     formData.append(
