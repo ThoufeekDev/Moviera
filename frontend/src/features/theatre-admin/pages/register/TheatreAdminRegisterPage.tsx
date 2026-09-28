@@ -9,7 +9,7 @@ import './AdminRegister.css';
 
 import { registerUser } from '../../../auth/services/auth.service';
 
-export default function HospitalRegisterPage() {
+export default function TheatreAdminRegisterPage() {
   const [authError, setAuthError] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const navigate = useNavigate();

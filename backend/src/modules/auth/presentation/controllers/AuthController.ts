@@ -69,6 +69,8 @@ export class AuthController {
 
     const loginUserUseCase = makeLoginUserCase();
 
+    console.log('login server triggered')
+
     const result = await loginUserUseCase.execute(validatedData);
 
     console.log("after login result",result);

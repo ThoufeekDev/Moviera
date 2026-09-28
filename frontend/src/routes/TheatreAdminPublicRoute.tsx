@@ -1,23 +1,23 @@
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../features/auth/stores/auth.store';
-import Loader from '../shared/components/Loader/Loader';
-import { Role } from '../shared/constants/Role';
+// import { Navigate } from 'react-router-dom';
+// import { useAuthStore } from '../features/auth/stores/auth.store';
+// import Loader from '../shared/components/Loader/Loader';
+// import { Role } from '../shared/constants/Role';
 
-interface Props {
-  children: React.ReactNode;
-}
+// interface Props {
+//   children: React.ReactNode;
+// }
 
-export default function TheatreAdminPublicRoute({ children }: Props) {
-  const { user, isAuthenticated, isCheckingAuth } = useAuthStore();
+// export default function TheatreAdminPublicRoute({ children }: Props) {
+//   const { user, isAuthenticated, isCheckingAuth } = useAuthStore();
 
-  if (isCheckingAuth) {
-    return <Loader />;
-  }
+//   if (isCheckingAuth) {
+//     return <Loader />;
+//   }
 
-  if (isAuthenticated && user?.role === Role.THEATRE_ADMIN) {
+//   if (isAuthenticated && user?.role === Role.THEATRE_ADMIN) {
    
-    return <Navigate to="/theatre-admin" replace />;
-  }
+//     return <Navigate to="/theatre-admin" replace />;
+//   }
 
-  return children;
-}
+//   return children;
+// }

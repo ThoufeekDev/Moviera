@@ -23,21 +23,32 @@ export class LoginUserUseCase {
       throw new UnauthorizedError('Invalid credentials');
     }
 
-    const isPasswordValid = await comparePassword(data.password, user.password);
+    console.log('its working');
+    
 
+    const isPasswordValid = await comparePassword(data.password, user.password);
+    console.log('its working')
     if (!isPasswordValid) {
       throw new UnauthorizedError('Invalid credentials');
     }
-
+     
+    console.log('its not working...');
+    
     if (!user.isVerified) {
       throw new ForbiddenError('Please verify your email');
     }
+
+    console.log('helo wolrd');
+    
 
     if (user.role !== data.role) {
       throw new UnauthorizedError('Invalid credentials');
     }
 
     const userResponse = UserMapper.toResponseDTO(user);
+
+    console.log('user ',userResponse);
+    
 
     return {
       user: userResponse,

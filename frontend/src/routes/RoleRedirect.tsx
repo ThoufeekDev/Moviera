@@ -22,6 +22,7 @@ export default function RoleRedirect() {
       return <Navigate to="/theatre-admin" replace />;
 
     case Role.USER:
+      return <Navigate to="/" replace/>
     default:
       return <Navigate to="/user/login" replace />;
   }

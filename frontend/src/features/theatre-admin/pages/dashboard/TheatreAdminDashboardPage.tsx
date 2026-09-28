@@ -1,5 +1,5 @@
 
-function AdminDashboardPage(){
+function TheatreAdminDashboardPage(){
   // Perfect place to hook up state management or API calls later.
   return (
     
@@ -10,4 +10,4 @@ function AdminDashboardPage(){
   )
 };
 
-export default AdminDashboardPage;
+export default TheatreAdminDashboardPage;

@@ -14,49 +14,55 @@ const HomePage = lazy(() => import('../features/auth/pages/home/HomePage'));
 
 const GatewayPage = lazy(() => import('../features/onboarding/GateWay'));
 
-const AdminLoginPage = lazy(() => import('../features/theatre-admin/pages/login/TheatreAdminLoginPage'));
+const TheatreAdminLoginPage = lazy(
+  () => import('../features/theatre-admin/pages/login/TheatreAdminLoginPage'),
+);
 
-
-const AdminRegisterPage = lazy(
+const TheatreAdminRegisterPage = lazy(
   () => import('../features/theatre-admin/pages/register/TheatreAdminRegisterPage'),
 );
 
-const AdminDashboardPage = lazy(
+const TheatreAdminDashboardPage = lazy(
   () => import('../features/theatre-admin/pages/dashboard/TheatreAdminDashboardPage'),
 );
 
-
 // SUPER_ADMIN PAGES
 
-const SuperAdminLoginPage = lazy(() => import('../features/super-admin/pages/Login/SuperAdminLoginPage'))
+const SuperAdminLoginPage = lazy(
+  () => import('../features/super-admin/pages/Login/SuperAdminLoginPage'),
+);
 
-const SuperAdminDashboardPage = lazy(()=>import("../features/super-admin/pages/Dashboard/SuperAdminDashboardPage"))
+const CreateMoviePage = lazy(
+  () => import('../features/super-admin/pages/movies-management/create-movie/CreateMoviePage'),
+);
+
+const MovieDetailsPage = lazy(
+  () => import('../features/super-admin/pages/movies-management/movie-details/MovieDetailsPage'),
+);
+const SuperAdminDashboardPage = lazy(
+  () => import('../features/super-admin/pages/Dashboard/SuperAdminDashboardPage'),
+);
 
 const NotFoundPage = lazy(() => import('../shared/pages/NotFoundPage'));
 
 // Route Components
 
-import TheatreAdminRoute from './TheatreAdminRoute';
+// import TheatreAdminRoute from './TheatreAdminRoute';
 import RoleRedirect from './RoleRedirect';
-import TheatreAdminPublicRoute from './TheatreAdminPublicRoute';
-import TheatreAdminLayoutWrapper from './TheatreAdminLayoutWrapper';
+// import TheatreAdminPublicRoute from './TheatreAdminPublicRoute';
+// import TheatreAdminLayoutWrapper from './TheatreAdminLayoutWrapper';
 
 import PublicRoute from './PublicRoute';
 import ProtectedRoute from './ProtectedRoute';
-import SuperAdminRoute from './SuperAdminRoute';
+// import SuperAdminRoute from './SuperAdminRoute';
 
 import ComingSoon from '../shared/components/coming-soon/ComingSoon';
 import SuperAdminLayout from '../features/super-admin/layouts/SuperAdminLayout';
 import MovieManagementPage from '../features/super-admin/pages/movies-management/MovieManagementPage';
 import EditMoviePage from '../features/super-admin/pages/movies-management/movie-edit/EditMoviePage';
 
-const CreateMoviePage = lazy(
-  () => import('../features/super-admin/pages/movies-management/create-movie/CreateMoviePage')
-);
+import { Role } from '../shared/constants/Role';
 
-const MovieDetailsPage = lazy(
-  () => import('../features/super-admin/pages/movies-management/movie-details/MovieDetailsPage')
-);
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -102,58 +108,59 @@ export default function AppRoutes() {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={[Role.USER]}>
                 <HomePage />
               </ProtectedRoute>
             }
           />
 
-          {/* Admin Public Routes */}
+          {/* ==================== THEATRE ADMIN ==================== */}
+
           <Route
             path="/theatre-admin/register"
             element={
-              <TheatreAdminPublicRoute>
-                <AdminRegisterPage />
-              </TheatreAdminPublicRoute>
+              <PublicRoute>
+                <TheatreAdminRegisterPage />
+              </PublicRoute>
             }
           />
 
           <Route
             path="/theatre-admin/login"
             element={
-              <TheatreAdminPublicRoute>
-                <AdminLoginPage />
-              </TheatreAdminPublicRoute>
+              <PublicRoute>
+                <TheatreAdminLoginPage />
+              </PublicRoute>
             }
           />
 
-          {/* Admin Redirect */}
-          <Route path="/admin" element={<RoleRedirect />} />
 
-          {/* Admin Dashboard Routes */}
-          <Route
-            element={
-              <TheatreAdminRoute>
-            
-                  <TheatreAdminLayoutWrapper />
-             
-              </TheatreAdminRoute>
-            }
-          >
-            <Route path="/theatre-admin/dashboard" element={<AdminDashboardPage />} />
+
+            <Route
+              path="/theatre-admin"
+              element={
+                <ProtectedRoute allowedRoles={[Role.THEATRE_ADMIN]}>
+                  <TheatreAdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/theatre-admin/settings"
               element={
-                <ComingSoon
-                  title="Settings"
-                  description="Cinema settings features are coming soon."
-                  backTo="/theatre-admin/dashboard"
-                  backLabel="Back to Dashboard"
-                />
+                <ProtectedRoute allowedRoles={[Role.THEATRE_ADMIN]}>
+                  <ComingSoon
+                    title="Settings"
+                    description="Cinema settings features are coming soon."
+                    backTo="/theatre-admin/dashboard"
+                    backLabel="Back to Dashboard"
+                  />
+                </ProtectedRoute>
               }
             />
-          </Route>
+
+
+           {/* ==================== SUPER ADMIN ==================== */}
 
           <Route
             path="/super-admin/login"
@@ -167,9 +174,9 @@ export default function AppRoutes() {
           <Route
             path="/super-admin"
             element={
-              <SuperAdminRoute>
+              <ProtectedRoute allowedRoles={[Role.SUPER_ADMIN]}>
                 <SuperAdminLayout />
-              </SuperAdminRoute>
+              </ProtectedRoute>
             }
           >
             <Route index element={<SuperAdminDashboardPage />} />
@@ -177,8 +184,10 @@ export default function AppRoutes() {
             <Route path="movies" element={<MovieManagementPage />} />
             <Route path="movies/create" element={<CreateMoviePage />} />
             <Route path="movies/:slug" element={<MovieDetailsPage />} />
-            <Route path="movies/:movieId/edit" element={<EditMoviePage/>} />
+            <Route path="movies/:movieId/edit" element={<EditMoviePage />} />
           </Route>
+
+          <Route path='/admin' element={<RoleRedirect/> } />
 
           {/* 404 */}
 

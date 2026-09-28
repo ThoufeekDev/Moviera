@@ -12,7 +12,7 @@ import MovieraLogo from '../../../../shared/components/moviera-logo/MovieraLogo'
 import './adminLogin.css';
 import { Role } from '../../../../shared/constants/Role';
 
-export default function AdminLoginPage() {
+export default function TheatreAdminLoginPage() {
   const navigate = useNavigate();
 
   const [authError, setAuthError] = useState('');
@@ -36,6 +36,8 @@ export default function AdminLoginPage() {
         ...data,
         role: Role.THEATRE_ADMIN,
       });
+
+      console.log("trigger after login")
 
       navigate('/theatre-admin');
     } catch (error: unknown) {
