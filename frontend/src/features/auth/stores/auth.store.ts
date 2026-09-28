@@ -74,7 +74,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const profile = await getProfile();
 
       set({
-        //user:profile.user
         user: profile,
         isAuthenticated: true,
       });

@@ -17,16 +17,5 @@ export default function PublicRoute({ children }: Props) {
 
   if (isAuthenticated && user) return <RoleRedirect />;
 
-  /**
-  * ! tempreroly removed for testing  
-   *   if (isAuthenticated && user) {
-    if (user.role === Role.THEATRE_ADMIN) {
-      return <Navigate to="/admin" replace />;
-    }
-    // return <Navigate to="/" replace />;
-  }
-   * 
-   */
-
   return children;
 }
