@@ -54,25 +54,6 @@ enum Certification {
   S
 }
 
-model TheatreAdminAssignment {
-  id String @id @default(cuid())
-
-  userId    String
-  theatreId String
-
-  user    User    @relation(fields: [userId], references: [id])
-  theatre Theatre @relation(fields: [theatreId], references: [id])
-
-  isActive Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, theatreId])
-  @@index([userId])
-  @@index([theatreId])
-}
-
 model User {
   id String @id @default(cuid())
 
@@ -92,8 +73,9 @@ model User {
   gender      String?
   dateOfBirth DateTime?
 
-  bookings Booking[]
-
+  bookings           Booking[]
+  movieReviews       MovieReview[]
+  theatreReviews     TheatreReview[]
   theatreAssignments TheatreAdminAssignment[]
 
   createdAt DateTime @default(now())
@@ -102,8 +84,28 @@ model User {
   @@index([role])
 }
 
+model TheatreAdminAssignment {
+  id String @id @default(cuid())
+
+  userId    String
+  theatreId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  theatre Theatre @relation(fields: [theatreId], references: [id])
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, theatreId])
+  @@index([userId])
+  @@index([theatreId])
+}
+
 model Person {
-  id            String  @id @default(cuid())
+  id String @id @default(cuid())
+
   name          String
   imageUrl      String?
   imagePublicId String?
@@ -143,7 +145,8 @@ model MovieCrew {
 }
 
 model Language {
-  id   String @id @default(cuid())
+  id String @id @default(cuid())
+
   name String @unique
   code String @unique
 
@@ -167,17 +170,19 @@ model MovieLanguage {
 }
 
 model Genre {
-  id       String  @id @default(cuid())
+  id String @id @default(cuid())
+
   name     String  @unique
   slug     String  @unique
   isActive Boolean @default(true)
 
   primaryMovies Movie[]
-
-  movies MovieGenre[]
+  movies        MovieGenre[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([isActive])
 }
 
 model MovieGenre {
@@ -231,20 +236,23 @@ model Movie {
 
   backdropUrl      String?
   backdropPublicId String?
-  trailerUrl       String?
+
+  trailerUrl String?
 
   isActive Boolean @default(true)
 
   shows Show[]
+  cast  MovieCast[]
+  crew  MovieCrew[]
 
-  cast MovieCast[]
-
-  crew MovieCrew[]
+  reviews MovieReview[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([primaryGenreId])
+  @@index([isActive])
+  @@index([releaseDate])
 }
 
 model City {
@@ -263,6 +271,99 @@ model City {
   updatedAt DateTime @updatedAt
 
   @@unique([name, state, country])
+  @@index([isActive])
+}
+
+model TheatreFacility {
+  id String @id @default(cuid())
+
+  name        String
+  slug        String  @unique
+  description String?
+  icon        String?
+
+  isActive Boolean @default(true)
+
+  assignments TheatreFacilityAssignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model TheatreFacilityAssignment {
+  id String @id @default(cuid())
+
+  theatreId  String
+  facilityId String
+
+  theatre  Theatre         @relation(fields: [theatreId], references: [id], onDelete: Cascade)
+  facility TheatreFacility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([theatreId, facilityId])
+  @@index([theatreId])
+  @@index([facilityId])
+}
+
+model MovieReview {
+  id String @id @default(cuid())
+
+  movieId String
+  userId  String
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  rating  Int
+  title   String?
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([movieId, userId])
+  @@index([movieId])
+  @@index([userId])
+}
+
+model TheatreReview {
+  id String @id @default(cuid())
+
+  theatreId String
+  userId    String
+
+  theatre Theatre @relation(fields: [theatreId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  rating  Int
+  title   String?
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([theatreId, userId])
+  @@index([theatreId])
+  @@index([userId])
+}
+
+model TheatreImage {
+  id String @id @default(cuid())
+
+  theatreId String
+  theatre   Theatre @relation(fields: [theatreId], references: [id], onDelete: Cascade)
+
+  imageUrl      String
+  imagePublicId String
+  sortOrder     Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([theatreId, sortOrder])
 }
 
 model Theatre {
@@ -271,17 +372,30 @@ model Theatre {
   cityId String
   city   City   @relation(fields: [cityId], references: [id])
 
-  name      String
-  slug      String
-  address   String
+  name    String
+  slug    String
+  address String
+
+  description String?
+
+  logoUrl      String?
+  logoPublicId String?
+
+  email String?
+  phone String?
+
   latitude  Float?
   longitude Float?
 
   isActive Boolean @default(true)
 
-  screens Screen[]
-
+  facilities       TheatreFacilityAssignment[]
+  images           TheatreImage[]
+  screens          Screen[]
   adminAssignments TheatreAdminAssignment[]
+  reviews          TheatreReview[]
+
+  licenseNumber String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -289,11 +403,13 @@ model Theatre {
   @@unique([cityId, name])
   @@unique([cityId, slug])
   @@index([cityId])
+  @@index([isActive])
   @@index([latitude, longitude])
 }
 
 model CinemaFormat {
-  id       String  @id @default(cuid())
+  id String @id @default(cuid())
+
   name     String  @unique
   slug     String  @unique
   isActive Boolean @default(true)
@@ -304,9 +420,9 @@ model CinemaFormat {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-// it connects screen - cinemaFormat
+  @@index([isActive])
+}
 
 model ScreenCinemaFormat {
   id String @id @default(cuid())
@@ -344,17 +460,18 @@ model Screen {
   @@unique([theatreId, name])
   @@unique([theatreId, slug])
   @@index([theatreId])
+  @@index([isActive])
 }
 
 model Seat {
   id String @id @default(cuid())
 
-  screenId String // which screen does this seat belong to 
+  screenId String
   screen   Screen @relation(fields: [screenId], references: [id])
 
-  rowLabel   String // A 
-  seatNumber Int // 1
-  label      String // A1
+  rowLabel   String
+  seatNumber Int
+  label      String
 
   x        Float
   y        Float
@@ -369,22 +486,22 @@ model Seat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // This protects the database from accidentally creating
-  // duplicate seats in the same screen.
-  // @@unique([screenId, label])
   @@unique([screenId, rowLabel, seatNumber])
+  @@unique([screenId, label])
+  @@index([screenId])
+  @@index([isActive])
 }
 
 model Show {
   id String @id @default(cuid())
 
-  movieId String // which movie is playing 
+  movieId String
   movie   Movie  @relation(fields: [movieId], references: [id])
 
-  screenId String // where is it playing
+  screenId String
   screen   Screen @relation(fields: [screenId], references: [id])
 
-  cinemaFormatId String // how is it beign shown 
+  cinemaFormatId String
   cinemaFormat   CinemaFormat @relation(fields: [cinemaFormatId], references: [id])
 
   startTime DateTime
@@ -401,18 +518,11 @@ model Show {
   updatedAt DateTime @updatedAt
 
   @@index([movieId])
-  @@index([screenId])
+  @@index([screenId, startTime])
   @@index([cinemaFormatId])
-  @@index([startTime])
+  @@index([startTime, isActive])
 }
 
-// Show 1 → Avatar → 6:00 PM
-// Show 2 → Avatar → 9:00 PM
-// The physical seat A1 is the same seat, but it needs separate
-// availability/pricing for each show:
-
-// seat for a particular movie show 
-// which seats are available
 model ShowSeat {
   id String @id @default(cuid())
 
@@ -430,22 +540,22 @@ model ShowSeat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([showId, seatId])
+  @@unique([showId, seatId])
   @@index([showId, status])
 }
 
 model Booking {
   id String @id @default(cuid())
 
-  bookingReference String @unique // customer-friendly booking id for ex:MOV-8x92KD
+  bookingReference String @unique
 
-  userId String // who booked it ? thoufeek 
+  userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  showId String // what show did they book ? avatar - 7.30
+  showId String
   show   Show   @relation(fields: [showId], references: [id])
 
-  // Historical snapshots
+  // Historical snapshots.
   movieTitle   String
   theatreName  String
   screenName   String
@@ -453,13 +563,13 @@ model Booking {
 
   status BookingStatus @default(PENDING_PAYMENT)
 
-  // All monetary values are stored in paise
+  // All monetary values are stored in paise.
   subtotal       Int
   convenienceFee Int @default(0)
   taxAmount      Int @default(0)
   totalAmount    Int
 
-  // Internal revenue split
+  // Internal revenue split.
   theatreAmount      Int
   platformCommission Int
 
@@ -469,23 +579,21 @@ model Booking {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
+  @@index([userId, createdAt])
   @@index([showId])
   @@index([status])
 }
 
-// why do we need booking seat when booking already exists
-// on booking can contain mulitple seats 
 model BookingSeat {
   id String @id @default(cuid())
 
-  bookingId String // which booking
+  bookingId String
   booking   Booking @relation(fields: [bookingId], references: [id])
 
-  showSeatId String // which specific show seat
+  showSeatId String
   showSeat   ShowSeat @relation(fields: [showSeatId], references: [id])
 
-  // Historical snapshots
+  // Historical snapshots.
   seatLabel String
   price     Int
 
@@ -493,7 +601,6 @@ model BookingSeat {
   updatedAt DateTime @updatedAt
 
   @@unique([bookingId, showSeatId])
-  @@index([bookingId])
   @@index([showSeatId])
 }
 
@@ -509,10 +616,9 @@ model Payment {
   status   PaymentStatus   @default(INITIATED)
   provider PaymentProvider @default(STRIPE)
 
-  providerOrderId   String?
   providerPaymentId String?
 
-  // becaus if the customer click pay twise wihtout idempotency protecttion ,backend could potentially create dupicate payment operations
+  // Prevents duplicate payment operations for the same client request.
   idempotencyKey String @unique
 
   createdAt DateTime @default(now())
@@ -520,4 +626,5 @@ model Payment {
 
   @@index([bookingId])
   @@index([status])
+  @@index([providerPaymentId])
 }

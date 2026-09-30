@@ -8,10 +8,14 @@ import languageRoute from './modules/movies/presentation/routes/language.route';
 import cinemaFormatRoute from './modules/movies/presentation/routes/cinemaFormat.route';
 import genreRoute from './modules/movies/presentation/routes/genre.Route';
 
+
+// Theatre 
+import theatreRoute from "./modules/theatre/presentation/routes/theatre.route"
+
+
 import cors from 'cors';
 import { errorHandler } from './shared/middleware/errrorHandler';
 
-import { authenticateUser } from './shared/middleware/authenticateUser';
 
 const app = express();
 
@@ -38,6 +42,8 @@ app.use('/cinema-format',cinemaFormatRoute)
 app.use("/genre", genreRoute);
 
 
+
+app.use('/theatre', theatreRoute);
 
 
 

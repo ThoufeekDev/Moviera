@@ -69,12 +69,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({
         isLoading: true,
       });
-      await loginUser(data);
+    const user =   await loginUser(data);
 
-      const profile = await getProfile();
+      // const profile = await getProfile();
 
       set({
-        user: profile,
+        user,
         isAuthenticated: true,
       });
     } catch (error) {

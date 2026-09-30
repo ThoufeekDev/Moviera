@@ -62,6 +62,7 @@ import MovieManagementPage from '../features/super-admin/pages/movies-management
 import EditMoviePage from '../features/super-admin/pages/movies-management/movie-edit/EditMoviePage';
 
 import { Role } from '../shared/constants/Role';
+import TheatreAdminLayout from '../features/theatre-admin/layouts/TheatreAdminLayout';
 
 export default function AppRoutes() {
   return (
@@ -135,29 +136,33 @@ export default function AppRoutes() {
           />
 
 
-
-            <Route
-              path="/theatre-admin"
-              element={
-                <ProtectedRoute allowedRoles={[Role.THEATRE_ADMIN]}>
-                  <TheatreAdminDashboardPage />
-                </ProtectedRoute>
-              }
+<Route
+  path="/theatre-admin"
+  element={
+    <ProtectedRoute allowedRoles={[Role.THEATRE_ADMIN]}>
+      <TheatreAdminLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route
+    index
+    element={<TheatreAdminDashboardPage />}
             />
+            
+            {/* <Route path="theatres" element={ <theatres/>} /> */}
 
-            <Route
-              path="/theatre-admin/settings"
-              element={
-                <ProtectedRoute allowedRoles={[Role.THEATRE_ADMIN]}>
-                  <ComingSoon
-                    title="Settings"
-                    description="Cinema settings features are coming soon."
-                    backTo="/theatre-admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                </ProtectedRoute>
-              }
-            />
+  <Route
+    path="settings"
+    element={
+      <ComingSoon
+        title="Settings"
+        description="Cinema settings features are coming soon."
+        backTo="/theatre-admin"
+        backLabel="Back to Dashboard"
+      />
+    }
+  />
+</Route>
 
 
            {/* ==================== SUPER ADMIN ==================== */}

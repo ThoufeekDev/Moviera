@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../exceptions/AppError';
 import { JsonWebTokenError, TokenExpiredError, NotBeforeError } from 'jsonwebtoken';
 import { errorResponse } from '../utils/apiResponse';
-
+import Sentry from '../infrastructure/monitoring/sentry';
 export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
   // Is this error created from AppError?
   if (error instanceof AppError) {
@@ -18,6 +18,8 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
   }
 
   console.error(error);
+  Sentry.captureException(error)
+
 
   return errorResponse(res, 500, false, "Internal Server Error");
 };
