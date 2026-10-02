@@ -1,0 +1,130 @@
+.headerCard {
+    background: linear-gradient(135deg,
+            #333545 0%,
+            #222539 60%,
+            #1a1c2e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.headerMain {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.theatreAvatar {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #1f2233;
+    border: 2px solid #f84464;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarPlaceholder {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.theatreTitle {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.statusDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.activeBadge {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.activeBadge .statusDot {
+    background-color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.inactiveBadge {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.inactiveBadge .statusDot {
+    background-color: #ef4444;
+}
+
+.locationSubtitle {
+    margin: 0;
+    font-size: 0.92rem;
+    color: #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.locationSubtitle svg {
+    color: #f84464;
+}
+
+@media (max-width: 768px) {
+    .theatreTitle {
+        font-size: 1.4rem;
+    }
+
+    .headerCard {
+        padding: 18px;
+    }
+}

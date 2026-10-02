@@ -1,5 +1,8 @@
 import type { ScreenProps } from "../types/ScreenProps";
 import type { CreateScreenProps } from "../types/CreateScreenProps";
+
+
+
 // ! get is an accession
 export class Screen {
   private constructor(private readonly props: ScreenProps) {}

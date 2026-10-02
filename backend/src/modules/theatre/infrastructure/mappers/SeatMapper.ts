@@ -1,4 +1,4 @@
-import { Seat } from "../../domain/entities/Seat";
+import { Seat } from "../../domain/entities/seat.entity";
 
 import type { SeatProps } from '../../domain/types/SeatProps';
 

@@ -1,4 +1,4 @@
-import type { Seat } from "../entities/Seat";
+import type { Seat } from "../entities/seat.entity";
 import type { CreateSeatProps } from "../types/CreateSeatProps";
 
 

@@ -13,10 +13,7 @@ export const theatreAdminSidebarItems: SidebarItem[] = [
         label: 'My Theatres',
         path: '/theatre-admin/theatres',
       },
-      {
-        label: 'Add Theatre',
-        path: '/theatre-admin/theatres/create',
-      },
+
     ],
   },
   {

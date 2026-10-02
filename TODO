@@ -41,10 +41,10 @@
 ✔ implement Pagination @done(26-09-24 14:38)
 
 ## Theatre Module
-☐ Theatre Admin Login @started(26-09-24 14:38)
+✔ Theatre Admin Login @started(26-09-24 14:38) @done(26-10-01 13:41) @lasted(6d23h3m21s)
 ☐ Create Theatre — Theatre Admin
-☐ Get All Theatres — Public
-☐ Get Theatre by ID — Public
+✔ Get All Theatres — Public @done(26-10-01 13:41)
+✔ Get Theatre by ID — Public @done(26-10-01 13:41)
 ☐ Update Theatre — Theatre Admin
 ☐ Deactivate Theatre — Theatre Admin
 ☐ Add Theatre Module Tests

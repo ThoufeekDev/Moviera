@@ -1,4 +1,4 @@
-import { Screen } from "../../domain/entities/Screen";
+import { Screen } from "../../domain/entities/screen.entity";
 import type { ScreenProps } from "../../domain/types/ScreenProps";
 
 

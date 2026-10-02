@@ -63,6 +63,8 @@ import EditMoviePage from '../features/super-admin/pages/movies-management/movie
 
 import { Role } from '../shared/constants/Role';
 import TheatreAdminLayout from '../features/theatre-admin/layouts/TheatreAdminLayout';
+import { MyTheatrePage } from '../features/theatre-admin/pages/theatres/MyTheatresPage';
+import TheatreDetailsPage from '../features/theatre-admin/pages/theatres/theatre-details/TheatreDetailsPage';
 
 export default function AppRoutes() {
   return (
@@ -149,7 +151,8 @@ export default function AppRoutes() {
     element={<TheatreAdminDashboardPage />}
             />
             
-            {/* <Route path="theatres" element={ <theatres/>} /> */}
+    <Route path="theatres" element={ <MyTheatrePage/>} />
+    <Route path="theatres/:theatreId" element={<TheatreDetailsPage />} />
 
   <Route
     path="settings"

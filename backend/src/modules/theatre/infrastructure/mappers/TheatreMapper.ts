@@ -1,4 +1,4 @@
-import { Theatre } from "../../domain/entities/Theatre";
+import { Theatre } from "../../domain/entities/theatre.entity";
 import { TheatreProps } from "../../domain/types/TheatreProps";
 
 

@@ -1,5 +1,11 @@
-import { Theatre } from "../entities/Theatre"
+import { Theatre } from "../entities/theatre.entity"
+import type { TheatreOverview } from "../types/TheatreOverView"
+import type { TheatreWithCity } from "../types/TheatreWithCity"
 
 export interface ITheatreRepository {
-    findById(id:string):Promise<Theatre | null>
+    findById(id: string): Promise<Theatre | null>
+    
+    findByAdminId(adminId: string): Promise<TheatreWithCity[]>
+    
+    getOverView(theatreId: string, adminId: string): Promise<TheatreOverview | null>;
 }

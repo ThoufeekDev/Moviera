@@ -1,0 +1,12 @@
+.skeletonLineGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skeletonContactRow {
+  display: flex;
+  gap: 12px;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+}

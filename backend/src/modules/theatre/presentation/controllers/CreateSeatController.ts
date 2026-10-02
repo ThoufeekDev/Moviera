@@ -6,13 +6,13 @@ import { successResponse } from '../../../../shared/utils/apiResponse';
 
 export class CreateSeatController {
     constructor(
-        private readonly createScreenUseCase: CreateSeatUseCase
+        private readonly createSeatUseCase: CreateSeatUseCase
     ) { }
     
 
     handle = async (req: Request, res: Response) => {
        
-        const seat = this.createScreenUseCase.execute({
+        const seat = await this.createSeatUseCase.execute({
             screenId: req.params.screenId,
             ...req.body
         });

@@ -43,7 +43,7 @@ app.use("/genre", genreRoute);
 
 
 
-app.use('/theatre', theatreRoute);
+app.use('/theatres', theatreRoute);
 
 
 

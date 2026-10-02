@@ -1,6 +1,6 @@
 import prisma from "../../../../config/database";
 
-import { Seat } from "../../domain/entities/Seat";
+import { Seat } from "../../domain/entities/seat.entity";
 import type { ISeatRepository } from "../../domain/repositories/ISeatRepository";
 import type { CreateSeatProps } from "../../domain/types/CreateSeatProps";
 import  { SeatMapper } from "../mappers/SeatMapper";

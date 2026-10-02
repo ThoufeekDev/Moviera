@@ -1,4 +1,4 @@
-import { Seat } from "../../domain/entities/Seat";
+import { Seat } from "../../domain/entities/seat.entity";
 import { ISeatRepository } from "../../domain/repositories/ISeatRepository";
 import { CreateSeatDTO } from "../dtos/CreateSeatDTO";
 import { IScreenRepository } from "../../domain/repositories/IScreenRepository";
@@ -22,7 +22,7 @@ export class CreateSeatUseCase {
 
         if (!screen.isActive) throw new ConflictError("Screen is inActive");
 
-        const label = `${seat.rowLabel}&${seat.seatNumber}`;
+        const label = `${seat.rowLabel}$${seat.seatNumber}`;
 
         const existingSeat = await this.seatRepository.findByLabel(seat.screenId, label)
         
