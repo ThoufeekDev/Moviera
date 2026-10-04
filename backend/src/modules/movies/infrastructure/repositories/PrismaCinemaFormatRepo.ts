@@ -1,6 +1,6 @@
 import prisma from "../../../../config/database";
 import { CinemaFormat } from "../../domain/entities/CinemaFormat";
-import { ICinemaFormatRepository } from "../../domain/repository/ICinemaFormatRepository";
+import { ICinemaFormatRepository } from "../../domain/repositories/ICinemaFormatRepository";
 
 
 export class PrismaCinemaFormatRepository

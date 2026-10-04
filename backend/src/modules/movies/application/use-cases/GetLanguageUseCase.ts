@@ -1,4 +1,4 @@
-import { ILanguageRepository } from "../../domain/repository/ILanguageRepository";
+import { ILanguageRepository } from "../../domain/repositories/ILanguageRepository";
 import { Language } from "../../domain/entities/Language";
 
 

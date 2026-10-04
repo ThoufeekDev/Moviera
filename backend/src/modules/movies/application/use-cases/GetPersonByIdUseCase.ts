@@ -1,4 +1,4 @@
-import { IPersonRepository } from '../../domain/repository/IPersonRepository';
+import { IPersonRepository } from '../../domain/repositories/IPersonRepository';
 import { Person } from '../../domain/entities/Person';
 import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
 

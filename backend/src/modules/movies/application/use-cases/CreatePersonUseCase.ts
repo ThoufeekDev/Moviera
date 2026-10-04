@@ -1,7 +1,7 @@
 import { IStorageService } from '../../../../shared/domain/services/IStorageService';
 import { ConflictError } from '../../../../shared/exceptions/ConflictError';
 import { Person } from '../../domain/entities/Person';
-import { IPersonRepository } from '../../domain/repository/IPersonRepository';
+import { IPersonRepository } from '../../domain/repositories/IPersonRepository';
 import { CreatePersonDTO } from '../dtos/CreatePersonDTO';
 
 export class CreatePersonUseCase {

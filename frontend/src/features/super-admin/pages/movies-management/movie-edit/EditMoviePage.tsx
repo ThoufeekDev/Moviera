@@ -18,7 +18,7 @@ import {
 import { useMovieById } from '../hooks/useMovieById';
 import { useUpdateMovie } from '../hooks/useUpdateMovie';
 
-import MovieFormSkeleton from '../components/skeletons/MovieFormSkeleton';
+import ContentLoader from '../../../../../shared/components/ContentLoader/ContentLoader';
 import ErrorState from '../../../../../shared/components/ErrorState/ErrorState';
 
 import styles from './EditMoviePage.module.css';
@@ -33,6 +33,7 @@ const steps = [
       'duration',
       'releaseDate',
       'primaryGenreId',
+      'genreIds',
       'certificate',
     ] as const,
   },
@@ -94,6 +95,7 @@ export default function EditMoviePage() {
       duration: undefined,
       releaseDate: '',
       primaryGenreId: '',
+      genreIds:[],
       certificate: undefined,
       languages: [],
       cinemaFormatIds: [],
@@ -114,6 +116,7 @@ export default function EditMoviePage() {
         ? new Date(movie.releaseDate).toISOString().split('T')[0]
         : '',
       primaryGenreId: movie.primaryGenre.id,
+      genreIds:movie.genres.map((genre)=>genre.id),
       certificate: movie.certification as UpdateMovieFormInput['certificate'],
       languages: movie.languages.map((language) => language.id),
       cinemaFormatIds: movie.cinemaFormats.map((format) => format.id),
@@ -204,7 +207,7 @@ export default function EditMoviePage() {
   }
 
   if (isLoading) {
-    return <MovieFormSkeleton />;
+    return <ContentLoader text="Loading Movie" subtext="Fetching movie details for editing..." />;
   }
 
   if (isError || !movie) {

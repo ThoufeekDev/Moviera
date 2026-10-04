@@ -1,6 +1,6 @@
 import prisma from '../../../../config/database';
 import { Language } from '../../domain/entities/Language';
-import { ILanguageRepository } from '../../domain/repository/ILanguageRepository';
+import { ILanguageRepository } from '../../domain/repositories/ILanguageRepository';
 
 export class PrismaLanguageRepository implements ILanguageRepository {
 //   constructor(private readonly prisma:Prisma) {}

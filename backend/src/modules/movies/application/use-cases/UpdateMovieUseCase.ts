@@ -1,15 +1,15 @@
-import { IMovieRepository } from '../../domain/repository/IMovieRepository';
+import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
 import { UpdateMovieDTO } from '../dtos/updateMovieDTO';
 import { Movie } from '../../domain/entities/Movie';
 import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
 import { generateSlug } from '../../../../shared/utils/generateSlug';
 import { ConflictError } from '../../../../shared/exceptions/ConflictError';
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
-import { IGenreRepository } from '../../domain/repository/IGenreRepository';
+import { IGenreRepository } from '../../domain/repositories/IGenreRepository';
 import { AppError } from '../../../../shared/exceptions/AppError';
-import { ILanguageRepository } from '../../domain/repository/ILanguageRepository';
-import { IPersonRepository } from '../../domain/repository/IPersonRepository';
-import { ICinemaFormatRepository } from '../../domain/repository/ICinemaFormatRepository';
+import { ILanguageRepository } from '../../domain/repositories/ILanguageRepository';
+import { IPersonRepository } from '../../domain/repositories/IPersonRepository';
+import { ICinemaFormatRepository } from '../../domain/repositories/ICinemaFormatRepository';
 
 import { UpdateMovieResult } from '../../domain/types/UpdateMovieResult';
 

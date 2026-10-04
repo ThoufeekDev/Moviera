@@ -1,5 +1,5 @@
 import { Movie } from "../../domain/entities/Movie";
-import { IMovieRepository } from "../../domain/repository/IMovieRepository";
+import { IMovieRepository } from "../../domain/repositories/IMovieRepository";
 import { GetMoviesQuery } from "../dtos/GetMovieQuery";
 import { PaginatedMovies } from "../dtos/PaginatedMovies";
 

@@ -1,4 +1,4 @@
-import { IGenreRepository } from "../../domain/repository/IGenreRepository";
+import { IGenreRepository } from "../../domain/repositories/IGenreRepository";
 import prisma from "../../../../config/database";
 import { Genre } from "../../domain/entities/Genre";
 export class PrismaGenreRepository implements IGenreRepository{

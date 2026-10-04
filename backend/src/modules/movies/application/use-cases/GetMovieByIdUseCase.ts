@@ -1,6 +1,6 @@
 import { NotFoundError } from "../../../../shared/exceptions/NotFoundError";
 import { Movie } from "../../domain/entities/Movie";
-import { IMovieRepository } from "../../domain/repository/IMovieRepository";
+import { IMovieRepository } from "../../domain/repositories/IMovieRepository";
 
 
 

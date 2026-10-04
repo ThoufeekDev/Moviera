@@ -1,11 +1,11 @@
 import { ConflictError } from "../../../../shared/exceptions/ConflictError";
 import { Movie } from "../../domain/entities/Movie";
-import { IMovieRepository } from "../../domain/repository/IMovieRepository";
+import { IMovieRepository } from "../../domain/repositories/IMovieRepository";
 import { CreateMovieDTO } from "../dtos/CreateMovieDTO";
 import { CreateMovieData } from "../../domain/types/CreateMovieData";
-import { IGenreRepository } from "../../domain/repository/IGenreRepository";
-import { ICinemaFormatRepository } from "../../domain/repository/ICinemaFormatRepository";
-import { ILanguageRepository } from "../../domain/repository/ILanguageRepository";
+import { IGenreRepository } from "../../domain/repositories/IGenreRepository";
+import { ICinemaFormatRepository } from "../../domain/repositories/ICinemaFormatRepository";
+import { ILanguageRepository } from "../../domain/repositories/ILanguageRepository";
 import { AppError } from "../../../../shared/exceptions/AppError";
 import { IStorageService } from "../../../../shared/domain/services/IStorageService";
 
@@ -16,6 +16,7 @@ export class CreateMovieUseCase {
     private readonly genreRepository: IGenreRepository,
     private readonly languageRepository:ILanguageRepository,
     private readonly cinemaFormatRepository: ICinemaFormatRepository,
+    // ! OCP
     private readonly storageService:IStorageService,
     
   
