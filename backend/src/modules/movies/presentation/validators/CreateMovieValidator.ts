@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Certification } from '../../../../shared/enums/Certification';
+import { Certification } from '../../domain/enums/Certification';
 
 
 // duration → converts "169" → 169
@@ -50,11 +50,16 @@ export const createMovieSchema = z.object({
     ),
 
   primaryGenreId: z.string().min(1, "Primary genre is required"),
-  genreIds: z
+genreIds: z
   .string()
   .transform((value) => JSON.parse(value))
   .pipe(
-    z.array(z.string().min(1)).min(1, 'At least one genre is required')
+    z.array(z.string().min(1))
+      .min(1, 'At least one genre is required')
+      .refine(
+        (ids) => new Set(ids).size === ids.length,
+        'Duplicate genre IDs are not allowed',
+      ),
   ),
   
 

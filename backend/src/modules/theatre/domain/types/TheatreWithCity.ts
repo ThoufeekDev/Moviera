@@ -1,4 +1,4 @@
-import type { Theatre } from "../entities/theatre.entity";
+import type { Theatre } from "../entities/Theatre";
 
 
 export interface TheatreWithCity{

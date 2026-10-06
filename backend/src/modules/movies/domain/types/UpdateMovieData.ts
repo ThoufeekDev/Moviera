@@ -1,4 +1,4 @@
-import { Certification } from "../../../../shared/enums/Certification";
+import { Certification } from "../enums/Certification";
 
 export interface UpdateMovieData {
   title?: string;

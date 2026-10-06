@@ -1,5 +1,5 @@
 import prisma from '../../../../config/database';
-import { Screen } from '../../domain/entities/screen.entity';
+import { Screen } from '../../domain/entities/Screen';
 import { IScreenRepository } from '../../domain/repositories/IScreenRepository';
 import type { CreateScreenProps } from '../../domain/types/CreateScreenProps';
 import { ScreenMapper } from '../mappers/ScreenMapper';

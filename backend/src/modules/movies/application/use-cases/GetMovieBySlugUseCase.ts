@@ -22,7 +22,7 @@ export class GetMovieBySlugUseCase {
              throw new NotFoundError('Movie not found ')
         }
         
-        console.log('movie by slug is working', movieBySlug);
+       
 
         return movieBySlug;
     }

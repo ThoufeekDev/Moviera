@@ -1,4 +1,4 @@
-import { Screen } from "../entities/screen.entity";
+import { Screen } from "../entities/Screen";
 import { CreateScreenProps } from "../types/CreateScreenProps";
 
 export interface IScreenRepository {

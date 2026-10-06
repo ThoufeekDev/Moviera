@@ -1,15 +1,13 @@
 import prisma from "../../../../config/database";
 import { CinemaFormat } from "../../domain/entities/CinemaFormat";
 import { ICinemaFormatRepository } from "../../domain/repositories/ICinemaFormatRepository";
-
+import { CinemaFormatMapper } from "../mappers/CinemaFormatMapper";
 
 export class PrismaCinemaFormatRepository
   implements ICinemaFormatRepository
 {
- 
-
   async findAll(): Promise<CinemaFormat[]> {
-    return prisma.cinemaFormat.findMany({
+    const cinemaFormats = await prisma.cinemaFormat.findMany({
       where: {
         isActive: true,
       },
@@ -17,10 +15,12 @@ export class PrismaCinemaFormatRepository
         name: "asc",
       },
     });
+
+    return CinemaFormatMapper.toDomainList(cinemaFormats);
   }
 
   async findByIds(ids: string[]): Promise<CinemaFormat[]> {
-    return prisma.cinemaFormat.findMany({
+    const cinemaFormats = await prisma.cinemaFormat.findMany({
       where: {
         id: {
           in: ids,
@@ -28,14 +28,20 @@ export class PrismaCinemaFormatRepository
         isActive: true,
       },
     });
+
+    return CinemaFormatMapper.toDomainList(cinemaFormats);
   }
 
   async findBySlug(slug: string): Promise<CinemaFormat | null> {
-    return prisma.cinemaFormat.findFirst({
+    const cinemaFormat = await prisma.cinemaFormat.findFirst({
       where: {
         slug,
         isActive: true,
       },
     });
+
+    return cinemaFormat
+      ? CinemaFormatMapper.toDomain(cinemaFormat)
+      : null;
   }
 }

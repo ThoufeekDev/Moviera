@@ -8,7 +8,7 @@ export class GetMovieByIdUseCase {
   constructor(private readonly movieRepository: IMovieRepository) {}
 
   async execute(id: string): Promise<Movie | null> {
-    const movie = this.movieRepository.findById(id);
+    const movie = await this.movieRepository.findById(id);
 
     if (!movie) {
       throw new NotFoundError('Movie not found');

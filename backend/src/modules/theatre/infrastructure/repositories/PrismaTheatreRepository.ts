@@ -1,4 +1,4 @@
-import { Theatre } from '../../domain/entities/theatre.entity';
+import { Theatre } from '../../domain/entities/Theatre';
 import prisma from '../../../../config/database';
 
 import { ITheatreRepository } from '../../domain/repositories/ITheatreRepository';

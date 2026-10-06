@@ -1,6 +1,7 @@
 import prisma from "../../../../config/database";
 import { Person } from "../../domain/entities/Person";
 import { IPersonRepository } from "../../domain/repositories/IPersonRepository";
+import { PersonMapper } from "../mappers/PersonMapper";
 
 export class PrismaPersonRepository implements IPersonRepository {
   async create(person: Person): Promise<Person> {
@@ -11,7 +12,9 @@ export class PrismaPersonRepository implements IPersonRepository {
       },
     });
 
-    return new Person(createdPerson.id, createdPerson.name, createdPerson.imageUrl);
+  
+
+    return PersonMapper.toDomain(createdPerson)
   }
 
   async findById(id: string): Promise<Person | null> {
@@ -19,11 +22,8 @@ export class PrismaPersonRepository implements IPersonRepository {
       where: { id },
     });
 
-    if (!person) {
-      return null;
-    }
 
-    return new Person(person.id, person.name, person.imageUrl);
+    return person?PersonMapper.toDomain(person):null
   }
 
 async findByIds(ids: string[]): Promise<Person[]> {
@@ -35,14 +35,8 @@ async findByIds(ids: string[]): Promise<Person[]> {
     },
   });
 
-  return persons.map(
-    (person) =>
-      new Person(
-        person.id,
-        person.name,
-        person.imageUrl
-      )
-  );
+
+  return PersonMapper.toDomainList(persons);
 }
 
   async findByName(name: string): Promise<Person | null> {
@@ -55,9 +49,10 @@ async findByIds(ids: string[]): Promise<Person[]> {
       },
     });
 
-    if (!person) return null;
+  
 
-    return new Person(person.id, person.name, person.imageUrl);
+  
+     return person ? PersonMapper.toDomain(person) : null;
   }
 
   async findAll(): Promise<Person[]> {
@@ -67,7 +62,8 @@ async findByIds(ids: string[]): Promise<Person[]> {
       },
     });
 
-    return people.map((person) => new Person(person.id, person.name, person.imageUrl));
+   
+    return PersonMapper.toDomainList(people);
   }
     
     
@@ -77,10 +73,8 @@ async findByIds(ids: string[]): Promise<Person[]> {
             data,
         })
 
-        return new Person(
-            updatedPerson.id,
-            updatedPerson.name,
-            updatedPerson.imageUrl
-        )
+
+      
+       return PersonMapper.toDomain(updatedPerson);
     }
 }

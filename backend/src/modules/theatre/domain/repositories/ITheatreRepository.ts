@@ -1,4 +1,4 @@
-import { Theatre } from "../entities/theatre.entity"
+import { Theatre } from "../entities/Theatre"
 import type { TheatreOverview } from "../types/TheatreOverView"
 import type { TheatreWithCity } from "../types/TheatreWithCity"
 

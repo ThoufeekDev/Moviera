@@ -1,9 +1,10 @@
 import prisma from '../../../../config/database';
 import { Language } from '../../domain/entities/Language';
 import { ILanguageRepository } from '../../domain/repositories/ILanguageRepository';
+import { LanguageMapper } from '../mappers/LanguageMapper';
 
 export class PrismaLanguageRepository implements ILanguageRepository {
-//   constructor(private readonly prisma:Prisma) {}
+
 
   async findAll(): Promise<Language[]> {
     const languages = await prisma.language.findMany({
@@ -12,19 +13,22 @@ export class PrismaLanguageRepository implements ILanguageRepository {
       },
     });
 
-    return languages.map((language) => new Language(language.id, language.name, language.code));
+
+    return LanguageMapper.toDomainList(languages);
   }
 
   async findById(id: string): Promise<Language | null> {
-    const languageById = await prisma.language.findUnique({
+    const language = await prisma.language.findUnique({
       where: {
         id,
       },
     });
 
-    if (!languageById) return null;
+    
 
-    return new Language(languageById.id, languageById.name, languageById.code);
+   
+
+    return language ? LanguageMapper.toDomain(language) : null;
   }
 
  async findByIds(ids: string[]): Promise<Language[]> {
@@ -37,19 +41,22 @@ export class PrismaLanguageRepository implements ILanguageRepository {
         }
     })
     
-   return languages.map((language)=>new Language(language.id,language.name,language.code))
+  
+    return LanguageMapper.toDomainList(languages);
    
   }
 
   async findByCode(code: string): Promise<Language | null> {
-    const languagByCode = await prisma.language.findUnique({
+    const language = await prisma.language.findUnique({
       where: {
         code,
       },
     });
 
-    if (!languagByCode) return null;
+   
 
-    return new Language(languagByCode.id, languagByCode.name, languagByCode.code);
+        return language
+      ? LanguageMapper.toDomain(language)
+      : null;
   }
 }

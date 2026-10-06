@@ -20,7 +20,7 @@ export class CreateMovieController {
 
 
 
-    const movie = await this.createMovieUseCase.execute({
+    await this.createMovieUseCase.execute({
       ...req.body,
 
       // multer change the type to string  
@@ -32,6 +32,6 @@ export class CreateMovieController {
     });
 
 
-    successResponse(res, 201, true, 'Movie created successfully', movie);
+    successResponse(res, 201, true, 'Movie created successfully');
   };
 }

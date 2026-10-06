@@ -10,17 +10,41 @@ export class CreatePersonUseCase {
     private readonly storageService: IStorageService,
   ) {}
 
-  async execute(data: CreatePersonDTO): Promise<Person> {
-    const existingPerson = await this.personRepository.findByName(data.name);
+async execute(data: CreatePersonDTO): Promise<Person> {
+  const existingPerson = await this.personRepository.findByName(data.name);
 
-    if (existingPerson) throw new ConflictError('Person already exists');
-
-    const image = data.imageFile
-      ? await this.storageService.uploadImage(data.imageFile.buffer, 'moviera/people')
-      : null;
-
-    const person = new Person('', data.name, image?.secureUrl ?? null);
-
-    return this.personRepository.create(person);
+  if (existingPerson) {
+    throw new ConflictError("Person already exists");
   }
+
+  const image = data.imageFile
+    ? await this.storageService.uploadImage(
+        data.imageFile.buffer,
+        "moviera/people",
+      )
+    : null;
+
+  try {
+    const person = new Person(
+      "",
+      data.name,
+      image?.secureUrl ?? null,
+    );
+
+    return await this.personRepository.create(person);
+  } catch (error) {
+    if (image?.publicId) {
+      try {
+        await this.storageService.deleteImage(image.publicId);
+      } catch (cleanupError) {
+        console.error(
+          `Failed to rollback person image: ${image.publicId}`,
+          cleanupError,
+        );
+      }
+    }
+
+    throw error;
+  }
+}
 }

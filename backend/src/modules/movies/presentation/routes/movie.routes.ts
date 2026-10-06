@@ -12,7 +12,7 @@ import { buildMoviesModule } from "../../movies.module";
 const moviesModule = buildMoviesModule();
 
 import { upload } from "../../../../shared/middleware/upload.middleware";
-import { updateMovieSchema } from "../validators/updateMovieValidator";
+import { updateMovieSchema } from "../validators/UpdateMovieValidator";
 
 const movieRoute = Router();
 

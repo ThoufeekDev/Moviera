@@ -1,4 +1,4 @@
-import { Screen } from "../../domain/entities/screen.entity";
+import { Screen } from "../../domain/entities/Screen";
 import type { ITheatreRepository } from "../../domain/repositories/ITheatreRepository";
 import type { IScreenRepository } from "../../domain/repositories/IScreenRepository";
 import type { CreateScreenDTO } from "../dtos/CreateScreenDTO";

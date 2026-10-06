@@ -1,17 +1,23 @@
 import { Movie } from "../../domain/entities/Movie";
 import { IMovieRepository } from "../../domain/repositories/IMovieRepository";
-import { GetMoviesQuery } from "../dtos/GetMovieQuery";
-import { PaginatedMovies } from "../dtos/PaginatedMovies";
+import { MovieQuery } from "../../domain/types/GetMoviesQuery";
+import { GetMoviesQueryDTO } from "../dtos/GetMovieQuery";
+import { PaginatedResult } from "../../../../shared/types/Pagination";
 
+export class GetMoviesUseCase {
+  constructor(private readonly movieRepository: IMovieRepository) {}
 
-export class GetMovieUseCase {
-    // contructor dependancy injection
-    constructor(private movieRepository: IMovieRepository) { }
-    
+  async execute(query: GetMoviesQueryDTO): Promise<PaginatedResult<Movie>> {
+    const movieQuery: MovieQuery = {
+      page: query.page,
+      limit: query.limit,
+      search: query.search,
+      status: query.status,
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
+    };
 
-    async execute(query:GetMoviesQuery): Promise<PaginatedMovies>{
-          
-        return await this.movieRepository.findAll(query);
-  
-      }
-} 
+    return this.movieRepository.findAll(movieQuery);
+  }
+}
+

@@ -1,4 +1,4 @@
-import { Theatre } from "../../domain/entities/theatre.entity";
+import { Theatre } from "../../domain/entities/Theatre";
 import type { TheatreWithCity } from "../../domain/types/TheatreWithCity";
 
 export class TheatreResponseMapper {

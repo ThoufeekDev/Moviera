@@ -4,9 +4,9 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './modules/auth/presentation/routes/auth.routes';
 import movieRouter from "./modules/movies/presentation/routes/movie.routes"
 import personRoutes from './modules/movies/presentation/routes/person.routes';
-import languageRoute from './modules/movies/presentation/routes/language.route';
-import cinemaFormatRoute from './modules/movies/presentation/routes/cinemaFormat.route';
-import genreRoute from './modules/movies/presentation/routes/genre.Route';
+import languageRoute from './modules/movies/presentation/routes/language.routes';
+import cinemaFormatRoute from './modules/movies/presentation/routes/cinema-format.routes';
+import genreRoute from './modules/movies/presentation/routes/genre.routes';
 
 
 // Theatre 

@@ -2,7 +2,7 @@ import { ILanguageRepository } from "../../domain/repositories/ILanguageReposito
 import { Language } from "../../domain/entities/Language";
 
 
-export class GetLanugageUseCase {
+export class GetLanguageUseCase {
     constructor(private readonly repository: ILanguageRepository) { }
     
 

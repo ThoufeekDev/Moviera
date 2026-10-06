@@ -6,7 +6,7 @@ import { MovieCrew } from '../../domain/entities/MovieCrew';
 import { Person } from '../../domain/entities/Person';
 import { CinemaFormat } from '../../domain/entities/CinemaFormat';
 import { Genre } from '../../domain/entities/Genre';
-import { Certification } from '../../../../shared/enums/Certification';
+import { Certification } from '../../domain/enums/Certification';
 type MovieWithRelations = Prisma.MovieGetPayload<{
   include: {
     primaryGenre: true;

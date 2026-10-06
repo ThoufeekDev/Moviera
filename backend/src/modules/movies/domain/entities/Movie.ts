@@ -3,7 +3,7 @@ import { MovieCast } from './MovieCast';
 import { MovieCrew } from './MovieCrew';
 import { Genre } from './Genre';
 import { CinemaFormat } from './CinemaFormat';
-import { Certification } from '../../../../shared/enums/Certification';
+import { Certification } from '../enums/Certification';
 export class Movie {
   constructor(
     public readonly id:string,

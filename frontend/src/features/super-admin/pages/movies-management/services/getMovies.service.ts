@@ -6,7 +6,7 @@ interface GetMoviesResponse {
   success: boolean;
   message: string;
     data: {
-        movies: Movie[],
+        items: Movie[],
         pagination: {
             page: number,
             limit: number,
@@ -27,6 +27,7 @@ export const getMovies = async (params: GetMoviesParams = {}):Promise<GetMoviesR
   const response = await api.get<GetMoviesResponse>('/movies', {
     params,
   });
+
 
   return response.data.data;
 };

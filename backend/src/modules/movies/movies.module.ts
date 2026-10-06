@@ -1,18 +1,18 @@
-import { PrismaMovieRepository } from './infrastructure/repositories/PrismaMovieRepo';
-import { PrismaGenreRepository } from './infrastructure/repositories/PrismaGenreRepo';
-import { PrismaLanguageRepository } from './infrastructure/repositories/PrismaLanguageRepo';
-import { PrismaCinemaFormatRepository } from './infrastructure/repositories/PrismaCinemaFormatRepo';
-import { PrismaPersonRepository } from './infrastructure/repositories/PrismaPersonRepo';
+import { PrismaMovieRepository } from './infrastructure/repositories/PrismaMovieRepository';
+import { PrismaGenreRepository } from './infrastructure/repositories/PrismaGenreRepository';
+import { PrismaLanguageRepository } from './infrastructure/repositories/PrismaLanguageRepository';
+import { PrismaCinemaFormatRepository } from './infrastructure/repositories/PrismaCinemaFormatRepository';
+import { PrismaPersonRepository } from './infrastructure/repositories/PrismaPersonRepository';
 
 import { CreateMovieUseCase } from './application/use-cases/CreateMovieUseCase';
 import { GetMovieByIdUseCase } from './application/use-cases/GetMovieByIdUseCase';
 import { CreatePersonUseCase } from './application/use-cases/CreatePersonUseCase';
 import { GetPersonByIdUseCase } from './application/use-cases/GetPersonByIdUseCase';
 import { GetPersonsUseCase } from './application/use-cases/GetPersonUseCase';
-import { GetLanugageUseCase } from './application/use-cases/GetLanguageUseCase';
+import { GetLanguageUseCase } from './application/use-cases/GetLanguageUseCase';
 import { GetCinemaFormatUseCase } from './application/use-cases/GetCinemaFormatUseCase';
 import { GetGenresUseCase } from "./application/use-cases/GetGenresUseCase";
-import { GetMovieUseCase } from './application/use-cases/GetMoviesUseCase';
+import { GetMoviesUseCase } from './application/use-cases/GetMoviesUseCase';
 import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugUseCase';
 
 import { GetGenreController } from "./presentation/controllers/GetGenreController";
@@ -30,6 +30,12 @@ import { UpdateMovieController } from './presentation/controllers/UpdateMovieCon
 import { UpdateMovieUseCase } from './application/use-cases/UpdateMovieUseCase';
 import { CloudinaryStorageService } from '../../shared/infrastructure/storage/CloudinaryStorageService';
 
+
+// services
+import { MovieReferenceValidator } from './application/services/MovieReferenceValidator';
+import { MovieSlugService } from './application/services/MovieSlugService';
+import { MovieImageService } from './application/services/MovieImageService';
+
 export function buildMoviesModule() {
   // * Repositories
 
@@ -39,25 +45,43 @@ export function buildMoviesModule() {
   const cinemaFormatRepository = new PrismaCinemaFormatRepository();
   const personRepository = new PrismaPersonRepository();
 
+
+
+  
+
   // ^ clodinary
 
   const storageService = new CloudinaryStorageService()
    
+
+    const movieReferenceValidator = new MovieReferenceValidator(
+    genreRepository,
+    languageRepository,
+    cinemaFormatRepository,
+    personRepository,
+  );
+
+const movieSlugService =
+  new MovieSlugService(movieRepository);
+
+const movieImageService =
+  new MovieImageService(storageService);
+
 
   // * Controllers
 
   const createMovieController = new CreateMovieController(
     new CreateMovieUseCase(
       movieRepository,
-      genreRepository,
-      languageRepository,
-      cinemaFormatRepository,
-      storageService,
+      movieReferenceValidator,
+      movieImageService,
+      movieSlugService,
+      
     )
     
   );
 
-  const getMovieController = new GetMovieController(new GetMovieUseCase(movieRepository));
+  const getMovieController = new GetMovieController(new GetMoviesUseCase(movieRepository));
 
   const getMovieByIdController = new GetMovieByIdController(
     new GetMovieByIdUseCase(movieRepository),
@@ -74,21 +98,22 @@ export function buildMoviesModule() {
   const getPersonController = new GetPersonController(new GetPersonsUseCase(personRepository));
 
   const getLanguageController = new GetLanguageController(
-    new GetLanugageUseCase(languageRepository),
+    new GetLanguageUseCase(languageRepository),
   );
 
   const getCinemaFormatController = new GetCinemaFormatController(
     new GetCinemaFormatUseCase(cinemaFormatRepository),
   );
+
+
+
     
     const updateMovieController = new UpdateMovieController(
         new UpdateMovieUseCase(
-            movieRepository,
-            genreRepository,
-            languageRepository,
-            cinemaFormatRepository,
-            personRepository,
-            storageService
+          movieRepository,
+          movieReferenceValidator,
+          movieSlugService,
+          movieImageService,
         )
     )
     
@@ -109,6 +134,7 @@ export function buildMoviesModule() {
     getCinemaFormatController,
     getGenreController,
     updateMovieController,
-    getMovieBySlugController
+    getMovieBySlugController,
+
   };
 }

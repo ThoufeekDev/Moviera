@@ -54,12 +54,12 @@ export default function MovieManagementPage() {
   
 
   
-  const movies = data?.movies ?? [];
-  console.log("movies length is",movies.length);
+  const movies = data?.items ?? [];
+  const movieLength = movies.length
+  console.log("movies length is",movieLength);
   
   const pagination = data?.pagination;
 
-  
   
   // if (isLoading) return <ContentLoader text="Movies" subtext="Loading movie collection..." />;
 

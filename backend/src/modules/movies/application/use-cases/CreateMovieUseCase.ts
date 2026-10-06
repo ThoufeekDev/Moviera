@@ -1,92 +1,34 @@
-import { ConflictError } from "../../../../shared/exceptions/ConflictError";
-import { Movie } from "../../domain/entities/Movie";
-import { IMovieRepository } from "../../domain/repositories/IMovieRepository";
-import { CreateMovieDTO } from "../dtos/CreateMovieDTO";
-import { CreateMovieData } from "../../domain/types/CreateMovieData";
-import { IGenreRepository } from "../../domain/repositories/IGenreRepository";
-import { ICinemaFormatRepository } from "../../domain/repositories/ICinemaFormatRepository";
-import { ILanguageRepository } from "../../domain/repositories/ILanguageRepository";
-import { AppError } from "../../../../shared/exceptions/AppError";
-import { IStorageService } from "../../../../shared/domain/services/IStorageService";
-
-export class CreateMovieUseCase {
+import { ConflictError } from '../../../../shared/exceptions/ConflictError';
+import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
+import { CreateMovieDTO } from '../dtos/CreateMovieDTO';
+import { CreateMovieData } from '../../domain/types/CreateMovieData';
+import { IGenreRepository } from '../../domain/repositories/IGenreRepository';
+import { ICinemaFormatRepository } from '../../domain/repositories/ICinemaFormatRepository';
+import { ILanguageRepository } from '../../domain/repositories/ILanguageRepository';
+import { AppError } from '../../../../shared/exceptions/AppError';
+import { IStorageService } from '../../../../shared/domain/services/IStorageService';
+import { generateSlug } from '../../../../shared/utils/generateSlug';
+import { IUseCase } from '../interfaces/IUseCase';
+import { MovieSlugService } from '../services/MovieSlugService';
+import { MovieImageService } from '../services/MovieImageService';
+import { MovieReferenceValidator } from '../services/MovieReferenceValidator';
+export class CreateMovieUseCase implements IUseCase<CreateMovieDTO,void> {
   // I need a movie repository. Give me one.
   constructor(
     private readonly movieRepository: IMovieRepository,
-    private readonly genreRepository: IGenreRepository,
-    private readonly languageRepository:ILanguageRepository,
-    private readonly cinemaFormatRepository: ICinemaFormatRepository,
-    // ! OCP
-    private readonly storageService:IStorageService,
+    private readonly movieReferenceValidator:MovieReferenceValidator,
+    private readonly movieImageService: MovieImageService,
+    private readonly movieSlugService: MovieSlugService,
+  ) {}
+
+  async execute(data: CreateMovieDTO): Promise<void> {
     
-  
-  ) { }
 
-  async execute(data: CreateMovieDTO): Promise<Movie | null> {
+    await this.movieReferenceValidator.validateForCreate(data)
+    const slug = await this.movieSlugService.generateUniqueSlug(data.title)
+ 
+    const image = await this.movieImageService.uploadImages(data);
 
-
-        /** 
-         * * finding is that movie exist or not
-         
-         */
-    
-    // ! 1. Validate genre
-
-    const genre =  await this.genreRepository.findById(data.primaryGenreId);
-    if (!genre) throw new AppError("Invalid or Inactive genre", 400);
-
-    const genres = await this.genreRepository.findByIds(data.genreIds);
-
-    if (genres.length !== new Set(data.genreIds).size) {
-       throw new AppError("One or more genres are invalid or inactive",400)
-    }
-
-    if (!data.genreIds.includes(data.primaryGenreId)) {
-  throw new AppError(
-    "Primary genre must be included in genreIds",
-    400
-  );
-}
-
-
-
-    const languages = await this.languageRepository.findByIds(data.languages);
-    if(languages.length!==data.languages.length)   throw new AppError( "One or more languages are invalid or inactive",400);
-
-
-
-
-    
-    const cinemaFormats = await this.cinemaFormatRepository.findByIds(data.cinemaFormatIds)
-     if (cinemaFormats.length !== data.cinemaFormatIds.length) throw new AppError("One or more cinema formats are invalid or inactive",400)
-
-    
-    
-    const slug = data.title.toLowerCase().trim().replace(/\s+/g, '-');
-    const existingMovie = await this.movieRepository.findBySlug(slug);
-
-    if (existingMovie) {
-      throw new ConflictError('Movie already exists');
-    }
-
-    const [poster, backdrop] = await Promise.all([
-  data.posterFile
-    ? this.storageService.uploadImage(
-        data.posterFile.buffer,
-        "moviera/movies/posters",
-      )
-    : null,
-
-  data.backdropFile
-    ? this.storageService.uploadImage(
-        data.backdropFile.buffer,
-        "moviera/movies/backdrops",
-      )
-    : null,
-]);
-
-
-    // return this.movieRepository.create(movie);
 
     const movieData: CreateMovieData = {
       title: data.title,
@@ -95,18 +37,17 @@ export class CreateMovieUseCase {
       duration: data.duration,
       releaseDate: data.releaseDate,
       primaryGenreId: data.primaryGenreId,
-      genreIds:data.genreIds,
-      certification:data.certification,
-      posterUrl: poster?.secureUrl ?? null,
-      posterPublicId:poster?.publicId ?? null,
-      backdropUrl: backdrop?.secureUrl ?? null,
-      backdropPublicId:backdrop?.publicId??null,
+      genreIds: data.genreIds,
+      certification: data.certification,
+      posterUrl: image.poster?.secureUrl ?? null,
+      posterPublicId: image.poster?.publicId ?? null,
+      backdropUrl: image.backdrop?.secureUrl ?? null,
+      backdropPublicId: image.backdrop?.publicId ?? null,
       trailerUrl: data.trailerUrl ?? null,
       isActive: true,
-    
+
       languageIds: data.languages,
-      cinemaFormatIds:data.cinemaFormatIds,
-      
+      cinemaFormatIds: data.cinemaFormatIds,
 
       // cast & crew has array of object
       cast: data.cast,
@@ -114,6 +55,13 @@ export class CreateMovieUseCase {
       crew: data.crew,
     };
 
-    return this.movieRepository.create(movieData);
+    try {
+      await this.movieRepository.create(movieData);
+    } catch (error) {
+      await this.movieImageService.rollbackUploads(image)
+      throw error
+    }
+
+   
   }
 }

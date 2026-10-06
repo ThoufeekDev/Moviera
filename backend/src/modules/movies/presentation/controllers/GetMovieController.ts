@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { GetMovieUseCase } from "../../application/use-cases/GetMoviesUseCase";
 import { successResponse } from "../../../../shared/utils/apiResponse";
-import { MovieStatus } from "../../../../shared/enums/MovieStatus";
+import { MovieStatus } from "../../domain/enums/MovieStatus";
+import { MovieResponseMapper } from "../mappers/MovieResponseMapper";
 
 
 
@@ -10,7 +11,8 @@ export class GetMovieController {
 
 
     handle = async (req: Request, res: Response) => {
-        const { page, limit, search, status, sortBy, sortOrder } = req.query;
+      const { page, limit, search, status, sortBy, sortOrder } = req.query;
+      
     const result = await this.getMovieUseCase.execute({
       page: page ? Number(page) : undefined,
       limit: limit ? Number(limit) : undefined,
@@ -31,8 +33,12 @@ export class GetMovieController {
           ? sortOrder
           : undefined,
     });
-        //  console.log('list all movies',allMovies)
+      console.log('list all movies', result)
+      
+      const response = MovieResponseMapper.toListResponse(result)
 
-        return successResponse(res,200,true," Movie fetch sucesfully",result)
+      console.log('after mapperREsonse',response)
+
+        return successResponse(res,200,true," Movie fetch sucesfully",response)
     }
 }
