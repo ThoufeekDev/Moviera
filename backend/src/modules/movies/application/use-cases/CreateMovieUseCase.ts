@@ -1,14 +1,9 @@
-import { ConflictError } from '../../../../shared/exceptions/ConflictError';
+
 import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
 import { CreateMovieDTO } from '../dtos/CreateMovieDTO';
 import { CreateMovieData } from '../../domain/types/CreateMovieData';
-import { IGenreRepository } from '../../domain/repositories/IGenreRepository';
-import { ICinemaFormatRepository } from '../../domain/repositories/ICinemaFormatRepository';
-import { ILanguageRepository } from '../../domain/repositories/ILanguageRepository';
-import { AppError } from '../../../../shared/exceptions/AppError';
-import { IStorageService } from '../../../../shared/domain/services/IStorageService';
-import { generateSlug } from '../../../../shared/utils/generateSlug';
-import { IUseCase } from '../interfaces/IUseCase';
+
+import { IUseCase } from '../../../../shared/application/interfaces/IUseCase';
 import { MovieSlugService } from '../services/MovieSlugService';
 import { MovieImageService } from '../services/MovieImageService';
 import { MovieReferenceValidator } from '../services/MovieReferenceValidator';
@@ -25,7 +20,7 @@ export class CreateMovieUseCase implements IUseCase<CreateMovieDTO,void> {
     
 
     await this.movieReferenceValidator.validateForCreate(data)
-    const slug = await this.movieSlugService.generateUniqueSlug(data.title)
+    const slug = await this.movieSlugService.generateUniqueSlug(data.title,data.releaseDate)
  
     const image = await this.movieImageService.uploadImages(data);
 

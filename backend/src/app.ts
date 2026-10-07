@@ -2,16 +2,19 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRoutes from './modules/auth/presentation/routes/auth.routes';
-import movieRouter from "./modules/movies/presentation/routes/movie.routes"
-import personRoutes from './modules/movies/presentation/routes/person.routes';
-import languageRoute from './modules/movies/presentation/routes/language.routes';
-import cinemaFormatRoute from './modules/movies/presentation/routes/cinema-format.routes';
-import genreRoute from './modules/movies/presentation/routes/genre.routes';
+// import movieRouter from "./modules/movies/presentation/routes/movie.routes"
+// import personRoutes from './modules/movies/presentation/routes/person.routes';
+// import languageRoute from './modules/movies/presentation/routes/language.routes';
+// import cinemaFormatRoute from './modules/movies/presentation/routes/cinema-format.routes';
+// import genreRoute from './modules/movies/presentation/routes/genre.routes';
+
+
+import { container } from './main/container';
 
 
 // Theatre 
 import theatreRoute from "./modules/theatre/presentation/routes/theatre.route"
-
+import seatRoute from './modules/theatre/presentation/routes/seat.route';
 
 import cors from 'cors';
 import { errorHandler } from './shared/middleware/errrorHandler';
@@ -32,18 +35,21 @@ app.use('/auth', authRoutes);
 
 
 
-app.use('/movies', movieRouter)
-app.use('/persons', personRoutes)
+app.use('/movies', container.movies.movieRouter)
+app.use('/persons', container.movies.personRouter)
 
-app.use('/language',languageRoute)
+app.use('/language',container.movies.languageRouter)
 
-app.use('/cinema-format',cinemaFormatRoute)
+app.use('/cinema-format',container.movies.cinemaFormatRouter)
 
-app.use("/genre", genreRoute);
+app.use("/genre", container.movies.genreRouter);
 
 
 
 app.use('/theatres', theatreRoute);
+
+
+app.use('/theatres',seatRoute)
 
 
 

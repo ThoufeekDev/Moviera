@@ -1,6 +1,6 @@
 import { Movie } from '../../domain/entities/Movie';
 import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
-import prisma from '../../../../config/database';
+import { PrismaClient } from '@prisma/client';
 import { MovieMapper } from '../mappers/MovieMapper';
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 import { CreateMovieData } from '../../domain/types/CreateMovieData';
@@ -11,12 +11,15 @@ import { PaginatedResult } from '../../../../shared/types/Pagination';
 import { MovieStatus } from '../../domain/enums/MovieStatus';
 
 export class PrismaMovieRepository implements IMovieRepository {
+
+  constructor(private readonly prisma: PrismaClient) { };
+
   async create(data: CreateMovieData): Promise<void> {
     //  desturctuing the data lang,cast,crew are the differenct table
     const { languageIds, genreIds, cinemaFormatIds, cast, crew, ...movieData } = data;
 
-    await prisma.$transaction(async (tx) => {
-      const movie = await prisma.movie.create({
+    await this.prisma.$transaction(async (tx) => {
+      const movie = await tx.movie.create({
         data: movieData,
       });
 
@@ -60,7 +63,7 @@ export class PrismaMovieRepository implements IMovieRepository {
   }
 
   async findById(id: string): Promise<Movie | null> {
-    const movie = await prisma.movie.findUnique({
+    const movie = await this.prisma.movie.findUnique({
       where: { id },
       include: {
         primaryGenre: true,
@@ -96,7 +99,7 @@ export class PrismaMovieRepository implements IMovieRepository {
   }
 
   async findBySlug(slug: string): Promise<Movie | null> {
-    const movie = await prisma.movie.findUnique({
+    const movie = await this.prisma.movie.findUnique({
       where: { slug },
       include: {
         primaryGenre: true,
@@ -157,7 +160,7 @@ export class PrismaMovieRepository implements IMovieRepository {
     };
 
     const [movies, total] = await Promise.all([
-      prisma.movie.findMany({
+      this.prisma.movie.findMany({
         where,
         skip,
         take: limit,
@@ -200,7 +203,7 @@ export class PrismaMovieRepository implements IMovieRepository {
         },
       }),
 
-      prisma.movie.count({
+      this.prisma.movie.count({
         where,
       }),
     ]);
@@ -249,7 +252,7 @@ export class PrismaMovieRepository implements IMovieRepository {
 
     // ? why Everything inside transaction
     // ? must use the transaction client tx
-    await prisma.$transaction(
+    await this.prisma.$transaction(
       async (tx) => {
 
 

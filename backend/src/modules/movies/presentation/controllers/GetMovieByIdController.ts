@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { GetMovieByIdUseCase } from "../../application/use-cases/GetMovieByIdUseCase";
 import { successResponse } from "../../../../shared/utils/apiResponse";
+import { MovieResponseMapper } from "../mappers/MovieResponseMapper";
 
 
 
@@ -13,6 +14,8 @@ export class GetMovieByIdController {
       
         const movie = await this.getMovieByIdUseCase.execute(req.params.id);
 
-        return successResponse(res,200,true,"getMovieById succesful",movie)
+        const response = movie?MovieResponseMapper.toResponse(movie):null
+
+        return successResponse(res,200,true,"getMovieById succesful",response)
     }
 }

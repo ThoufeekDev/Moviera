@@ -1,16 +1,21 @@
 import { Router } from "express";
-import { buildMoviesModule } from "../../movies.module";
-const moviesModule = buildMoviesModule();
-
-const languageRoute = Router();
-
-// const getLanguageController = makeGetLanguageContoller();
+import { GetLanguageController } from "../controllers/GetLanguageController";
 
 
-// !for Testing authourize and athenticate middleware were not used
+interface LanguageRouteControllers {
+  getLanguageController:GetLanguageController
+}
 
-languageRoute.get('/',moviesModule.getLanguageController.handle)
+export function createLanguageRoutes(controllers: LanguageRouteControllers):Router {
+    
+    const languageRoute = Router()
+
+    languageRoute.get('/', controllers.getLanguageController.handle)
+    
+    return languageRoute;
+}
 
 
-export default languageRoute;
+
+
 

@@ -1,4 +1,4 @@
-import { IStorageService } from '../../../../shared/domain/services/IStorageService';
+import { IStorageService } from '../../../../shared/application/ports/IStorageService';
 import { ConflictError } from '../../../../shared/exceptions/ConflictError';
 import { Person } from '../../domain/entities/Person';
 import { IPersonRepository } from '../../domain/repositories/IPersonRepository';
@@ -36,11 +36,7 @@ async execute(data: CreatePersonDTO): Promise<Person> {
     if (image?.publicId) {
       try {
         await this.storageService.deleteImage(image.publicId);
-      } catch (cleanupError) {
-        console.error(
-          `Failed to rollback person image: ${image.publicId}`,
-          cleanupError,
-        );
+      } catch {
       }
     }
 

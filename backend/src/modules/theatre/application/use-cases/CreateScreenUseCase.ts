@@ -17,7 +17,7 @@ export class CreateScreenUseCase {
     async execute(screen:CreateScreenDTO):Promise<Screen> {
         
         const theatre =
-            await this.theatreRepository.findById(screen.theatreId);
+            await this.theatreRepository.findByIdForAdmin(screen.theatreId,screen.adminId);
 
         if (!theatre) throw new NotFoundError("Theatre not found");
 

@@ -4,23 +4,23 @@ import { JsonWebTokenError, TokenExpiredError, NotBeforeError } from 'jsonwebtok
 import { errorResponse } from '../utils/apiResponse';
 import Sentry from '../infrastructure/monitoring/sentry';
 import { ZodError } from 'zod';
+import multer from 'multer';
 export const errorHandler = (error: Error, _req: Request, res: Response, _next: NextFunction) => {
-
   if (error instanceof ZodError) {
-    return errorResponse(
-      res,
-      400,
-      false,
-      error.issues[0]?.message ?? "Validation failed",
-    )
+    return errorResponse(res, 400, false, error.issues[0]?.message ?? 'Validation failed');
   }
+
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return errorResponse(res, 400, false, 'File size must not exceed 5MB');
+    }
+
+    return errorResponse(res, 400, false, error.message);
+  }
+
   // Is this error created from AppError?
   if (error instanceof AppError) {
-    return errorResponse(
-      res,
-      error.statusCode,
-      false,
-      error.message);
+    return errorResponse(res, error.statusCode, false, error.message);
   }
 
   if (
@@ -32,10 +32,7 @@ export const errorHandler = (error: Error, _req: Request, res: Response, _next: 
   }
 
   console.error(error);
-  Sentry.captureException(error)
+  Sentry.captureException(error);
 
-
-  return errorResponse(res, 500, false, "Internal Server Error");
+  return errorResponse(res, 500, false, 'Internal Server Error');
 };
-
-

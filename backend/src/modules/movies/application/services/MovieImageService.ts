@@ -1,4 +1,4 @@
-import { IStorageService } from '../../../../shared/domain/services/IStorageService';
+import { IStorageService } from '../../../../shared/application/ports/IStorageService';
 import { Movie } from '../../domain/entities/Movie';
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 
@@ -126,29 +126,25 @@ export class MovieImageService {
     await Promise.all(deletions);
   }
 
-  async rollbackUploads(
-    images: MovieImages,
-  ): Promise<void> {
-    const deletions: Promise<void>[] = [];
+async rollbackUploads(
+  images: MovieImages,
+): Promise<void> {
+  const deletions: Promise<void>[] = [];
 
-    if (images.poster?.publicId) {
-      deletions.push(
-        this.storageService.deleteImage(
-          images.poster.publicId,
-        ),
-      );
-    }
-
-    if (images.backdrop?.publicId) {
-      deletions.push(
-        this.storageService.deleteImage(
-          images.backdrop.publicId,
-        ),
-      );
-    }
-
-    await Promise.all(deletions);
+  if (images.poster?.publicId) {
+    deletions.push(
+      this.deleteSafely(images.poster.publicId),
+    );
   }
+
+  if (images.backdrop?.publicId) {
+    deletions.push(
+      this.deleteSafely(images.backdrop.publicId),
+    );
+  }
+
+  await Promise.all(deletions);
+}
 
   private async deleteSafely(
     publicId: string,
@@ -156,10 +152,6 @@ export class MovieImageService {
     try {
       await this.storageService.deleteImage(publicId);
     } catch (error) {
-      console.error(
-        `Failed to delete old movie image: ${publicId}`,
-        error,
-      );
     }
   }
 }

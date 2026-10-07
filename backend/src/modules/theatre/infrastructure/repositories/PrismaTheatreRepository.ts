@@ -42,6 +42,24 @@ export class PrismaTheatreRepository implements ITheatreRepository {
     }));
   }
 
+  async findByIdForAdmin(theatreId: string, adminId: string): Promise<Theatre | null> {
+    const assignment = await prisma.theatreAdminAssignment.findFirst({
+      where: {
+        theatreId,
+        userId: adminId,
+        isActive: true,
+        theatre: {
+          isActive: true,
+        },
+      },
+      include: {
+        theatre: true,
+      },
+    });
+
+    return assignment ? TheatreMapper.toDomain(assignment.theatre) : null;
+  }
+
   async getOverView(theatreId: string, adminId: string): Promise<TheatreOverview | null> {
     const assignment = await prisma.theatreAdminAssignment.findFirst({
       where: {

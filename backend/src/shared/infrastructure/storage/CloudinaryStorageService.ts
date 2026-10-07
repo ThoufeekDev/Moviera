@@ -4,7 +4,7 @@ import {
   UploadApiErrorResponse,
   UploadApiResponse,
 } from 'cloudinary';
-import { IStorageService } from '../../domain/services/IStorageService';
+import { IStorageService } from '../../application/ports/IStorageService';
 
 export interface CloudinaryUploadResult {
   secureUrl: string;

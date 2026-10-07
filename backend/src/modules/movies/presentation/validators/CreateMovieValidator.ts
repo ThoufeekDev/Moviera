@@ -1,14 +1,29 @@
 import { z } from 'zod';
 import { Certification } from '../../domain/enums/Certification';
 
+const jsonArray = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess(
+    (value) => {
+      if (typeof value !== 'string') {
+        return value;
+      }
 
-// duration → converts "169" → 169
-// releaseDate → converts string → Date
-// languages → JSON string → string[]
-// cast → JSON string → cast array
-// crew → JSON string → crew array
-// posterUrl / backdropUrl → optional Cloudinary URLs
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    },
+    schema,
+  );
 
+const uniqueIds = (message: string) =>
+  z
+    .array(z.string().min(1))
+    .refine(
+      (ids) => new Set(ids).size === ids.length,
+      message,
+    );
 
 export const createMovieSchema = z.object({
   title: z.string().min(1),
@@ -18,60 +33,46 @@ export const createMovieSchema = z.object({
   duration: z.coerce.number().positive(),
 
   releaseDate: z.coerce.date(),
-  //from multipart/form-data, that's actually a string, not an array.
-  // We need to transform the JSON string into an array.
-  languages: z
-    .string()
-    .transform((value) => JSON.parse(value))
-    .pipe(z.array(z.string().min(1)).min(1)),
 
-  cast: z
-    .string()
-    .transform((value) => JSON.parse(value))
-    .pipe(
-      z.array(
-        z.object({
-          personId: z.string().min(1),
-          character: z.string().optional(),
-        }),
-      ),
-    ),
-
-  crew: z
-    .string()
-    .transform((value) => JSON.parse(value))
-    .pipe(
-      z.array(
-        z.object({
-          personId: z.string().min(1),
-          job: z.string().min(1),
-        }),
-      ),
-    ),
-
-  primaryGenreId: z.string().min(1, "Primary genre is required"),
-genreIds: z
-  .string()
-  .transform((value) => JSON.parse(value))
-  .pipe(
-    z.array(z.string().min(1))
-      .min(1, 'At least one genre is required')
-      .refine(
-        (ids) => new Set(ids).size === ids.length,
-        'Duplicate genre IDs are not allowed',
-      ),
+  languages: jsonArray(
+    z.array(z.string().min(1)).min(1),
   ),
-  
+
+  cast: jsonArray(
+    z.array(
+      z.object({
+        personId: z.string().min(1),
+        character: z.string().optional(),
+      }),
+    ),
+  ),
+
+  crew: jsonArray(
+    z.array(
+      z.object({
+        personId: z.string().min(1),
+        job: z.string().min(1),
+      }),
+    ),
+  ),
+
+  primaryGenreId: z.string().min(1, 'Primary genre is required'),
+
+  genreIds: jsonArray(
+    uniqueIds('Duplicate genre IDs are not allowed').refine(
+      (ids) => ids.length > 0,
+      'At least one genre is required',
+    ),
+  ),
 
   certification: z.enum(Certification),
-cinemaFormatIds: z
-  .string()
-  .transform((value) => JSON.parse(value))
-  .pipe(
-    z.array(z.string().min(1)).min(1, "At least one cinema format is required")
+
+  cinemaFormatIds: jsonArray(
+    uniqueIds('Duplicate cinema format IDs are not allowed').refine(
+      (ids) => ids.length > 0,
+      'At least one cinema format is required',
+    ),
   ),
+
   trailerUrl: z.url().optional(),
 });
-
-
-

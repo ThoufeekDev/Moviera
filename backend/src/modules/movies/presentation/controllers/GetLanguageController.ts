@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { GetLanugageUseCase } from "../../application/use-cases/GetLanguageUseCase";
+import { GetLanguageUseCase } from "../../application/use-cases/GetLanguageUseCase";
 import { successResponse } from "../../../../shared/utils/apiResponse";
 
 
 
 export class GetLanguageController{
-    constructor(private readonly useCase: GetLanugageUseCase) { };
+    constructor(private readonly useCase: GetLanguageUseCase) { };
 
    handle = async(req: Request, res: Response)=>{
         const languages = await this.useCase.execute();

@@ -1,22 +1,28 @@
 import { IMovieRepository } from "../../domain/repositories/IMovieRepository";
-import { ConflictError } from "../../../../shared/exceptions/ConflictError";
 import { generateSlug } from "../../../../shared/utils/generateSlug";
 
 export class MovieSlugService {
-    constructor(private readonly movieRepository: IMovieRepository) { }
-    
+  constructor(private readonly movieRepository: IMovieRepository) {}
 
-    async generateUniqueSlug(title: string, currentMovieId?: string): Promise<string>{
-     
-        const slug = generateSlug(title);
+  async generateUniqueSlug(
+    title: string,
+    releaseDate: Date,
+    currentMovieId?: string,
+  ): Promise<string> {
+    const baseSlug = `${generateSlug(title)}-${releaseDate.getFullYear()}`;
 
-        const existingMovie = await this.movieRepository.findBySlug(slug)
-    // Generate a new slug only when the title changes
+    let slug = baseSlug;
+    let suffix = 2;
 
-        if (existingMovie && existingMovie.id !== currentMovieId) {
-            throw new ConflictError('Movie Already exists');
-        }
+    while (true) {
+      const existingMovie = await this.movieRepository.findBySlug(slug);
 
-        return slug
+      if (!existingMovie || existingMovie.id === currentMovieId) {
+        return slug;
+      }
+
+      slug = `${baseSlug}-${suffix}`;
+      suffix++;
     }
+  }
 }

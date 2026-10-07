@@ -1,10 +1,14 @@
-import { buildMoviesModule } from "../../movies.module";
-import { Router } from "express";
-const moviesModule = buildMoviesModule();
+import { Router } from 'express';
 
+import { GetCinemaFormatController } from '../controllers/GetCinemaFormatController';
 
-const cinemaFormatRoute = Router()
+interface CinemaFormatRouteController {
+  getCinemaFormatController: GetCinemaFormatController;
+}
 
-cinemaFormatRoute.get('/', moviesModule.getCinemaFormatController.handle)
+export function createCinemaFormatRoutes(controllers: CinemaFormatRouteController): Router {
+  const cinemaFormatRoute = Router();
 
-export default cinemaFormatRoute;
+  cinemaFormatRoute.get('/', controllers.getCinemaFormatController.handle);
+  return cinemaFormatRoute;
+}

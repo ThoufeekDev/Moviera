@@ -1,13 +1,14 @@
-import { Router } from "express";
-import { buildMoviesModule } from "../../movies.module";
+import { Router } from 'express';
+import { GetGenreController } from '../controllers/GetGenreController';
 
-const moviesModule = buildMoviesModule();
+interface GetGenreRouteControllers {
+  getGenreController: GetGenreController;
+}
 
-const genreRoute = Router();
+export function createGenreRoutes(controllers: GetGenreRouteControllers): Router {
+  const genreRoute = Router();
 
-genreRoute.get(
-  "/",
-  moviesModule.getGenreController.handle
-);
+  genreRoute.get('/', controllers.getGenreController.handle);
 
-export default genreRoute;
+  return genreRoute;
+}

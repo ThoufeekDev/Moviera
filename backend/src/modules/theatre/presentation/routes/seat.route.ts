@@ -11,4 +11,6 @@ const router = Router();
 
 const theatreModule = buildTheatreModule();
 
-router.post('/screens/:screenId/seats',authenticateUser,authorizeRoles(Role.THEATRE_ADMIN),validate(createSeatSchema),theatreModule.createSeatController.handle)
+router.post('/screens/:screenId/seats', authenticateUser, authorizeRoles(Role.THEATRE_ADMIN), validate({body:createSeatSchema}), theatreModule.createSeatController.handle)
+
+export default router

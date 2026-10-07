@@ -82,5 +82,8 @@ export const updateMovieSchema = z.object({
 
   trailerUrl: z.url().optional(),
 
-  isActive: z.coerce.boolean().optional(),
+  isActive: z
+  .enum(['true', 'false'])
+  .transform((value) => value === 'true')
+  .optional(),
 });

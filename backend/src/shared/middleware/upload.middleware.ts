@@ -1,5 +1,5 @@
 import multer from 'multer';
-
+import { BadRequestError } from '../exceptions/BadRequestError';
 const storage = multer.memoryStorage();
 
 export const upload = multer({
@@ -11,7 +11,7 @@ export const upload = multer({
   fileFilter(_req, file, cb) {
     const allowed = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowed.includes(file.mimetype)) {
-      return cb(new Error('Invalid image format'));
+      return cb(new BadRequestError('Invalid image format'));
     }
     cb(null, true);
   },

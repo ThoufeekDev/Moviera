@@ -13,7 +13,6 @@ export class CreateMovieController {
       [fieldname: string]: Express.Multer.File[];
     };
     
-    console.log("BODY:", req.body);
 
     const posterFile = files?.poster?.[0];
     const backdropFile = files?.backdrop?.[0];
