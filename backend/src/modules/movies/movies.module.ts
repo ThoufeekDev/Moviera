@@ -14,7 +14,7 @@ import { GetPersonsUseCase } from './application/use-cases/GetPersonUseCase';
 import { GetLanguageUseCase } from './application/use-cases/GetLanguageUseCase';
 import { GetCinemaFormatUseCase } from './application/use-cases/GetCinemaFormatUseCase';
 import { GetGenresUseCase } from './application/use-cases/GetGenresUseCase';
-import { GetMoviesUseCase } from './application/use-cases/GetMoviesUseCase';
+
 import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugUseCase';
 
 import { GetGenreController } from './presentation/controllers/GetGenreController';
@@ -25,7 +25,7 @@ import { GetPersonByIdController } from './presentation/controllers/GetPersonByI
 import { GetPersonController } from './presentation/controllers/GetPersonController';
 import { GetLanguageController } from './presentation/controllers/GetLanguageController';
 import { GetCinemaFormatController } from './presentation/controllers/GetCinemaFormatController';
-import { GetMovieController } from './presentation/controllers/GetMovieController';
+
 import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
 
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
@@ -80,7 +80,7 @@ export function buildMoviesModule(prisma: PrismaClient) {
     ),
   );
 
-  const getMovieController = new GetMovieController(new GetMoviesUseCase(movieRepository));
+
 
   const getMovieByIdController = new GetMovieByIdController(
     new GetMovieByIdUseCase(movieRepository),
@@ -120,7 +120,7 @@ export function buildMoviesModule(prisma: PrismaClient) {
   );
 
   const movieRouter = createMovieRoutes({
-    getMovieController,
+
     createMovieController,
     getMovieBySlugController,
     getMovieByIdController,

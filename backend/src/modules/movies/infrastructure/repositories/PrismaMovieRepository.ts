@@ -5,10 +5,10 @@ import { MovieMapper } from '../mappers/MovieMapper';
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 import { CreateMovieData } from '../../domain/types/CreateMovieData';
 
-import { MovieQuery } from '../../domain/types/GetMoviesQuery';
+
 import { PaginatedResult } from '../../../../shared/types/Pagination';
 
-import { MovieStatus } from '../../domain/enums/MovieStatus';
+import { MovieStatus } from '../../application/queries/MovieStatus';
 
 export class PrismaMovieRepository implements IMovieRepository {
 
@@ -134,91 +134,91 @@ export class PrismaMovieRepository implements IMovieRepository {
     return movie ? MovieMapper.toDomain(movie) : null;
   }
 
-  async findAll(query: MovieQuery): Promise<PaginatedResult<Movie>> {
-    const {
-      page = 1,
-      limit = 12,
-      search,
-      status,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
-    } = query;
+  // async findAll(query: MovieQuery): Promise<PaginatedResult<Movie>> {
+  //   const {
+  //     page = 1,
+  //     limit = 12,
+  //     search,
+  //     status,
+  //     sortBy = 'createdAt',
+  //     sortOrder = 'desc',
+  //   } = query;
 
-    const skip = (page - 1) * limit;
+  //   const skip = (page - 1) * limit;
 
-    const where = {
-      ...(search && {
-        title: {
-          contains: search,
-          mode: 'insensitive' as const,
-        },
-      }),
+  //   const where = {
+  //     ...(search && {
+  //       title: {
+  //         contains: search,
+  //         mode: 'insensitive' as const,
+  //       },
+  //     }),
 
-      ...(status && {
-        isActive: status === MovieStatus.ACTIVE,
-      }),
-    };
+  //     ...(status && {
+  //       isActive: status === MovieStatus.ACTIVE,
+  //     }),
+  //   };
 
-    const [movies, total] = await Promise.all([
-      this.prisma.movie.findMany({
-        where,
-        skip,
-        take: limit,
+  //   const [movies, total] = await Promise.all([
+  //     this.prisma.movie.findMany({
+  //       where,
+  //       skip,
+  //       take: limit,
 
-        orderBy: {
-          [sortBy]: sortOrder,
-        },
+  //       orderBy: {
+  //         [sortBy]: sortOrder,
+  //       },
 
-        include: {
-          primaryGenre: true,
+  //       include: {
+  //         primaryGenre: true,
 
-          languages: {
-            include: {
-              language: true,
-            },
-          },
+  //         languages: {
+  //           include: {
+  //             language: true,
+  //           },
+  //         },
 
-          cinemaFormats: {
-            include: {
-              cinemaFormat: true,
-            },
-          },
+  //         cinemaFormats: {
+  //           include: {
+  //             cinemaFormat: true,
+  //           },
+  //         },
 
-          cast: {
-            include: {
-              person: true,
-            },
-          },
+  //         cast: {
+  //           include: {
+  //             person: true,
+  //           },
+  //         },
 
-          crew: {
-            include: {
-              person: true,
-            },
-          },
-          genres: {
-            include: {
-              genre: true,
-            },
-          },
-        },
-      }),
+  //         crew: {
+  //           include: {
+  //             person: true,
+  //           },
+  //         },
+  //         genres: {
+  //           include: {
+  //             genre: true,
+  //           },
+  //         },
+  //       },
+  //     }),
 
-      this.prisma.movie.count({
-        where,
-      }),
-    ]);
+  //     this.prisma.movie.count({
+  //       where,
+  //     }),
+  //   ]);
 
-    return {
-      items: movies.map((movie) => MovieMapper.toDomain(movie)),
+  //   return {
+  //     items: movies.map((movie) => MovieMapper.toDomain(movie)),
 
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  }
+  //     pagination: {
+  //       page,
+  //       limit,
+  //       total,
+  //       totalPages: Math.ceil(total / limit),
+  //     },
+  //   };
+  // }
 
   /**
    *

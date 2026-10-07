@@ -13,14 +13,13 @@ import { Role } from "../../../../shared/enums/Role";
 
 import { upload } from "../../../../shared/middleware/upload.middleware";
 import { updateMovieSchema } from "../validators/UpdateMovieValidator";
-import { GetMovieController } from "../controllers/GetMovieController";
+
 import { CreateMovieController } from "../controllers/CreateMovieController";
 import { GetMovieByIdController } from '../controllers/GetMovieByIdController';
 import { GetMovieBySlugController } from "../controllers/GetMovieBySlugController";
 import { UpdateMovieController } from "../controllers/UpdateMovieController";
 
 interface MovieRouteControllers {
-  getMovieController: GetMovieController;
   createMovieController: CreateMovieController;
   getMovieBySlugController: GetMovieBySlugController;
   getMovieByIdController: GetMovieByIdController;
@@ -33,7 +32,7 @@ export function createMovieRoutes(controllers: MovieRouteControllers):Router{
     const admin = [authenticateUser, authorizeRoles(Role.SUPER_ADMIN),];
     const files = upload.fields([{ name: 'poster', maxCount: 1 }, { name: 'backdrop', maxCount: 1 }]);
 
-    movieRoute.get('/', controllers.getMovieController.handle)
+    
 
     movieRoute.post('/', ...admin, files, validate({ body: createMovieSchema }), controllers.createMovieController.handle)
     

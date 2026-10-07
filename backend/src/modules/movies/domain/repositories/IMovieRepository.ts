@@ -1,7 +1,7 @@
 
-import { MovieQuery } from "../types/GetMoviesQuery";
-;
-import { PaginatedResult } from "../../../../shared/types/Pagination";
+// import { ListMoviesForAdminQuery } from "../../application/queries/ListMoviesForAdminQuery";
+// ;
+// import { PaginatedResult } from "../../../../shared/types/Pagination";
 import { Movie } from "../entities/Movie";
 import { CreateMovieData } from "../types/CreateMovieData";
 import { UpdateMovieData } from "../types/UpdateMovieData";
@@ -14,7 +14,7 @@ export interface IMovieRepository {
 
   findBySlug(slug: string): Promise<Movie | null>;
 
-  findAll(query:MovieQuery): Promise<PaginatedResult<Movie>>;
+  // findAll(query:ListMoviesForAdminQuery): Promise<PaginatedResult<Movie>>;
 
 
   updateMovie(id: string, movie: UpdateMovieData): Promise<void>;
