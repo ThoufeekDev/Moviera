@@ -1,6 +1,6 @@
-import { BadRequestError } from '../../../../shared/exceptions/BadRequestError';
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
-import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedError';
+import { BadRequestError } from '../../../../shared/errors/BadRequestError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
+import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
 import { ITheatreRepository } from '../../domain/repositories/ITheatreRepository';
 import { TheatreOverview } from '../../domain/types/TheatreOverView';
 

@@ -4,9 +4,15 @@ import dotenv from 'dotenv';
 dotenv.config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is required");
+}
 export const env = {
   PORT: process.env.PORT!,
-  JWT_SECRET: process.env.JWT_SECRET!,
+  JWT_SECRET,
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   TURNSTILE_SITE_KEY: process.env.TURNSTILE_SITE_KEY,

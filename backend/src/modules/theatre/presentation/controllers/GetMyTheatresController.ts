@@ -2,7 +2,7 @@ import { successResponse } from "../../../../shared/utils/apiResponse";
 import { Request, Response } from "express";
 import { GetMyTheatresUseCase } from "../../application/use-cases/GetMyTheatresUseCase";
 import { AuthenticatedRequest } from "../../../../shared/types/AuthenticateRequest";
-import { UnauthorizedError } from "../../../../shared/exceptions/UnauthorizedError";
+import { UnauthorizedError } from "../../../../shared/errors/UnauthorizedError";
 import { TheatreResponseMapper } from "../mappers/TheatreResponseMapper";
 
 export class GetMyTheatresController {

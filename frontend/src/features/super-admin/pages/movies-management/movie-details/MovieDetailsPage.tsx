@@ -1,23 +1,28 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-// import { useMovieById } from "../hooks/useMovieById";
 import MovieDetailSkeleton from "../components/skeletons/MovieDetailSkeleton";
 import styles from "./MovieDetailsPage.module.css";
 
 import { useToggleMovieStatus } from "../hooks/useToggleMovieStatus";
 // import { toggleMovieStatus } from '../services/toggleMovieStatus.service';
-import { useMovieBySlug } from "../hooks/useMovieBySlug";
+// import { useMovieBySlug } from "../hooks/useMovieBySlug";
+import { useMovieById } from "../hooks/useMovieById";
 export default function MovieDetailsPage() {
 
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
+
+  console.log("movie id is",id)
 
   const navigate = useNavigate();
-  const { data: movie, isLoading, isError, refetch } = useMovieBySlug(slug);
+  const { data: movie, isLoading, isError, refetch } = useMovieById(id);
 
   // const [isTogglingStatus, setIsTogglingStatus] = useState(false);
   const {mutate:toggleMovieStatus,isPending:isTogglingStatus} = useToggleMovieStatus()
   if (isLoading) {
     return <MovieDetailSkeleton />;
   }
+
+  console.log('data movie is ',movie);
+  
 
   if (isError || !movie) {
     return (
@@ -287,19 +292,19 @@ export default function MovieDetailsPage() {
                   {movie.cast.map((item) => (
                     <div key={item.id} className={styles.personCard}>
                       <div className={styles.avatarWrapper}>
-                        {item.person.imageUrl ? (
+                        {item.profileImageUrl ? (
                           <img
-                            src={item.person.imageUrl}
-                            alt={item.person.name}
+                            src={item.profileImageUrl}
+                            alt={item.name}
                             className={styles.avatarImg}
                           />
                         ) : (
                           <div className={styles.avatarPlaceholder}>
-                            {item.person.name.charAt(0).toUpperCase()}
+                            {item.name.charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>
-                      <span className={styles.personName}>{item.person.name}</span>
+                      <span className={styles.personName}>{item.name}</span>
                       {item.character && (
                         <span className={styles.personRole}>as {item.character}</span>
                       )}
@@ -316,19 +321,19 @@ export default function MovieDetailsPage() {
                   {movie.crew.map((item) => (
                     <div key={item.id} className={styles.personCard}>
                       <div className={styles.avatarWrapper}>
-                        {item.person.imageUrl ? (
+                        {item.profileImageUrl ? (
                           <img
-                            src={item.person.imageUrl}
-                            alt={item.person.name}
+                            src={item.profileImageUrl}
+                            alt={item.name}
                             className={styles.avatarImg}
                           />
                         ) : (
                           <div className={styles.avatarPlaceholder}>
-                            {item.person.name.charAt(0).toUpperCase()}
+                            {item.name.charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>
-                      <span className={styles.personName}>{item.person.name}</span>
+                      <span className={styles.personName}>{item.name}</span>
                       <span className={styles.personRole}>{item.job}</span>
                     </div>
                   ))}

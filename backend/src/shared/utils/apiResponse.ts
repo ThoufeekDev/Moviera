@@ -1,9 +1,9 @@
-import { Response } from 'express';
+import { Response } from "express";
 
 export const successResponse = <T>(
   res: Response,
   statusCode: number,
-  success:boolean,
+  _success: boolean,
   message: string,
   data?: T,
 ) => {
@@ -14,10 +14,18 @@ export const successResponse = <T>(
   });
 };
 
-export const errorResponse = (res: Response, statusCode: number,sucess:boolean, message: string) => {
+export const errorResponse = (
+  res: Response,
+  statusCode: number,
+  _success: boolean,
+  message: string,
+  code: string = "INTERNAL_ERROR",
+  details?:unknown,
+) => {
   return res.status(statusCode).json({
     success: false,
+    code,
     message,
+    ...(details !==undefined && {details}),
   });
 };
-

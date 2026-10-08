@@ -1,5 +1,5 @@
 import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
 

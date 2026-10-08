@@ -6,8 +6,10 @@ import { PrismaLanguageRepository } from './infrastructure/repositories/PrismaLa
 import { PrismaCinemaFormatRepository } from './infrastructure/repositories/PrismaCinemaFormatRepository';
 import { PrismaPersonRepository } from './infrastructure/repositories/PrismaPersonRepository';
 
+import { PrismaMovieQueryService } from './infrastructure/persistence/queries/PrismaMovieQueryService';
+
 import { CreateMovieUseCase } from './application/use-cases/CreateMovieUseCase';
-import { GetMovieByIdUseCase } from './application/use-cases/GetMovieByIdUseCase';
+// import { GetMovieByIdUseCase } from './application/use-cases/GetMovieByIdUseCase';
 import { CreatePersonUseCase } from './application/use-cases/CreatePersonUseCase';
 import { GetPersonByIdUseCase } from './application/use-cases/GetPersonByIdUseCase';
 import { GetPersonsUseCase } from './application/use-cases/GetPersonUseCase';
@@ -26,8 +28,9 @@ import { GetPersonController } from './presentation/controllers/GetPersonControl
 import { GetLanguageController } from './presentation/controllers/GetLanguageController';
 import { GetCinemaFormatController } from './presentation/controllers/GetCinemaFormatController';
 
-import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
 
+
+import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
 import { UpdateMovieUseCase } from './application/use-cases/UpdateMovieUseCase';
 import { CloudinaryStorageService } from '../../shared/infrastructure/storage/CloudinaryStorageService';
@@ -45,6 +48,25 @@ import { createLanguageRoutes } from './presentation/routes/language.routes';
 import { createCinemaFormatRoutes } from './presentation/routes/cinema-format.routes';
 import { createGenreRoutes } from './presentation/routes/genre.routes';
 
+
+
+
+
+
+
+
+
+import { ListMoviesForAdminUseCase } from './application/use-cases/queries/ListMoviesForAdminUseCase';
+import { GetMovieByIdForAdminUseCase } from './application/use-cases/queries/GetMovieByIdForAdminUseCase';
+
+
+
+
+import { ListMoviesForAdminController } from './presentation/controllers/ListMoviesForAdminController';
+import { GetMovieByIdForAdminController } from './presentation/controllers/GetMovieByIdForAdminController';
+
+
+
 export function buildMoviesModule(prisma: PrismaClient) {
   // * Repositories
 
@@ -53,6 +75,8 @@ export function buildMoviesModule(prisma: PrismaClient) {
   const languageRepository = new PrismaLanguageRepository(prisma);
   const cinemaFormatRepository = new PrismaCinemaFormatRepository(prisma);
   const personRepository = new PrismaPersonRepository(prisma);
+
+  const movieQueryService = new PrismaMovieQueryService(prisma)
 
   // ^ clodinary
 
@@ -80,11 +104,20 @@ export function buildMoviesModule(prisma: PrismaClient) {
     ),
   );
 
+  const listMoviesForAdminController = new ListMoviesForAdminController(
+    new ListMoviesForAdminUseCase(movieQueryService)
+  )
+
+  const getMovieByIdForAdminController = new GetMovieByIdForAdminController(
+      new GetMovieByIdForAdminUseCase(movieQueryService)
+    )
+  
 
 
-  const getMovieByIdController = new GetMovieByIdController(
-    new GetMovieByIdUseCase(movieRepository),
-  );
+
+  // const getMovieByIdController = new GetMovieByIdController(
+  //   new GetMovieByIdUseCase(movieRepository),
+  // );
 
   const createPersonController = new CreatePersonController(
     new CreatePersonUseCase(personRepository, storageService),
@@ -120,10 +153,11 @@ export function buildMoviesModule(prisma: PrismaClient) {
   );
 
   const movieRouter = createMovieRoutes({
-
+    listMoviesForAdminController,
+    getMovieByIdForAdminController,
     createMovieController,
     getMovieBySlugController,
-    getMovieByIdController,
+    
     updateMovieController,
   });
 

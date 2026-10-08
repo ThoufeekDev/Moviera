@@ -1,11 +1,12 @@
 import multer from 'multer';
-import { BadRequestError } from '../exceptions/BadRequestError';
+import { BadRequestError } from '../errors/BadRequestError';
 const storage = multer.memoryStorage();
-
+export const MAX_FILE_SIZE_MB = 5;
+export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; //5MB
 export const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
+    fileSize:MAX_FILE_SIZE_BYTES
   },
 
   fileFilter(_req, file, cb) {

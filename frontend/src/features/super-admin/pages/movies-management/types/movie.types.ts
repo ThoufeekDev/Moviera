@@ -20,22 +20,16 @@ export interface MovieCinemaFormat {
 
 export interface MovieCastMember {
   id: string;
-  character?: string | null;
-  person: {
-    id: string;
-    name: string;
-    imageUrl?: string | null;
-  };
+  name: string;
+  character: string | null;
+  profileImageUrl: string | null;
 }
 
 export interface MovieCrewMember {
   id: string;
+  name: string;
   job: string;
-  person: {
-    id: string;
-    name: string;
-    imageUrl?: string | null;
-  };
+  profileImageUrl: string | null;
 }
 
 export interface Movie {

@@ -1,4 +1,4 @@
-import { ConflictError } from "../../../../shared/exceptions/ConflictError";
+import { ConflictError } from "../../../../shared/errors/ConflictError";
 import { generateOtp } from "../../../../shared/utils/generateOtp";
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 // import { redis } from "../../../../shared/redis_config/redis";

@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { z } from 'zod';
+import { Request, Response, NextFunction } from "express";
+import { z } from "zod";
+import { ValidationError } from "../errors/ValidationError";
 
 interface ValidationSchemas {
   body?: z.ZodType;
@@ -7,9 +8,18 @@ interface ValidationSchemas {
   query?: z.ZodType;
 }
 
+export interface ValidatedRequest extends Request {
+  validated?: {
+    body?: unknown;
+    params?: unknown;
+    query?: unknown;
+  };
+}
+
 export const validate = (schemas: ValidationSchemas) => {
-  return (req: Request, _res: Response, next: NextFunction) => {
+  return (req: ValidatedRequest, _res: Response, next: NextFunction) => {
     const errors: Record<string, z.ZodError> = {};
+    const validated: ValidatedRequest["validated"] = {};
 
     if (schemas.body) {
       const result = schemas.body.safeParse(req.body);
@@ -17,7 +27,7 @@ export const validate = (schemas: ValidationSchemas) => {
       if (!result.success) {
         errors.body = result.error;
       } else {
-        req.body = result.data;
+        validated.body = result.data;
       }
     }
 
@@ -27,7 +37,7 @@ export const validate = (schemas: ValidationSchemas) => {
       if (!result.success) {
         errors.params = result.error;
       } else {
-        req.params = result.data as typeof req.params
+        validated.params = result.data;
       }
     }
 
@@ -37,14 +47,15 @@ export const validate = (schemas: ValidationSchemas) => {
       if (!result.success) {
         errors.query = result.error;
       } else {
-        req.query = result.data as typeof req.query
+        validated.query = result.data;
       }
     }
 
     if (Object.keys(errors).length > 0) {
-      return next(errors);
+      return next(new ValidationError(errors))
     }
 
+    req.validated = validated;
     next();
   };
 };

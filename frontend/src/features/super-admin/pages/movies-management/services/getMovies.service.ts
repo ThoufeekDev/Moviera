@@ -23,8 +23,10 @@ export interface GetMoviesParams {
   sortBy?: 'title' | 'releaseDate' | 'createdAt' | 'updatedAt';
   sortOrder?: 'asc' | 'desc';
 }
-export const getMovies = async (params: GetMoviesParams = {}):Promise<GetMoviesResponse['data']> => {
-  const response = await api.get<GetMoviesResponse>('/movies', {
+export const getMovies = async (params: GetMoviesParams = {}): Promise<GetMoviesResponse['data']> => {
+  
+
+  const response = await api.get<GetMoviesResponse>('/movies/admin', {
     params,
   });
 

@@ -1,4 +1,4 @@
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { UserMapper } from '../mappers/UserMapper';
 import { ProfileResponseDTO } from '../dtos/response/ProfileResponseDTO';

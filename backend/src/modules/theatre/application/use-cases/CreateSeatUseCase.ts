@@ -2,8 +2,8 @@ import { Seat } from "../../domain/entities/Seat";
 import { ISeatRepository } from "../../domain/repositories/ISeatRepository";
 import { CreateSeatDTO } from "../dtos/CreateSeatDTO";
 import { IScreenRepository } from "../../domain/repositories/IScreenRepository";
-import { NotFoundError } from "../../../../shared/exceptions/NotFoundError";
-import { ConflictError } from "../../../../shared/exceptions/ConflictError";
+import { NotFoundError } from "../../../../shared/errors/NotFoundError";
+import { ConflictError } from "../../../../shared/errors/ConflictError";
 
 
 

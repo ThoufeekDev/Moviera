@@ -3,12 +3,14 @@ import { IMovieQueryService } from '../../../application/ports/IMovieQueryServic
 import { MovieAdminListItem } from '../../../application/read-models/MovieAdminListItem';
 import { ListMoviesForAdminQuery } from '../../../application/queries/ListMoviesForAdminQuery';
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
-import { Certification } from '../../../domain/enums/Certification';
+import { MovieAdminDetail } from '../../../application/read-models/MovieAdminDetail';
 import { MovieStatus } from '../../../application/queries/MovieStatus';
 import { movieAdminListSelect } from '../selects/movieListSelector';
 import { MovieAdminListItemMapper } from '../mappers/MovieAdminListItemMapper';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
-
+import { NotFoundError } from '../../../../../shared/errors/NotFoundError';
+import { MovieDetailMapper } from '../mappers/MovieDetailMapper';
+import { movieDetailSelect } from '../selects/movieDetailSelect';
 export class PrismaMovieQueryService implements IMovieQueryService {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -100,4 +102,31 @@ export class PrismaMovieQueryService implements IMovieQueryService {
 
     return toPaginatedResult(items, total, page, limit);
   }
+
+    async findAdminDetailById(id: string): Promise<MovieAdminDetail | null> {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id },
+      select:movieDetailSelect,
+    })
+
+   
+
+      return movie ? MovieDetailMapper.toDetail(movie):null;
+    }
+  
+  async findAdminDetailBySlug(slug: string): Promise<MovieAdminDetail | null> {
+    const movie = await this.prisma.movie.findFirst({
+      where: { slug },
+      select:movieDetailSelect,
+    })
+    
+    if (!movie) throw new NotFoundError('Movie not found');
+
+    return movie ? MovieDetailMapper.toDetail(movie):null;
+  }
+
+
 }
+
+
+

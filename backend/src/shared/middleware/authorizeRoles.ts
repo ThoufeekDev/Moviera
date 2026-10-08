@@ -1,27 +1,25 @@
-import { NextFunction, Response } from 'express';
-// import { Role } from '@prisma/client';
-import { Role } from '../enums/Role';
-import { AuthenticatedRequest } from '../types/AuthenticateRequest';
+import { NextFunction, Response } from "express";
+import { Role } from "../enums/Role";
+import { AuthenticatedRequest } from "../types/AuthenticateRequest";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
+import { ForbiddenError } from "../errors/ForbiddenError";
 
-                               // can pass any number of role  [...]
 export const authorizeRoles = (...allowedRoles: Role[]) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  return (
+    req: AuthenticatedRequest,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     if (!req.role) {
-      return res.status(401).json({
-        success: false,
-        message: 'Unathorized',
-      });
+      return next(new UnauthorizedError("Authentication required"));
     }
-    // it checks allowedRoles["ADMIN","USER","SUPERADMIN"]
-    // roles.includes("ADMIN")
-    const isAllowed = allowedRoles.includes(req.role as Role);
+
+    const isAllowed = allowedRoles.includes(req.role);
 
     if (!isAllowed) {
-      return res.status(403).json({
-        success: false,
-        message: 'Forbidden',
-      });
+      return next(new ForbiddenError("Forbidden"));
     }
+
     next();
   };
 };

@@ -4,9 +4,9 @@ import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { verifyOtpDTO } from '../dtos/requests/VerifyOtpDTO';
 
 // Error handler
-import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedError';
-import { BadRequestError } from '../../../../shared/exceptions/BadRequestError';
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
+import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
+import { BadRequestError } from '../../../../shared/errors/BadRequestError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { UserMapper } from '../mappers/UserMapper';
 import { IOtpRepository } from '../../domain/repositories/IOtpRepository';
 

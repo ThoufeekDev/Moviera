@@ -18,8 +18,8 @@ import { makeResendOtpUseCase } from '../../infrastructure/factories/makeResendO
 import { makeGoogleLoginUseCase } from '../../infrastructure/factories/makeGoogleLoginUseCase';
 
 // Shared - Errors
-import { BadRequestError } from '../../../../shared/exceptions/BadRequestError';
-import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedError';
+import { BadRequestError } from '../../../../shared/errors/BadRequestError';
+import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
 
 // Shared - HTTP Utilities
 import { successResponse } from '../../../../shared/utils/apiResponse';

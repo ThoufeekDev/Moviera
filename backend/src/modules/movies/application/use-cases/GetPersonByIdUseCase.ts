@@ -1,6 +1,6 @@
 import { IPersonRepository } from '../../domain/repositories/IPersonRepository';
 import { Person } from '../../domain/entities/Person';
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 
 export class GetPersonByIdUseCase {
   constructor(private readonly personRepository: IPersonRepository) {}

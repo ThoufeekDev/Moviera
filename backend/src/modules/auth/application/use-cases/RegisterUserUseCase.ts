@@ -10,7 +10,7 @@ import { generateOtp } from '../../../../shared/utils/generateOtp';
 // utils
 import { hashPassword } from '../../../../shared/utils/hashPassword';
 
-import { ConflictError } from '../../../../shared/exceptions/ConflictError';
+import { ConflictError } from '../../../../shared/errors/ConflictError';
 import { UserRegisterMapper } from '../mappers/UserRegisterMapper';
 import { UserResponserRegisterDTO } from '../dtos/response/UserResponseRegisterDTO';
 import { IOtpRepository } from '../../domain/repositories/IOtpRepository';

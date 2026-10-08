@@ -125,7 +125,7 @@ export default function MovieCard({ movie, onToggleStatus }: MovieCardProps) {
 
           <div className={styles.actions}>
             <Link
-              to={`/super-admin/movies/${movie.slug}`}
+              to={`/super-admin/movies/${movie.id}`}
               className={styles.viewButton}
             >
               <span>View Details</span>

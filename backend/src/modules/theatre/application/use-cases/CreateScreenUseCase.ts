@@ -3,9 +3,9 @@ import type { ITheatreRepository } from "../../domain/repositories/ITheatreRepos
 import type { IScreenRepository } from "../../domain/repositories/IScreenRepository";
 import type { CreateScreenDTO } from "../dtos/CreateScreenDTO";
 import { generateSlug } from "../../../../shared/utils/generateSlug";
-import { ConflictError } from "../../../../shared/exceptions/ConflictError";
-import { NotFoundError } from "../../../../shared/exceptions/NotFoundError";
-import { ForbiddenError } from "../../../../shared/exceptions/ForbiddenError";
+import { ConflictError } from "../../../../shared/errors/ConflictError";
+import { NotFoundError } from "../../../../shared/errors/NotFoundError";
+import { ForbiddenError } from "../../../../shared/errors/ForbiddenError";
 export class CreateScreenUseCase {
     constructor(
         private readonly screenRepository: IScreenRepository,

@@ -1,5 +1,5 @@
 import { IStorageService } from '../../../../shared/application/ports/IStorageService';
-import { ConflictError } from '../../../../shared/exceptions/ConflictError';
+import { ConflictError } from '../../../../shared/errors/ConflictError';
 import { Person } from '../../domain/entities/Person';
 import { IPersonRepository } from '../../domain/repositories/IPersonRepository';
 import { CreatePersonDTO } from '../dtos/CreatePersonDTO';

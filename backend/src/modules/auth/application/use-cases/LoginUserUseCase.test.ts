@@ -2,13 +2,13 @@ import { describe, it, expect, vi } from 'vitest';
 
 import { LoginUserUseCase } from './LoginUserUseCase';
 import { Role } from '../../../../shared/enums/Role';
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { User } from '../../domain/entities/User';
 import { comparePassword } from '../../../../shared/utils/comparePassword';
-import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedError';
+import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
 import { beforeEach } from 'vitest';
-import { ForbiddenError } from '../../../../shared/exceptions/ForbiddenError';
+import { ForbiddenError } from '../../../../shared/errors/ForbiddenError';
 
 vi.mock('../../../../shared/utils/comparePassword', () => ({
   comparePassword: vi.fn(),

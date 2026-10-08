@@ -5,9 +5,9 @@ import { comparePassword } from '../../../../shared/utils/comparePassword';
 import { UserMapper } from '../mappers/UserMapper';
 
 // Error Handling
-import { NotFoundError } from '../../../../shared/exceptions/NotFoundError';
-import { UnauthorizedError } from '../../../../shared/exceptions/UnauthorizedError';
-import { ForbiddenError } from '../../../../shared/exceptions/ForbiddenError';
+import { NotFoundError } from '../../../../shared/errors/NotFoundError';
+import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
+import { ForbiddenError } from '../../../../shared/errors/ForbiddenError';
 import { LoginResponseDTO } from '../dtos/response/LoginResponseDTO';
 export class LoginUserUseCase {
   constructor(private userRepository: IUserRepository) {}

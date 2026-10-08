@@ -1,41 +1,24 @@
-import { NextFunction, Response } from 'express';
-import { env } from '../../config/env';
-import { verifyToken } from '../utils/verifyToken';
-import { AuthenticatedRequest } from '../types/AuthenticateRequest';
-import { Role } from '../enums/Role';
-import { successResponse } from '../utils/apiResponse';
+import type { Request, Response, NextFunction } from "express";
+import { env } from "../../config/env";
+import { verifyToken } from "../utils/verifyToken";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
+import type { AuthenticatedRequest } from "../types/AuthenticateRequest";
 
 export const authenticateUser = (
   req: AuthenticatedRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): void => {
-  try {
-    const token = req.cookies?.accessToken;
+  const token = req.cookies?.accessToken;
 
-   
-    
-
-    if (!token) {
-      // res.status(401).json({
-      //   success: false,
-      //   message: 'Unauthorized',
-      // });
-
-      successResponse(res, 401, false, "Unathorized request");
-      return
-    }
-
-    const decoded = verifyToken(token, env.JWT_SECRET!);
-
-    req.userId = decoded.userId as string;
-    req.role = decoded.role as Role;
-    next();
-  } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: 'Invalid token',
-    });
-    return;
+  if (!token) {
+    return next(new UnauthorizedError("Authentication required"));
   }
+
+  const payload = verifyToken(token, env.JWT_SECRET);
+
+  req.userId = payload.userId 
+  req.role = payload.role 
+
+  next();
 };
