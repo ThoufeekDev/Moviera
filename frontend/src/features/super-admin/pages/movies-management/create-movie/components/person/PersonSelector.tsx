@@ -1,8 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-
 import { usePersons } from '../../../hooks/usePerson';
-import styles from './PersonSelector.module.css';
 import CreatePersonModal from './CreatePersonModal';
 import type { Person } from '../person.types';
 
@@ -66,10 +63,10 @@ export default function PersonSelector({
   };
 
   return (
-    <div ref={containerRef} className={styles.selectorContainer}>
+    <div ref={containerRef} className="relative w-full">
       {/* Search input */}
-      <div className={styles.inputWrapper}>
-        <span className={styles.searchIcon}>
+      <div className="relative flex items-center">
+        <span className="pointer-events-none absolute left-3.5 text-slate-400">
           <svg
             width="18"
             height="18"
@@ -88,7 +85,7 @@ export default function PersonSelector({
         <input
           ref={inputRef}
           type="text"
-          className={styles.searchInput}
+          className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
           placeholder={placeholder}
           value={search}
           onFocus={() => {
@@ -106,7 +103,7 @@ export default function PersonSelector({
         {search && (
           <button
             type="button"
-            className={styles.clearButton}
+            className="absolute right-3 rounded-full p-1 text-xs text-slate-400 hover:text-slate-600"
             onClick={() => {
               setSearch('');
               setIsOpen(false);
@@ -120,15 +117,15 @@ export default function PersonSelector({
 
       {/* Dropdown */}
       {isOpen && search.trim().length > 0 && (
-        <div className={styles.dropdown}>
+        <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl animate-in fade-in duration-150">
           {isLoading && (
-            <div className={styles.noResults}>
+            <div className="px-4 py-3 text-center text-xs text-slate-500">
               Loading persons...
             </div>
           )}
 
           {isError && (
-            <div className={styles.noResults}>
+            <div className="px-4 py-3 text-center text-xs text-rose-500">
               Failed to load persons.
             </div>
           )}
@@ -139,27 +136,27 @@ export default function PersonSelector({
               <button
                 key={person.id}
                 type="button"
-                className={styles.optionItem}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50"
                 onClick={() => handleSelectPerson(person)}
               >
                 {person.imageUrl ? (
                   <img
                     src={person.imageUrl}
                     alt={person.name}
-                    className={styles.avatar}
+                    className="h-8 w-8 rounded-full object-cover"
                   />
                 ) : (
-                  <div className={styles.avatarPlaceholder}>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand-600">
                     {person.name ? person.name.charAt(0).toUpperCase() : '?'}
                   </div>
                 )}
 
-                <span className={styles.personName}>{person.name}</span>
+                <span className="font-medium text-slate-900">{person.name}</span>
               </button>
             ))}
 
           {!isLoading && !isError && filteredPersons.length === 0 && (
-            <div className={styles.noResults}>
+            <div className="px-4 py-3 text-center text-xs text-slate-500">
               No matching profiles found
             </div>
           )}
@@ -168,25 +165,23 @@ export default function PersonSelector({
           {!isLoading && !isError && (
             <button
               type="button"
-              className={styles.createOption}
+              className="mt-1 flex w-full items-center gap-2 border-t border-slate-100 px-3 py-2.5 text-left text-xs font-bold text-brand-500 transition hover:bg-brand-50 rounded-lg"
               onClick={handleCreateNewPerson}
             >
-              + Create profile for "{search.trim()}"
+              + Create profile for &quot;{search.trim()}&quot;
             </button>
           )}
         </div>
       )}
 
       {/* Modal */}
-      {isCreateModalOpen &&
-        createPortal(
-          <CreatePersonModal
-            initialName={search.trim()}
-            onClose={() => setIsCreateModalOpen(false)}
-            onCreated={handlePersonCreated}
-          />,
-          document.body,
-        )}
+      {isCreateModalOpen && (
+        <CreatePersonModal
+          initialName={search.trim()}
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreated={handlePersonCreated}
+        />
+      )}
     </div>
   );
 }

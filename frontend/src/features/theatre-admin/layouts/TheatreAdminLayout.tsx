@@ -1,19 +1,15 @@
-import { Outlet } from "react-router-dom";
-
-import Sidebar  from "../../../shared/components/Sidebar/Sidebar"
-import { theatreAdminSidebarItems } from "../config/theatre-admin-sidebar.config";
-import styles from './TheatreAdminLayout.module.css';
-
+import { Outlet } from 'react-router-dom';
+import { Sidebar } from '@/shared/ui/Sidebar';
+import { theatreAdminSidebarItems } from '../config/theatre-admin-sidebar.config';
 
 export default function TheatreAdminLayout() {
-    return (
-            <div className={styles.layoutContainer}>
+  return (
+    <div className="flex h-screen h-[100dvh] w-full overflow-hidden bg-slate-50 font-sans text-slate-900">
       <Sidebar items={theatreAdminSidebarItems} />
 
-      <main className={styles.mainContent}>
+      <main className="flex-1 min-w-0 h-screen h-[100dvh] overflow-y-auto overflow-x-hidden p-4 pt-20 pb-8 md:ml-[260px] md:p-8 transition-[margin] duration-300">
         <Outlet />
       </main>
     </div>
-
-    )
+  );
 }

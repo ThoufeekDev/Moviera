@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import Input from '../../../../../../../shared/components/Input/Input';
-import styles from './Media.module.css';
+import { Input } from '@/shared/ui/Input';
 
 interface MovieMediaProps {
   register: UseFormRegister<any>;
@@ -19,7 +18,6 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
 
   const trailerUrlVal = watch ? watch('trailerUrl') : '';
 
-  // Extract Youtube Embed URL
   const getYoutubeEmbedUrl = (url?: string) => {
     if (!url) return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -43,7 +41,6 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
     setBackdropPreview(url);
   };
 
-  // Cleanup object URLs on unmount
   useEffect(() => {
     return () => {
       if (posterPreview) URL.revokeObjectURL(posterPreview);
@@ -52,38 +49,38 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
   }, [posterPreview, backdropPreview]);
 
   return (
-    <section className={styles.sectionCard} id="media-section">
-      <div className={styles.sectionHeader}>
-        <div className={styles.headerIcon}>
+    <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm" id="media-section">
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-            <polyline points="21 15 16 10 5 21"></polyline>
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
           </svg>
         </div>
-        <div className={styles.headerText}>
-          <h2>Movie Media & Visuals</h2>
-          <p>Upload high-resolution poster artwork, backdrop banners, and trailer URL.</p>
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Movie Media &amp; Visuals</h2>
+          <p className="text-xs text-slate-500">Upload high-resolution poster artwork, backdrop banners, and trailer URL.</p>
         </div>
       </div>
 
-      <div className={styles.mediaGrid}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Poster Upload Card */}
-        <div className={styles.uploadCard}>
-          <div className={styles.cardLabel}>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
             <span>Vertical Poster</span>
-            <span className={styles.badge}>2:3 Ratio</span>
+            <span className="rounded bg-slate-100 px-2 py-0.5 text-slate-500">2:3 Ratio</span>
           </div>
 
           <div
-            className={styles.posterDropzone}
+            className="group relative flex aspect-[2/3] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 transition hover:border-brand-500 hover:bg-brand-50/20"
             onClick={() => posterInputRef.current?.click()}
           >
             <input
               ref={posterInputRef}
               id="movie-poster"
               type="file"
-              className={styles.hiddenInput}
+              className="hidden"
               accept="image/jpeg,image/png,image/webp"
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -93,47 +90,44 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
 
             {posterPreview ? (
               <>
-                <img src={posterPreview} alt="Movie Poster Preview" className={styles.previewImage} />
-                <div className={styles.previewOverlay}>
-                  <button type="button" className={styles.overlayBtn}>
+                <img src={posterPreview} alt="Movie Poster Preview" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
+                  <span className="rounded-xl bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-lg">
                     Replace Poster
-                  </button>
+                  </span>
                 </div>
               </>
             ) : (
-              <>
-                <div className={styles.uploadIcon}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                  </svg>
-                </div>
-                <div className={styles.uploadText}>Upload Poster</div>
-                <div className={styles.uploadSubtext}>JPG, PNG, WEBP (Max 5MB)</div>
-              </>
+              <div className="flex flex-col items-center gap-2 p-6 text-center text-slate-400">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span className="text-xs font-semibold text-slate-700">Click to upload poster</span>
+                <span className="text-[11px] text-slate-400">JPG, PNG, or WebP up to 5MB</span>
+              </div>
             )}
           </div>
-
-          {errors.poster?.message && <p className={styles.errorMsg}>⚠️ {String(errors.poster.message)}</p>}
+          {errors.poster && <p className="text-xs text-rose-500">{errors.poster.message as string}</p>}
         </div>
 
         {/* Backdrop Upload Card */}
-        <div className={styles.uploadCard}>
-          <div className={styles.cardLabel}>
-            <span>Landscape Backdrop Banner</span>
-            <span className={styles.badge}>16:9 Banner</span>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+            <span>Wide Backdrop</span>
+            <span className="rounded bg-slate-100 px-2 py-0.5 text-slate-500">16:9 Ratio</span>
           </div>
 
           <div
-            className={styles.backdropDropzone}
+            className="group relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 transition hover:border-brand-500 hover:bg-brand-50/20"
             onClick={() => backdropInputRef.current?.click()}
           >
             <input
               ref={backdropInputRef}
               id="movie-backdrop"
               type="file"
-              className={styles.hiddenInput}
+              className="hidden"
               accept="image/jpeg,image/png,image/webp"
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -143,52 +137,50 @@ export default function MovieMedia({ register, setValue, errors, watch }: MovieM
 
             {backdropPreview ? (
               <>
-                <img src={backdropPreview} alt="Movie Backdrop Preview" className={styles.previewImage} />
-                <div className={styles.previewOverlay}>
-                  <button type="button" className={styles.overlayBtn}>
+                <img src={backdropPreview} alt="Movie Backdrop Preview" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
+                  <span className="rounded-xl bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-lg">
                     Replace Backdrop
-                  </button>
+                  </span>
                 </div>
               </>
             ) : (
-              <>
-                <div className={styles.uploadIcon}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                  </svg>
-                </div>
-                <div className={styles.uploadText}>Upload Backdrop Banner</div>
-                <div className={styles.uploadSubtext}>JPG, PNG, WEBP (Max 5MB)</div>
-              </>
+              <div className="flex flex-col items-center gap-2 p-6 text-center text-slate-400">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span className="text-xs font-semibold text-slate-700">Click to upload backdrop</span>
+                <span className="text-[11px] text-slate-400">Landscape wallpaper used on movie page</span>
+              </div>
             )}
           </div>
-
-          {errors.backdrop?.message && <p className={styles.errorMsg}>⚠️ {String(errors.backdrop.message)}</p>}
+          {errors.backdrop && <p className="text-xs text-rose-500">{errors.backdrop.message as string}</p>}
         </div>
       </div>
 
-      {/* Trailer Box */}
-      <div className={styles.trailerBox}>
+      {/* Trailer URL */}
+      <div className="mt-6 border-t border-slate-100 pt-6 flex flex-col gap-4">
         <Input
-          id="movie-trailer"
-          type="url"
-          label="YouTube Official Trailer URL"
+          id="movie-trailer-url"
+          label="YouTube Trailer Link"
           placeholder="https://www.youtube.com/watch?v=..."
           {...register('trailerUrl')}
-          error={errors.trailerUrl?.message ? String(errors.trailerUrl.message) : undefined}
+          error={errors.trailerUrl?.message}
         />
 
         {embedUrl && (
-          <div className={styles.trailerPreviewContainer}>
-            <iframe
-              src={embedUrl}
-              title="Movie Trailer Preview"
-              className={styles.iframe}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+          <div className="overflow-hidden rounded-2xl border border-slate-200">
+            <div className="aspect-video w-full">
+              <iframe
+                src={embedUrl}
+                title="Trailer Preview"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="h-full w-full"
+              />
+            </div>
           </div>
         )}
       </div>

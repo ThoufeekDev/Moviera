@@ -149,7 +149,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         user: profile,
         isAuthenticated: true,
       });
-    } catch (error) {
+    } catch {
       set({
         user: null,
         isAuthenticated: false,
@@ -179,13 +179,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
 
-  resendOtp: async (data)=>{
+  resendOtp: async (data) => {
     try {
-
-      return await resendOtp(data)
-      
+      return await resendOtp(data);
     } catch (error) {
-      
+      console.error(error);
+      throw error;
     }
-  }
+  },
 }));

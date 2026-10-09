@@ -1,4 +1,3 @@
-import './AuthErrorBanner.css';
 interface AuthErrorBannerProps {
   message: string;
 }
@@ -7,11 +6,12 @@ export default function AuthErrorBanner({ message }: AuthErrorBannerProps) {
   if (!message) return null;
 
   return (
-    <div className="auth-error-banner" role="alert">
+    <div
+      className="mb-5 flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-left text-xs font-medium text-rose-800"
+      role="alert"
+    >
       <svg
-        className="auth-error-icon"
-        width="16"
-        height="16"
+        className="h-4 w-4 shrink-0 text-rose-600"
         viewBox="0 0 16 16"
         fill="currentColor"
         aria-hidden="true"
@@ -22,7 +22,7 @@ export default function AuthErrorBanner({ message }: AuthErrorBannerProps) {
           clipRule="evenodd"
         />
       </svg>
-      <span className="auth-error-text">{message}</span>
+      <span className="leading-relaxed">{message}</span>
     </div>
   );
 }

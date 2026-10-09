@@ -1,8 +1,6 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import Input from '../../../../../../../shared/components/Input/Input';
-import styles from './BasicInfo.module.css';
-
-import { Certification } from '../../../../../../../shared/constants/Certification';
+import { Input } from '@/shared/ui/Input';
+import { Certification } from '@/shared/constants/Certification';
 import { useGenres } from '../../../hooks/useGenre';
 
 interface MovieBasicInfoProps {
@@ -13,22 +11,10 @@ interface MovieBasicInfoProps {
 }
 
 const certificates = [
-  {
-    code: Certification.U,
-    label: 'U (Universal)',
-  },
-  {
-    code: Certification.UA,
-    label: 'U/A',
-  },
-  {
-    code: Certification.A,
-    label: 'A (Adults Only)',
-  },
-  {
-    code: Certification.S,
-    label: 'S (Special Class)',
-  },
+  { code: Certification.U, label: 'U (Universal)' },
+  { code: Certification.UA, label: 'U/A' },
+  { code: Certification.A, label: 'A (Adults Only)' },
+  { code: Certification.S, label: 'S (Special Class)' },
 ];
 
 const formatDuration = (mins?: unknown) => {
@@ -47,11 +33,7 @@ export default function MovieBasicInfo({
   setValue,
   watch,
 }: MovieBasicInfoProps) {
-  const {
-    data: genres = [],
-    isLoading: genresLoading,
-    isError: genresError,
-  } = useGenres();
+  const { data: genres = [], isLoading: genresLoading, isError: genresError } = useGenres();
 
   const descriptionVal = watch ? watch('description') : '';
   const durationVal = watch ? watch('duration') : undefined;
@@ -69,29 +51,29 @@ export default function MovieBasicInfo({
   const certErr = getErrorString(errors.certificate);
 
   return (
-    <section className={styles.sectionCard} id="basic-info-section">
-      <div className={styles.sectionHeader}>
-        <div className={styles.headerIcon}>
+    <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm" id="basic-info-section">
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-            <line x1="7" y1="2" x2="7" y2="22"></line>
-            <line x1="17" y1="2" x2="17" y2="22"></line>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <line x1="2" y1="7" x2="7" y2="7"></line>
-            <line x1="2" y1="17" x2="7" y2="17"></line>
-            <line x1="17" y1="17" x2="22" y2="17"></line>
-            <line x1="17" y1="7" x2="22" y2="7"></line>
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+            <line x1="7" y1="2" x2="7" y2="22" />
+            <line x1="17" y1="2" x2="17" y2="22" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <line x1="2" y1="7" x2="7" y2="7" />
+            <line x1="2" y1="17" x2="7" y2="17" />
+            <line x1="17" y1="17" x2="22" y2="17" />
+            <line x1="17" y1="7" x2="22" y2="7" />
           </svg>
         </div>
-        <div className={styles.headerText}>
-          <h2>Basic Information</h2>
-          <p>Enter the core cinematic details of the movie.</p>
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Basic Information</h2>
+          <p className="text-xs text-slate-500">Enter the core cinematic details of the movie.</p>
         </div>
       </div>
 
-      <div className={styles.formGrid}>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         {/* Title */}
-        <div className={styles.fullWidth}>
+        <div className="sm:col-span-2">
           <Input
             id="movie-title"
             label="Movie Title"
@@ -102,41 +84,40 @@ export default function MovieBasicInfo({
         </div>
 
         {/* Description */}
-        <div className={`${styles.fullWidth} ${styles.fieldGroup}`}>
-          <div className={styles.fieldLabel}>
-            <label htmlFor="movie-description">Synopsis / Description</label>
-            <span className={styles.helperText}>
+        <div className="sm:col-span-2 flex flex-col gap-1.5">
+          <div className="flex items-center justify-between text-xs">
+            <label htmlFor="movie-description" className="font-semibold text-slate-700">
+              Synopsis / Description
+            </label>
+            <span className="text-slate-400">
               {descriptionVal ? `${descriptionVal.length} / 2000` : 'Min 10 characters'}
             </span>
           </div>
 
           <textarea
             id="movie-description"
-            className={styles.textarea}
+            rows={4}
+            className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             placeholder="Write a captivating synopsis summarizing the storyline..."
             {...register('description')}
           />
 
-          {descErr && (
-            <p className={styles.errorMsg}>{descErr}</p>
-          )}
+          {descErr && <p className="text-xs text-rose-500">{descErr}</p>}
         </div>
 
         {/* Duration */}
-        <div className={styles.fieldGroup}>
-          <div className={styles.fieldLabel}>
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
             <span>Duration (Minutes)</span>
             {Boolean(formattedDuration) && (
-              <span className={styles.helperText}>⏱ {formattedDuration}</span>
+              <span className="text-slate-500">⏱ {formattedDuration}</span>
             )}
           </div>
           <Input
             id="movie-duration"
             type="number"
             placeholder="e.g. 150"
-            {...register('duration', {
-              valueAsNumber: true,
-            })}
+            {...register('duration', { valueAsNumber: true })}
             error={errors.duration?.message}
           />
         </div>
@@ -152,148 +133,113 @@ export default function MovieBasicInfo({
           />
         </div>
 
-{/* Genres */}
-<div className={styles.fieldGroup}>
-  <label className={styles.fieldLabel}>
-    Genres
-  </label>
+        {/* Genres */}
+        <div className="sm:col-span-2 flex flex-col gap-2">
+          <label className="text-xs font-semibold text-slate-700">Genres</label>
+          <p className="text-xs text-slate-400">Select all genres that apply to this movie.</p>
 
-  <p className={styles.helperText}>
-    Select all genres that apply to this movie.
-  </p>
+          {genresLoading && <p className="text-xs text-slate-400">Loading genres...</p>}
+          {genresError && <p className="text-xs text-rose-500">Failed to load genres</p>}
 
-  {genresLoading && (
-    <p className={styles.helperText}>Loading genres...</p>
-  )}
+          {!genresLoading && !genresError && (
+            <div className="flex flex-wrap gap-2">
+              {genres.map((genre) => {
+                const selectedGenreIds = watch('genreIds') || [];
+                const isSelected = selectedGenreIds.includes(genre.id);
 
-  {genresError && (
-    <p className={styles.errorMsg}>
-      Failed to load genres
-    </p>
-  )}
-
-  {!genresLoading && !genresError && (
-    <div className={styles.certPillGroup}>
-      {genres.map((genre) => {
-        const selectedGenreIds = watch('genreIds') || [];
-        const isSelected = selectedGenreIds.includes(genre.id);
-
-        return (
-          <button
-            type="button"
-            key={genre.id}
-            className={`${styles.certPill} ${
-              isSelected ? styles.certPillActive : ''
-            }`}
-            onClick={() => {
-              const currentGenreIds = watch('genreIds') || [];
-
-              if (currentGenreIds.includes(genre.id)) {
-                setValue(
-                  'genreIds',
-                  currentGenreIds.filter(
-                    (id: string) => id !== genre.id
-                  ),
-                  {
-                    shouldValidate: true,
-                  }
+                return (
+                  <button
+                    type="button"
+                    key={genre.id}
+                    className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
+                      isSelected
+                        ? 'border border-brand-500 bg-brand-50 text-brand-600'
+                        : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                    }`}
+                    onClick={() => {
+                      const currentGenreIds = watch('genreIds') || [];
+                      if (currentGenreIds.includes(genre.id)) {
+                        setValue(
+                          'genreIds',
+                          currentGenreIds.filter((id: string) => id !== genre.id),
+                          { shouldValidate: true }
+                        );
+                      } else {
+                        setValue('genreIds', [...currentGenreIds, genre.id], {
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
+                  >
+                    {genre.name}
+                  </button>
                 );
-              } else {
-                setValue(
-                  'genreIds',
-                  [...currentGenreIds, genre.id],
-                  {
-                    shouldValidate: true,
-                  }
-                );
-              }
-            }}
-          >
-            {genre.name}
-          </button>
-        );
-      })}
-    </div>
-  )}
+              })}
+            </div>
+          )}
 
-  {getErrorString(errors.genreIds) && (
-    <p className={styles.errorMsg}>
-      {getErrorString(errors.genreIds)}
-    </p>
-  )}
+          {getErrorString(errors.genreIds) && (
+            <p className="text-xs text-rose-500">{getErrorString(errors.genreIds)}</p>
+          )}
         </div>
-        
+
         {/* Primary Genre */}
-<div className={styles.fieldGroup}>
-  <label className={styles.fieldLabel}>
-    Primary Genre
-  </label>
+        <div className="sm:col-span-2 flex flex-col gap-2">
+          <label className="text-xs font-semibold text-slate-700">Primary Genre</label>
+          <p className="text-xs text-slate-400">Choose the main genre of this movie.</p>
 
-  <p className={styles.helperText}>
-    Choose the main genre of this movie.
-  </p>
+          {!genresLoading && !genresError && (
+            <div className="flex flex-wrap gap-2">
+              {genres.map((genre) => {
+                const primaryGenreId = watch('primaryGenreId');
+                const isSelected = primaryGenreId === genre.id;
 
-  {!genresLoading && !genresError && (
-    <div className={styles.certPillGroup}>
-      {genres.map((genre) => {
-        const primaryGenreId = watch('primaryGenreId');
-        const isSelected = primaryGenreId === genre.id;
-
-        return (
-          <button
-            type="button"
-            key={genre.id}
-            className={`${styles.certPill} ${
-              isSelected ? styles.certPillActive : ''
-            }`}
-            onClick={() => {
-              const currentGenreIds = watch('genreIds') || [];
-
-              setValue('primaryGenreId', genre.id, {
-                shouldValidate: true,
-              });
-
-              // Primary genre must always exist in genreIds
-              if (!currentGenreIds.includes(genre.id)) {
-                setValue(
-                  'genreIds',
-                  [...currentGenreIds, genre.id],
-                  {
-                    shouldValidate: true,
-                  }
+                return (
+                  <button
+                    type="button"
+                    key={genre.id}
+                    className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
+                      isSelected
+                        ? 'border border-brand-500 bg-brand-500 text-white shadow-sm'
+                        : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                    }`}
+                    onClick={() => {
+                      const currentGenreIds = watch('genreIds') || [];
+                      setValue('primaryGenreId', genre.id, { shouldValidate: true });
+                      if (!currentGenreIds.includes(genre.id)) {
+                        setValue('genreIds', [...currentGenreIds, genre.id], {
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
+                  >
+                    {genre.name}
+                  </button>
                 );
-              }
-            }}
-          >
-            {genre.name}
-          </button>
-        );
-      })}
-    </div>
-  )}
+              })}
+            </div>
+          )}
 
-  {genreErr && (
-    <p className={styles.errorMsg}>
-      {genreErr}
-    </p>
-  )}
-</div>
+          {genreErr && <p className="text-xs text-rose-500">{genreErr}</p>}
+        </div>
 
         {/* Certificate selection */}
-        <div className={styles.fieldGroup}>
-          <label className={styles.fieldLabel}>Certification Rating</label>
-
-          {/* Hidden input for form registration */}
+        <div className="sm:col-span-2 flex flex-col gap-2">
+          <label className="text-xs font-semibold text-slate-700">Certification Rating</label>
           <input type="hidden" {...register('certificate')} />
 
-          <div className={styles.certPillGroup}>
+          <div className="flex flex-wrap gap-2">
             {certificates.map((cert) => {
               const isSelected = certificateVal === cert.code;
               return (
                 <button
                   type="button"
                   key={cert.code}
-                  className={`${styles.certPill} ${isSelected ? styles.certPillActive : ''}`}
+                  className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+                    isSelected
+                      ? 'border border-brand-500 bg-brand-500 text-white shadow-sm'
+                      : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                  }`}
                   onClick={() => {
                     setValue('certificate', cert.code, { shouldValidate: true });
                   }}
@@ -304,9 +250,7 @@ export default function MovieBasicInfo({
             })}
           </div>
 
-          {certErr && (
-            <p className={styles.errorMsg}>{certErr}</p>
-          )}
+          {certErr && <p className="text-xs text-rose-500">{certErr}</p>}
         </div>
       </div>
     </section>

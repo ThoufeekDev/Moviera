@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClientProvider } from '@tanstack/react-query';
-import ErrorBoundary from './shared/components/ErrorBoundary/ErrorBoundary';
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 import queryClient from './shared/lib/queryClient';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import App from './App';

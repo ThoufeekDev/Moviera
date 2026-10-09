@@ -8,6 +8,7 @@ import MovieLanguages from './components/movie/Language';
 import MovieMedia from './components/movie/Media';
 import MovieCast from './components/movie/Cast';
 import MovieCrew from './components/movie/Crew';
+import { Button } from '@/shared/ui/Button';
 
 import {
   createMovieSchema,
@@ -15,7 +16,6 @@ import {
   type CreateMovieFormData,
 } from '../validators/createMovie.schema';
 import { createMovie } from '../services/createMovie.service';
-import styles from './CreateMoviePage.module.css';
 
 const steps = [
   {
@@ -51,6 +51,7 @@ const steps = [
     fields: ['crew'] as const,
   },
 ];
+
 export default function SuperAdminCreateMoviePage() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
@@ -75,10 +76,10 @@ export default function SuperAdminCreateMoviePage() {
       duration: undefined,
       releaseDate: '',
       primaryGenreId: '',
-      genreIds:[],
-      certificate:undefined,
+      genreIds: [],
+      certificate: undefined,
       languages: [],
-      cinemaFormatIds:[],
+      cinemaFormatIds: [],
       cast: [],
       crew: [],
       trailerUrl: '',
@@ -126,7 +127,8 @@ export default function SuperAdminCreateMoviePage() {
     } catch (err: any) {
       console.error('Failed to create movie:', err);
       setServerError(
-        err?.response?.data?.message || 'Failed to create movie. Please verify your details and try again.',
+        err?.response?.data?.message ||
+          'Failed to create movie. Please verify your details and try again.',
       );
     } finally {
       setIsSubmitting(false);
@@ -134,29 +136,39 @@ export default function SuperAdminCreateMoviePage() {
   };
 
   return (
-    <div className={styles.pageContainer}>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-24 font-sans text-slate-900">
       {/* Dark Hero Header with Stepper */}
-      <div className={styles.heroHeader}>
-        <div className={styles.headerTitleGroup}>
-          <h1>
+      <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 sm:p-8 text-white shadow-lg">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             <span>🎬</span> Add New Movie
           </h1>
-          <p>
+          <p className="text-xs sm:text-sm text-slate-300">
             Fill out the cinematic parameters, poster visuals, audio languages, and feature cast and crew to add a movie.
           </p>
         </div>
 
-        <div className={styles.stepperBar}>
+        <div className="mt-6 flex flex-wrap gap-2">
           {steps.map((step) => {
             const isActive = activeStep === step.id;
             return (
               <button
                 type="button"
                 key={step.id}
-                className={`${styles.stepItem} ${isActive ? styles.stepItemActive : ''}`}
+                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
+                  isActive
+                    ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
+                    : 'bg-white/10 text-slate-300 hover:bg-white/15 hover:text-white'
+                }`}
                 onClick={() => handleStepClick(step.id)}
               >
-                <span className={styles.stepNumber}>{step.id + 1}</span>
+                <span
+                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${
+                    isActive ? 'bg-white text-brand-600' : 'bg-white/20 text-white'
+                  }`}
+                >
+                  {step.id + 1}
+                </span>
                 <span>{step.title}</span>
               </button>
             );
@@ -166,21 +178,21 @@ export default function SuperAdminCreateMoviePage() {
 
       {/* Notifications */}
       {successMessage && (
-        <div className={styles.alertSuccess}>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
           <span>{successMessage}</span>
         </div>
       )}
 
       {serverError && (
-        <div className={styles.alertError}>
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
           <span>⚠️ {serverError}</span>
         </div>
       )}
 
       {/* Main Form */}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
         {/* Step 1: Basic Info */}
-        <div style={{ display: activeStep === 0 ? 'block' : 'none' }}>
+        <div className={activeStep === 0 ? 'block' : 'hidden'}>
           <MovieBasicInfo
             register={register}
             errors={errors}
@@ -190,15 +202,12 @@ export default function SuperAdminCreateMoviePage() {
         </div>
 
         {/* Step 2: Languages & Formats */}
-        <div style={{ display: activeStep === 1 ? 'block' : 'none' }}>
-          <MovieLanguages
-            control={control}
-            errors={errors}
-          />
+        <div className={activeStep === 1 ? 'block' : 'hidden'}>
+          <MovieLanguages control={control} errors={errors} />
         </div>
 
         {/* Step 3: Media & Visuals */}
-        <div style={{ display: activeStep === 2 ? 'block' : 'none' }}>
+        <div className={activeStep === 2 ? 'block' : 'hidden'}>
           <MovieMedia
             register={register}
             setValue={setValue}
@@ -208,76 +217,65 @@ export default function SuperAdminCreateMoviePage() {
         </div>
 
         {/* Step 4: Cast */}
-        <div style={{ display: activeStep === 3 ? 'block' : 'none' }}>
-          <MovieCast
-            control={control}
-            register={register}
-            errors={errors}
-          />
+        <div className={activeStep === 3 ? 'block' : 'hidden'}>
+          <MovieCast control={control} register={register} errors={errors} />
         </div>
 
         {/* Step 5: Crew */}
-        <div style={{ display: activeStep === 4 ? 'block' : 'none' }}>
-          <MovieCrew
-            control={control}
-            register={register}
-            errors={errors}
-          />
+        <div className={activeStep === 4 ? 'block' : 'hidden'}>
+          <MovieCrew control={control} register={register} errors={errors} />
         </div>
 
         {/* Step Navigation Row */}
-        <div className={styles.stepNavRow}>
-          <button
+        <div className="flex items-center justify-between gap-4">
+          <Button
             type="button"
-            className={styles.prevStepBtn}
+            variant="secondary"
             onClick={handlePrevStep}
             disabled={activeStep === 0 || isSubmitting}
           >
             ← Previous Step
-          </button>
+          </Button>
 
           {activeStep < steps.length - 1 && (
-            <button
+            <Button
               type="button"
-              className={styles.nextStepBtn}
+              variant="primary"
               onClick={handleNextStep}
               disabled={isSubmitting}
             >
               Next Step →
-            </button>
+            </Button>
           )}
         </div>
 
         {/* Sticky Action Footer */}
-        <div className={styles.actionFooter}>
-          <div className={styles.footerInfo}>
+        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between border-t border-slate-200 bg-white/90 px-6 py-4 backdrop-blur-md md:left-[260px]">
+          <div className="text-xs font-semibold text-slate-500">
             Step {activeStep + 1} of {steps.length}: {steps[activeStep].title}
           </div>
 
-          <div className={styles.btnGroup}>
-            <button
+          <div className="flex items-center gap-3">
+            <Button
               type="button"
-              className={styles.cancelBtn}
+              variant="secondary"
+              size="sm"
               onClick={() => navigate(-1)}
               disabled={isSubmitting}
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              className={styles.submitBtn}
+              variant="primary"
+              size="sm"
+              loading={isSubmitting}
               disabled={isSubmitting}
+              className="font-bold shadow-md shadow-brand-500/25"
             >
-              {isSubmitting ? (
-                <>
-                  <div className={styles.spinner}></div>
-                  <span>Creating Movie...</span>
-                </>
-              ) : (
-                <span>Publish Movie</span>
-              )}
-            </button>
+              Publish Movie
+            </Button>
           </div>
         </div>
       </form>

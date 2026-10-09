@@ -1,9 +1,6 @@
-import { Controller,type FieldErrors } from 'react-hook-form';
-import styles from "./Language.module.css"
-
+import { Controller, type FieldErrors } from 'react-hook-form';
 import { useLanguages } from '../../../hooks/useLanguage';
 import { useCinemaFormats } from '../../../hooks/useCinemaFormats';
-
 
 interface MovieLanguagesProps {
   control: any;
@@ -11,7 +8,7 @@ interface MovieLanguagesProps {
 }
 
 export default function MovieLanguages({ control, errors }: MovieLanguagesProps) {
-  const { data: languages = [] } = useLanguages()
+  const { data: languages = [] } = useLanguages();
   const { data: cinemaFormats = [] } = useCinemaFormats();
 
   const getErrorString = (err?: any): string | null => {
@@ -24,22 +21,22 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
   const formatErr = getErrorString(errors?.cinemaFormatIds);
 
   return (
-    <section className={styles.sectionCard} id="languages-section">
-      <div className={styles.sectionHeader}>
-        <div className={styles.headerIcon}>
+    <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm" id="languages-section">
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z" />
           </svg>
         </div>
-        <div className={styles.headerText}>
-          <h2>Languages & Formats</h2>
-          <p>Select audio languages and viewing formats supported for ticket bookings.</p>
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Languages &amp; Formats</h2>
+          <p className="text-xs text-slate-500">Select audio languages and viewing formats supported for ticket bookings.</p>
         </div>
       </div>
 
-      <div className={styles.groupTitle}>
+      <div className="mb-3 text-sm font-bold text-slate-800">
         🌐 Audio Languages
       </div>
 
@@ -47,18 +44,22 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
         name="languages"
         control={control}
         render={({ field }) => (
-          <div className={styles.chipGrid}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {languages.map((language) => {
               const checked = field.value?.includes(language.id);
 
               return (
                 <label
                   key={language.id}
-                  className={`${styles.languageChip} ${checked ? styles.languageChipActive : ''}`}
+                  className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-3 text-sm font-semibold transition ${
+                    checked
+                      ? 'border-brand-500 bg-brand-50/50 text-brand-600'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                  }`}
                 >
                   <input
                     type="checkbox"
-                    className={styles.hiddenCheckbox}
+                    className="h-4 w-4 rounded border-slate-300 text-brand-500 accent-brand-500"
                     checked={checked || false}
                     onChange={(event) => {
                       const current: string[] = field.value ?? [];
@@ -69,14 +70,6 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
                       }
                     }}
                   />
-
-                  {checked && (
-                    <span className={styles.checkmark}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                    </span>
-                  )}
                   <span>{language.name}</span>
                 </label>
               );
@@ -85,57 +78,49 @@ export default function MovieLanguages({ control, errors }: MovieLanguagesProps)
         )}
       />
 
-      {langErr && (
-        <p className={styles.errorMsg}>⚠️ {langErr}</p>
-      )}
+      {langErr && <p className="mt-2 text-xs text-rose-500">⚠️ {langErr}</p>}
 
       {/* Screen Formats */}
-      <div className={styles.formatGroup}>
-        <div className={styles.groupTitle}>
+      <div className="mt-8 border-t border-slate-100 pt-6">
+        <div className="mb-3 text-sm font-bold text-slate-800">
           🎬 Cinema Formats
         </div>
-        <div className={styles.formatGrid}>
-          <Controller
-            name="cinemaFormatIds"
-            control={control}
-            render={({ field }) => (
-              <div className={styles.formatGrid}>
-                {cinemaFormats.map((format) => {
-                  const checked = field.value?.includes(format.id);
 
-                  return (
-                    <button
-                      type="button"
-                      key={format.id}
-                      className={`${styles.formatTag} ${
-                        checked ? styles.formatTagActive : ''
-                      }`}
-                      onClick={() => {
-                        const current: string[] = field.value ?? [];
+        <Controller
+          name="cinemaFormatIds"
+          control={control}
+          render={({ field }) => (
+            <div className="flex flex-wrap gap-2.5">
+              {cinemaFormats.map((format) => {
+                const checked = field.value?.includes(format.id);
 
-                        if (checked) {
-                          field.onChange(
-                            current.filter((id: string) => id !== format.id)
-                          );
-                        } else {
-                          field.onChange([...current, format.id]);
-                        }
-                      }}
-                    >
-                      {format.name} {checked ? '✓' : '+'}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          />
-
-          {formatErr && (
-            <p className={styles.errorMsg}>
-              ⚠️ {formatErr}
-            </p>
+                return (
+                  <button
+                    type="button"
+                    key={format.id}
+                    className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+                      checked
+                        ? 'border border-brand-500 bg-brand-500 text-white shadow-sm'
+                        : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                    }`}
+                    onClick={() => {
+                      const current: string[] = field.value ?? [];
+                      if (checked) {
+                        field.onChange(current.filter((id: string) => id !== format.id));
+                      } else {
+                        field.onChange([...current, format.id]);
+                      }
+                    }}
+                  >
+                    {format.name} {checked ? '✓' : '+'}
+                  </button>
+                );
+              })}
+            </div>
           )}
-        </div>
+        />
+
+        {formatErr && <p className="mt-2 text-xs text-rose-500">⚠️ {formatErr}</p>}
       </div>
     </section>
   );

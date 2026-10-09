@@ -1,6 +1,6 @@
 
 import { useAuthStore } from '../features/auth/stores/auth.store';
-import Loader from '../shared/components/Loader/Loader';
+import { Loader } from '@/shared/ui/Loader';
 import { Role } from '../shared/constants/Role';
 import RoleRedirect from './RoleRedirect';
 interface Props {

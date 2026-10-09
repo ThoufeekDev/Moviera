@@ -10,7 +10,6 @@ import { upload } from "../../../../shared/middleware/upload.middleware";
 import { updateMovieSchema } from "../validators/UpdateMovieValidator";
 
 import { CreateMovieController } from "../controllers/CreateMovieController";
-import { GetMovieByIdController } from '../controllers/GetMovieByIdController';
 import { GetMovieBySlugController } from "../controllers/GetMovieBySlugController";
 import { UpdateMovieController } from "../controllers/UpdateMovieController";
 
@@ -19,9 +18,10 @@ import { ListMoviesForAdminController } from "../controllers/ListMoviesForAdminC
 import { ListMoviesForAdminValidator } from "../validators/ListMoviesForAdminValidator";
 import { adapt } from "../../../../shared/http/expressAdapter";
 import { GetMovieByIdForAdminController } from '../controllers/GetMovieByIdForAdminController';
+import { GetMovieBySlugForAdminController } from '../controllers/GetMovieBySlugForAdminCotroller';
 interface MovieRouteControllers {
   createMovieController: CreateMovieController;
-  getMovieBySlugController: GetMovieBySlugController;
+  getMovieBySlugForAdminController: GetMovieBySlugForAdminController;
   getMovieByIdForAdminController:GetMovieByIdForAdminController;
   updateMovieController: UpdateMovieController;
   listMoviesForAdminController:ListMoviesForAdminController
@@ -35,12 +35,14 @@ export function createMovieRoutes(controllers: MovieRouteControllers):Router{
     
   //& Admin
   movieRoute.get('/admin', validate({ query: ListMoviesForAdminValidator }), adapt(controllers.listMoviesForAdminController.execute))
+  movieRoute.get('/admin/:slug',...admin,adapt(controllers.getMovieBySlugForAdminController.execute));
+  movieRoute.get('/admin/:id', ...admin, adapt(controllers.getMovieByIdForAdminController.execute))
   
-   movieRoute.get('/admin/:id',...admin, adapt(controllers.getMovieByIdForAdminController.execute))
 
-    movieRoute.post('/', ...admin, files, validate({ body: createMovieSchema }), controllers.createMovieController.handle)
+
+  movieRoute.post('/', ...admin, files, validate({ body: createMovieSchema }), controllers.createMovieController.handle)
     
-    movieRoute.get('/slug/:slug', controllers.getMovieBySlugController.handle);
+  
 
    
 

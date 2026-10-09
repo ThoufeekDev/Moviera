@@ -1,39 +1,225 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import "tailwindcss";
+
+/* ==========================================================================
+   Moviera Design Tokens — Tailwind v4 @theme block
+   ========================================================================== */
+
+@theme {
+  /* ── Typography ────────────────────────────────────────────────────────── */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Brand / Red scale ─────────────────────────────────────────────────── */
+  --color-brand-50:  #fff1f3;
+  --color-brand-100: #fee2e2;
+  --color-brand-200: #fecdd3;
+  --color-brand-300: #fda4af;
+  --color-brand-400: #fb7185;
+  --color-brand-500: #f84464;   /* primary */
+  --color-brand-600: #e03352;   /* hover    */
+  --color-brand-700: #d62947;   /* active   */
+  --color-brand-800: #be123c;
+  --color-brand-900: #9f1239;
+
+  /* ── Semantic: Success ──────────────────────────────────────────────────── */
+  --color-success-50:  #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-bg:  #ecfdf5;
+  --color-success-border: #a7f3d0;
+  --color-success-text:   #059669;
+
+  /* ── Semantic: Warning ──────────────────────────────────────────────────── */
+  --color-warning-50:  #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-bg:  #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text:   #b45309;
+
+  /* ── Semantic: Danger (mirrors brand-red) ──────────────────────────────── */
+  --color-danger-50:  #fff1f3;
+  --color-danger-100: #fef2f2;
+  --color-danger-200: #fecdd3;
+  --color-danger-500: #f84464;
+  --color-danger-600: #e03352;
+  --color-danger-700: #dc2626;
+  --color-danger-bg:  #fff1f3;
+  --color-danger-border: #fecdd3;
+  --color-danger-text:   #e11d48;
+
+  /* ── Seat states (future booking UI) ───────────────────────────────────── */
+  --color-seat-available: #22c55e;
+  --color-seat-selected:  #f84464;
+  --color-seat-booked:    #64748b;
+  --color-seat-blocked:   #e2e8f0;
+
+  /* ── Radii ──────────────────────────────────────────────────────────────── */
+  --radius-card:   20px;
+  --radius-input:  12px;
+  --radius-button: 10px;
+  --radius-badge:  9999px;
+
+  /* ── Shadows ────────────────────────────────────────────────────────────── */
+  --shadow-card:        0 20px 45px -10px rgba(17, 24, 39, 0.08), 0 1px 3px rgba(17, 24, 39, 0.05);
+  --shadow-card-hover:  0 25px 50px -10px rgba(248, 68, 100, 0.2), 0 4px 12px rgba(248, 68, 100, 0.1);
+  --shadow-button:      0 4px 14px rgba(248, 68, 100, 0.3);
+  --shadow-button-hover:0 8px 22px rgba(248, 68, 100, 0.45);
+
+  /* ── Animations ─────────────────────────────────────────────────────────── */
+  --animate-spin-slow: spin 3s linear infinite;
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  @keyframes pulseDot {
+    0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  @keyframes subMenuSlideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes overlayFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes ambientPulse {
+    0%   { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+    100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.9; }
+  }
+
+  @keyframes haloPulse {
+    0%   { opacity: 0.4; transform: scale(0.95); }
+    100% { opacity: 0.8; transform: scale(1.08); }
+  }
+
+  @keyframes blinkDot {
+    0%, 100% { opacity: 1; transform: scale(1);   }
+    50%      { opacity: 0.3; transform: scale(0.8); }
+  }
+
+  @keyframes scaleFadeIn {
+    0%   { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1);    }
+  }
+
+  @keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes errorFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes coming-fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes coming-icon-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+
+  @keyframes coming-icon-pulse {
+    0%      { opacity: 0.45; transform: scale(0.95); }
+    70%, 100% { opacity: 0; transform: scale(1.12); }
+  }
+
+  @keyframes reelSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  @keyframes floatLeft {
+    from { transform: translateY(0) rotate(-12deg); }
+    to   { transform: translateY(-8px) rotate(-6deg); }
+  }
+
+  @keyframes floatRight {
+    from { transform: translateY(0) rotate(12deg); }
+    to   { transform: translateY(-8px) rotate(18deg); }
+  }
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: #f8fafc;
-  color: #111827;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* ==========================================================================
+   Base layer — global resets & typographic defaults
+   ========================================================================== */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: theme(--color-slate-50);
+    color: theme(--color-slate-900);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Visible focus ring using brand colour */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
-#root {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
+/* ==========================================================================
+   Skeleton shimmer utility (used across skeleton components)
+   ========================================================================== */
 
-.loader-container {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f8fafc;
-}
+@layer utilities {
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(248, 68, 100, 0.18) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    display: block;
+  }
 
-.loader-circle {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #fee2e2;
-  border-top: 6px solid #f84464;
-  border-radius: 50%;
+  /* Dark sidebar skeleton (used inside sidebar-coloured containers) */
+  .skeleton-dark {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(248, 68, 100, 0.12) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    display: block;
+  }
 }

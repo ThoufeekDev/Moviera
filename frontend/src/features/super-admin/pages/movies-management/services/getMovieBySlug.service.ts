@@ -11,7 +11,9 @@ interface GetMovieslugResponse {
 
 
 export const getMovieBySlug = async (slug: string) => {
-    const response = await api.get<GetMovieslugResponse>(`/movies/slug/${slug}`);
+    
+    const response = await api.get<GetMovieslugResponse>(`/movies/admin/${slug}`);
+    
     return response.data.data
 }
 

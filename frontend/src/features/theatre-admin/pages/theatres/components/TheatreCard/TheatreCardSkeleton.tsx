@@ -1,39 +1,35 @@
-import Skeleton from "../../../../../../shared/components/Skeleton";
-import cardStyles from "./TheatreCard.module.css";
-import styles from "./TheatreCardSkeleton.module.css";
+import { Skeleton } from '@/shared/ui/Skeleton';
 
 export default function TheatreCardSkeleton() {
   return (
-    <article className={cardStyles.card}>
+    <article className="flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
       {/* Header Accent Bar Skeleton */}
-      <div className={cardStyles.cardHeaderBg}>
-        <Skeleton width="70px" height="22px" borderRadius="20px" />
-        <Skeleton width="90px" height="20px" borderRadius="6px" />
+      <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-5 py-3">
+        <Skeleton className="h-5 w-16 rounded-full" />
+        <Skeleton className="h-5 w-20 rounded-md" />
       </div>
 
       {/* Card Body Skeleton */}
-      <div className={cardStyles.cardBody}>
-        <div className={cardStyles.logoAndTitle}>
-          <Skeleton width="52px" height="52px" borderRadius="14px" />
-          <div className={cardStyles.headerText} style={{ flex: 1 }}>
-            <Skeleton width="75%" height="22px" borderRadius="6px" style={{ marginBottom: "6px" }} />
-            <Skeleton width="45%" height="14px" borderRadius="4px" />
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-start gap-3.5">
+          <Skeleton className="h-13 w-13 shrink-0 rounded-xl" />
+          <div className="flex-1 min-w-0 space-y-2">
+            <Skeleton className="h-5 w-3/4 rounded-md" />
+            <Skeleton className="h-3.5 w-1/2 rounded-md" />
           </div>
         </div>
 
-        <div className={cardStyles.infoSection}>
-          <div className={styles.skeletonLineGroup}>
-            <Skeleton width="100%" height="14px" borderRadius="4px" />
-            <Skeleton width="80%" height="14px" borderRadius="4px" />
-          </div>
-          <div className={styles.skeletonContactRow}>
-            <Skeleton width="45%" height="16px" borderRadius="4px" />
-            <Skeleton width="45%" height="16px" borderRadius="4px" />
+        <div className="mt-4 flex flex-1 flex-col gap-2.5 border-t border-slate-100 pt-4">
+          <Skeleton className="h-3.5 w-full rounded" />
+          <Skeleton className="h-3.5 w-4/5 rounded" />
+          <div className="flex gap-4 pt-1">
+            <Skeleton className="h-3.5 w-2/5 rounded" />
+            <Skeleton className="h-3.5 w-2/5 rounded" />
           </div>
         </div>
 
-        <div className={cardStyles.footerRow}>
-          <Skeleton width="100%" height="44px" borderRadius="12px" />
+        <div className="mt-5 pt-3">
+          <Skeleton className="h-10 w-full rounded-xl" />
         </div>
       </div>
     </article>

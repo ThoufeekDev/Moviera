@@ -1,4 +1,4 @@
-import styles from "./TheatreShows.module.css";
+import { Button } from '@/shared/ui/Button';
 
 interface TheatreShowsProps {
   totalShows: number;
@@ -10,24 +10,18 @@ export default function TheatreShows({
   totalScreens,
 }: TheatreShowsProps) {
   return (
-    <div className={styles.tabContent}>
-      <div className={styles.tabHeaderRow}>
-        <h2 className={styles.sectionHeading}>
-          Today's Showtimes
-        </h2>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h2 className="text-lg font-bold text-slate-900">Today&apos;s Showtimes</h2>
 
-        <button
-          type="button"
-          className={styles.primaryBtn}
-        >
+        <Button variant="primary" size="sm">
           + Schedule Show
-        </button>
+        </Button>
       </div>
 
-      <div className={styles.showsPlaceholder}>
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500">
         <p>
-          {totalShows} active showtimes scheduled for today
-          across {totalScreens} screens.
+          {totalShows} active showtimes scheduled for today across {totalScreens} screens.
         </p>
       </div>
     </div>

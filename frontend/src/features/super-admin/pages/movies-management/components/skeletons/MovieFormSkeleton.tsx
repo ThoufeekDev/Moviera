@@ -1,65 +1,62 @@
-import Skeleton from '../../../../../../shared/components/Skeleton';
-import styles from '../../movie-edit/EditMoviePage.module.css';
+import { Skeleton } from '@/shared/ui/Skeleton';
 
 export default function MovieFormSkeleton() {
   return (
-    <div className={styles.pageContainer}>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-24 font-sans">
       {/* Top Nav Skeleton */}
-      <div className={styles.topNav}>
-        <Skeleton width="110px" height="36px" borderRadius="12px" />
-        <Skeleton width="130px" height="20px" borderRadius="4px" />
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-9 w-28 rounded-xl" />
+        <Skeleton className="h-5 w-32 rounded" />
       </div>
 
       {/* Hero Header Skeleton */}
-      <div className={styles.heroHeader}>
-        <div className={styles.headerTitleGroup}>
-          <Skeleton width="260px" height="32px" borderRadius="8px" style={{ marginBottom: '10px' }} />
-          <Skeleton width="80%" height="16px" borderRadius="4px" />
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64 rounded-lg" />
+          <Skeleton className="h-4 w-4/5 rounded" />
         </div>
 
         {/* Stepper Bar Skeleton */}
-        <div className={styles.stepperBar}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className={styles.stepItem} style={{ border: 'none', pointerEvents: 'none' }}>
-              <Skeleton width="140px" height="36px" borderRadius="30px" />
-            </div>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-9 w-32 rounded-xl" />
           ))}
         </div>
       </div>
 
       {/* Step Content Form Card Skeleton */}
-      <div className={styles.stepContentCard}>
-        <Skeleton width="200px" height="26px" borderRadius="6px" style={{ marginBottom: '24px' }} />
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-6">
+        <Skeleton className="h-7 w-48 rounded-lg" />
 
         {/* Form Fields Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-          <div>
-            <Skeleton width="100px" height="16px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-            <Skeleton width="100%" height="44px" borderRadius="10px" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24 rounded" />
+            <Skeleton className="h-11 w-full rounded-xl" />
           </div>
-          <div>
-            <Skeleton width="110px" height="16px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-            <Skeleton width="100%" height="44px" borderRadius="10px" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-28 rounded" />
+            <Skeleton className="h-11 w-full rounded-xl" />
           </div>
-          <div style={{ gridColumn: 'span 2' }}>
-            <Skeleton width="120px" height="16px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-            <Skeleton width="100%" height="100px" borderRadius="10px" />
+          <div className="sm:col-span-2 space-y-2">
+            <Skeleton className="h-4 w-32 rounded" />
+            <Skeleton className="h-28 w-full rounded-xl" />
           </div>
-          <div>
-            <Skeleton width="90px" height="16px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-            <Skeleton width="100%" height="44px" borderRadius="10px" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-20 rounded" />
+            <Skeleton className="h-11 w-full rounded-xl" />
           </div>
-          <div>
-            <Skeleton width="130px" height="16px" borderRadius="4px" style={{ marginBottom: '8px' }} />
-            <Skeleton width="100%" height="44px" borderRadius="10px" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-28 rounded" />
+            <Skeleton className="h-11 w-full rounded-xl" />
           </div>
         </div>
       </div>
 
       {/* Navigation Buttons Skeleton */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Skeleton width="120px" height="46px" borderRadius="12px" />
-        <Skeleton width="140px" height="46px" borderRadius="12px" />
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-11 w-28 rounded-xl" />
+        <Skeleton className="h-11 w-32 rounded-xl" />
       </div>
     </div>
   );

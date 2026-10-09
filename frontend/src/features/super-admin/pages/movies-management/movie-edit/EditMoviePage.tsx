@@ -8,6 +8,9 @@ import MovieLanguages from '../create-movie/components/movie/Language';
 import MovieMedia from '../create-movie/components/movie/Media';
 import MovieCast from '../create-movie/components/movie/Cast';
 import MovieCrew from '../create-movie/components/movie/Crew';
+import { Button } from '@/shared/ui/Button';
+import { ContentLoader } from '@/shared/ui/ContentLoader';
+import { ErrorState } from '@/shared/ui/ErrorState';
 
 import {
   updateMovieSchema,
@@ -17,11 +20,6 @@ import {
 
 import { useMovieById } from '../hooks/useMovieById';
 import { useUpdateMovie } from '../hooks/useUpdateMovie';
-
-import ContentLoader from '../../../../../shared/components/ContentLoader/ContentLoader';
-import ErrorState from '../../../../../shared/components/ErrorState/ErrorState';
-
-import styles from './EditMoviePage.module.css';
 
 const steps = [
   {
@@ -95,7 +93,7 @@ export default function EditMoviePage() {
       duration: undefined,
       releaseDate: '',
       primaryGenreId: '',
-      genreIds:[],
+      genreIds: [],
       certificate: undefined,
       languages: [],
       cinemaFormatIds: [],
@@ -116,17 +114,17 @@ export default function EditMoviePage() {
         ? new Date(movie.releaseDate).toISOString().split('T')[0]
         : '',
       primaryGenreId: movie.primaryGenre.id,
-      genreIds:movie.genres.map((genre)=>genre.id),
+      genreIds: movie.genres.map((genre) => genre.id),
       certificate: movie.certification as UpdateMovieFormInput['certificate'],
       languages: movie.languages.map((language) => language.id),
       cinemaFormatIds: movie.cinemaFormats.map((format) => format.id),
       trailerUrl: movie.trailerUrl ?? '',
       cast: (movie.cast ?? []).map((member) => ({
-        personId: member.person.id,
+        personId: (member as any).person?.id ?? member.id,
         character: member.character ?? '',
       })),
       crew: (movie.crew ?? []).map((member) => ({
-        personId: member.person.id,
+        personId: (member as any).person?.id ?? member.id,
         job: member.job,
       })),
     });
@@ -138,22 +136,14 @@ export default function EditMoviePage() {
 
     if (isValid && activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
-
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevStep = () => {
     if (activeStep > 0) {
       setActiveStep((prev) => prev - 1);
-
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -225,11 +215,14 @@ export default function EditMoviePage() {
   }
 
   return (
-    <div className={styles.pageContainer}>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-24 font-sans text-slate-900">
       {/* Top Header Navigation */}
-      <div className={styles.topNav}>
-        <Link to={`/super-admin/movies/${movieId}`} className={styles.backBtn}>
-          <svg className={styles.backIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+      <div className="flex items-center">
+        <Link
+          to={`/super-admin/movies/${movieId}`}
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-600"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           <span>Back to Movie Details</span>
@@ -237,18 +230,18 @@ export default function EditMoviePage() {
       </div>
 
       {/* Hero Header Section */}
-      <div className={styles.heroHeader}>
-        <div className={styles.headerTitleGroup}>
-          <h1>
+      <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 sm:p-8 text-white shadow-lg">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             <span>🎬</span> Edit Movie: {movie.title}
           </h1>
-          <p>
+          <p className="text-xs sm:text-sm text-slate-300">
             Update the movie details, media visuals, language options, cast, and crew members.
           </p>
         </div>
 
         {/* Stepper Navigation Bar */}
-        <div className={styles.stepperBar}>
+        <div className="mt-6 flex flex-wrap gap-2">
           {steps.map((step) => {
             const isActive = activeStep === step.id;
 
@@ -256,12 +249,18 @@ export default function EditMoviePage() {
               <button
                 type="button"
                 key={step.id}
-                className={`${styles.stepItem} ${
-                  isActive ? styles.stepItemActive : ''
+                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
+                  isActive
+                    ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
+                    : 'bg-white/10 text-slate-300 hover:bg-white/15 hover:text-white'
                 }`}
                 onClick={() => handleStepClick(step.id)}
               >
-                <span className={styles.stepNumber}>
+                <span
+                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${
+                    isActive ? 'bg-white text-brand-600' : 'bg-white/20 text-white'
+                  }`}
+                >
                   {step.id + 1}
                 </span>
                 <span>{step.title}</span>
@@ -273,115 +272,99 @@ export default function EditMoviePage() {
 
       {/* Notifications */}
       {successMessage && (
-        <div className={styles.alertSuccess}>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
           <span>{successMessage}</span>
         </div>
       )}
 
       {serverError && (
-        <div className={styles.alertError}>
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
           <span>⚠️ {serverError}</span>
         </div>
       )}
 
       {/* Form Container */}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className={styles.stepContentCard}>
-          <div style={{ display: activeStep === 0 ? 'block' : 'none' }}>
-            <MovieBasicInfo
-              register={register}
-              errors={errors}
-              setValue={setValue}
-              watch={watch}
-            />
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
+        <div className={activeStep === 0 ? 'block' : 'hidden'}>
+          <MovieBasicInfo
+            register={register}
+            errors={errors}
+            setValue={setValue}
+            watch={watch}
+          />
+        </div>
 
-          <div style={{ display: activeStep === 1 ? 'block' : 'none' }}>
-            <MovieLanguages
-              control={control}
-              errors={errors}
-            />
-          </div>
+        <div className={activeStep === 1 ? 'block' : 'hidden'}>
+          <MovieLanguages control={control} errors={errors} />
+        </div>
 
-          <div style={{ display: activeStep === 2 ? 'block' : 'none' }}>
-            <MovieMedia
-              register={register}
-              setValue={setValue}
-              errors={errors}
-              watch={watch}
-            />
-          </div>
+        <div className={activeStep === 2 ? 'block' : 'hidden'}>
+          <MovieMedia
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            watch={watch}
+          />
+        </div>
 
-          <div style={{ display: activeStep === 3 ? 'block' : 'none' }}>
-            <MovieCast
-              control={control}
-              register={register}
-              errors={errors}
-            />
-          </div>
+        <div className={activeStep === 3 ? 'block' : 'hidden'}>
+          <MovieCast control={control} register={register} errors={errors} />
+        </div>
 
-          <div style={{ display: activeStep === 4 ? 'block' : 'none' }}>
-            <MovieCrew
-              control={control}
-              register={register}
-              errors={errors}
-            />
-          </div>
+        <div className={activeStep === 4 ? 'block' : 'hidden'}>
+          <MovieCrew control={control} register={register} errors={errors} />
+        </div>
 
-          {/* Step Navigation Controls */}
-          <div className={styles.stepNavRow}>
-            <button
+        {/* Step Navigation Controls */}
+        <div className="flex items-center justify-between gap-4">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handlePrevStep}
+            disabled={activeStep === 0 || isSubmitting}
+          >
+            ← Previous Step
+          </Button>
+
+          {activeStep < steps.length - 1 && (
+            <Button
               type="button"
-              className={styles.prevStepBtn}
-              onClick={handlePrevStep}
-              disabled={activeStep === 0 || isSubmitting}
+              variant="primary"
+              onClick={handleNextStep}
+              disabled={isSubmitting}
             >
-              ← Previous Step
-            </button>
-
-            {activeStep < steps.length - 1 && (
-              <button
-                type="button"
-                className={styles.nextStepBtn}
-                onClick={handleNextStep}
-                disabled={isSubmitting}
-              >
-                Next Step →
-              </button>
-            )}
-          </div>
+              Next Step →
+            </Button>
+          )}
         </div>
 
         {/* Sticky Action Footer */}
-        <div className={styles.actionFooter}>
-          <div className={styles.footerInfo}>
+        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between border-t border-slate-200 bg-white/90 px-6 py-4 backdrop-blur-md md:left-[260px]">
+          <div className="text-xs font-semibold text-slate-500">
             Step {activeStep + 1} of {steps.length}: {steps[activeStep].title}
           </div>
 
-          <div className={styles.btnGroup}>
-            <button
+          <div className="flex items-center gap-3">
+            <Button
               type="button"
-              className={styles.cancelBtn}
+              variant="secondary"
+              size="sm"
               onClick={() => navigate(`/super-admin/movies/${movieId}`)}
               disabled={isSubmitting}
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              className={styles.submitBtn}
+              variant="primary"
+              size="sm"
+              loading={isSubmitting}
               disabled={isSubmitting}
+              className="font-bold shadow-md shadow-brand-500/25"
             >
-              {isSubmitting ? (
-                <>
-                  <div className={styles.spinner} />
-                  <span>Updating Movie...</span>
-                </>
-              ) : (
-                <span>Update Movie</span>
-              )}
-            </button>
+              Update Movie
+            </Button>
           </div>
         </div>
       </form>

@@ -1,87 +1,55 @@
-
-
+import { useState } from 'react';
 import MovieCard from './movie-details/components/MovieCard';
 import MovieCardSkeleton from './components/skeletons/MovieCardSkeleton';
-import Pagination from '../../../../shared/components/Pagination';
-import ErrorState from '../../../../shared/components/ErrorState/ErrorState';
+import { Pagination } from '@/shared/ui/Pagination';
+import { ErrorState } from '@/shared/ui/ErrorState';
 import { useToggleMovieStatus } from './hooks/useToggleMovieStatus';
-
-
 import { useMovies } from './hooks/useMovies';
-import {  useState,useEffect } from 'react';
-import { useDebounce } from '../../../../shared/hooks/useDebounce';
-
-import styles from "./MovieManagementPage.module.css"
-
-
-
+import { useDebounce } from '@/shared/hooks/useDebounce';
 
 export default function MovieManagementPage() {
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
-
-   
   const limit = 8;
-// Debounce function to limit the rate of function calls
   const debouncedSearch = useDebounce(search, 700);
-  
-  useEffect(() => {
-  setPage(1);
-}, [debouncedSearch]);
 
-
- 
-  const handleToggleStatus = (
-  movieId: string,
-  currentStatus: boolean
-) => {
-  toggleMovieStatus({
-    movieId,
-    isActive: !currentStatus,
-  });
+  const handleToggleStatus = (movieId: string, currentStatus: boolean) => {
+    toggleMovieStatus({
+      movieId,
+      isActive: !currentStatus,
+    });
   };
-  
-   const {
-    data,
-     isLoading,
-    isFetching,
-    isError,
-     error,
-    refetch
-   } = useMovies({ page, limit, search: debouncedSearch || undefined });
-  
 
-  
+  const { data, isLoading, isFetching, isError, error, refetch } = useMovies({
+    page,
+    limit,
+    search: debouncedSearch || undefined,
+  });
+
   const movies = data?.items ?? [];
-  const movieLength = movies.length
-  console.log("movies length is",movieLength);
-  
   const pagination = data?.pagination;
-
-  
-  // if (isLoading) return <ContentLoader text="Movies" subtext="Loading movie collection..." />;
 
   if (isLoading) {
     return (
-      <div className={styles.page}>
-        <header className={styles.header}>
-          <div>
-            <h1>Movies</h1>
-            <p>Manage all movies in Moviera.</p>
-          </div>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-8">
+        <header className="flex flex-col gap-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Movies
+          </h1>
+          <p className="text-sm text-slate-500">Manage all movies in Moviera.</p>
         </header>
 
-        <section className={styles.toolbar}>
-          <div className={styles.searchContainer}>
-            <svg 
-              className={styles.searchIcon} 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+        <section className="flex flex-wrap items-center gap-3">
+          <div className="relative flex min-w-[240px] flex-1 items-center">
+            <svg
+              className="pointer-events-none absolute left-3.5 h-4 w-4 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             >
               <circle cx="11" cy="11" r="8" />
@@ -90,31 +58,30 @@ export default function MovieManagementPage() {
             <input
               type="search"
               placeholder="Search movies..."
-              className={styles.searchInput}
-              value={search ?? ''}
-              onChange={(e)=>setSearch(e.target.value)}
+              className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
             />
           </div>
-          <select className={styles.filter} disabled>
+          <select className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-500" disabled>
             <option value="">All Genres</option>
-           
           </select>
-          <select className={styles.filter} disabled>
+          <select className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-500" disabled>
             <option value="">All Status</option>
           </select>
         </section>
 
         {isFetching && (
-          <div className={styles.searchLoadingStatus} aria-live="polite">
-            <svg className={styles.spinnerIcon} viewBox="0 0 24 24" fill="none">
-              <circle className={styles.spinnerTrack} cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" />
-              <path className={styles.spinnerHead} d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
+          <div className="inline-flex items-center gap-2 self-start rounded-full border border-brand-500/20 bg-brand-50/60 px-3.5 py-1.5 text-xs font-semibold text-brand-600">
+            <span className="h-2 w-2 rounded-full bg-brand-500 animate-ping" />
             <span>Loading Movies...</span>
           </div>
         )}
 
-        <section className={styles.movieList}>
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {Array.from({ length: 8 }).map((_, index) => (
             <MovieCardSkeleton key={index} />
           ))}
@@ -122,41 +89,39 @@ export default function MovieManagementPage() {
       </div>
     );
   }
-  
-if (isError) {
+
+  if (isError) {
+    return (
+      <ErrorState
+        title="Failed to load movies"
+        message={
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong while loading movies.'
+        }
+        onRetry={refetch}
+      />
+    );
+  }
+
   return (
-    <ErrorState
-      title="Failed to load movies"
-      message={
-        error instanceof Error
-          ? error.message
-          : "Something went wrong while loading movies."
-      }
-      onRetry={refetch}
-    />
-  );
-}
-  return (
-     <div className={styles.page}>
-      <header className={styles.header}>
-        <div>
-          <h1>Movies</h1>
-          <p>Manage all movies in Moviera.</p>
-        </div>
-        
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-8">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          Movies
+        </h1>
+        <p className="text-sm text-slate-500">Manage all movies in Moviera.</p>
       </header>
 
-
-
-      <section className={styles.toolbar}>
-        <div className={styles.searchContainer}>
-          <svg 
-            className={styles.searchIcon} 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+      <section className="flex flex-wrap items-center gap-3">
+        <div className="relative flex min-w-[240px] flex-1 items-center">
+          <svg
+            className="pointer-events-none absolute left-3.5 h-4 w-4 text-slate-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <circle cx="11" cy="11" r="8" />
@@ -166,41 +131,34 @@ if (isError) {
             type="search"
             placeholder="Search movies..."
             value={search}
-            onChange={(e)=>setSearch(e.target.value)}
-            className={styles.searchInput}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
           />
         </div>
 
- <select className={styles.filter}>
-  <option value="">All Genres</option>
-</select>
+        <select className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-brand-500 focus:outline-none">
+          <option value="">All Genres</option>
+        </select>
 
-        <select className={styles.filter}>
+        <select className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-brand-500 focus:outline-none">
           <option value="">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
         </select>
       </section>
 
-      {/* {isFetching && (
-        <div className={styles.searchLoadingStatus} aria-live="polite">
-          <svg className={styles.spinnerIcon} viewBox="0 0 24 24" fill="none">
-            <circle className={styles.spinnerTrack} cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" />
-            <path className={styles.spinnerHead} d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-          </svg>
-          <span>Searching...</span>
-        </div>
-      )} */}
-
       {movies.length === 0 ? (
-        <div className={styles.emptyState}>
-          <h2>No movies found</h2>
-          <p>
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <h2 className="text-lg font-bold text-slate-800">No movies found</h2>
+          <p className="mt-1 text-sm text-slate-500">
             Movies created by the Super Admin will appear here.
           </p>
         </div>
       ) : (
-        <section className={styles.movieList}>
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {movies.map((movie) => (
             <MovieCard
               key={movie.id}
@@ -212,11 +170,13 @@ if (isError) {
       )}
 
       {pagination && pagination.totalPages > 1 && (
+        <div className="mt-4 flex justify-center">
           <Pagination
-    currentPage={pagination.page}
-    totalPages={pagination.totalPages}
-    onPageChange={setPage}
-  />
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={setPage}
+          />
+        </div>
       )}
     </div>
   );

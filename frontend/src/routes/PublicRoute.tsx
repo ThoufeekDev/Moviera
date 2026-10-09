@@ -1,6 +1,6 @@
 
 import { useAuthStore } from '../features/auth/stores/auth.store';
-import Loader from '../shared/components/Loader/Loader';
+import { Loader } from '@/shared/ui/Loader';
 
 import RoleRedirect from './RoleRedirect';
 

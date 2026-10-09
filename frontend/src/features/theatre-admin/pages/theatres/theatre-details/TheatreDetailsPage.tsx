@@ -1,76 +1,37 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import Skeleton from "../../../../../shared/components/Skeleton";
-import { useTheatreOverview } from "../hooks/useTheatreOverview";
+import { Skeleton } from '@/shared/ui/Skeleton';
+import { useTheatreOverview } from '../hooks/useTheatreOverview';
 
-import TheatreHeader from "./components/TheatreHeader";
-import TheatreOverview from "./components/TheatreOverview";
-import TheatreScreens from "./components/TheatreScreens";
-import TheatreSettings from "./components/TheatreSettings";
-import TheatreShows from "./components/TheatreShows";
-import TheatreTabs, {
-  type TheatreTab,
-} from "./components/TheatreTabs";
-
-import styles from "./TheatreDetailsPage.module.css";
+import TheatreHeader from './components/TheatreHeader';
+import TheatreOverview from './components/TheatreOverview';
+import TheatreScreens from './components/TheatreScreens';
+import TheatreSettings from './components/TheatreSettings';
+import TheatreShows from './components/TheatreShows';
+import TheatreTabs, { type TheatreTab } from './components/TheatreTabs';
 
 export default function TheatreDetailsPage() {
   const { theatreId } = useParams<{ theatreId: string }>();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] =
-    useState<TheatreTab>("OVERVIEW");
+  const [activeTab, setActiveTab] = useState<TheatreTab>('OVERVIEW');
 
-  const {
-    data: overview,
-    isLoading,
-  } = useTheatreOverview(theatreId!);
+  const { data: overview, isLoading } = useTheatreOverview(theatreId!);
 
   const theatre = overview?.theatre;
 
   if (isLoading) {
     return (
-      <div className={styles.container}>
-        <Skeleton
-          width="140px"
-          height="36px"
-          borderRadius="10px"
-          style={{ marginBottom: "20px" }}
-        />
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <Skeleton className="h-9 w-32 rounded-xl mb-2" />
+        <Skeleton className="h-40 w-full rounded-3xl mb-2" />
+        <Skeleton className="h-12 w-full rounded-2xl mb-2" />
 
-        <Skeleton
-          width="100%"
-          height="160px"
-          borderRadius="18px"
-          style={{ marginBottom: "24px" }}
-        />
-
-        <Skeleton
-          width="100%"
-          height="50px"
-          borderRadius="12px"
-          style={{ marginBottom: "24px" }}
-        />
-
-        <div className={styles.loadingStatsGrid}>
-          <Skeleton
-            width="100%"
-            height="100px"
-            borderRadius="16px"
-          />
-
-          <Skeleton
-            width="100%"
-            height="100px"
-            borderRadius="16px"
-          />
-
-          <Skeleton
-            width="100%"
-            height="100px"
-            borderRadius="16px"
-          />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Skeleton className="h-28 w-full rounded-2xl" />
+          <Skeleton className="h-28 w-full rounded-2xl" />
+          <Skeleton className="h-28 w-full rounded-2xl" />
         </div>
       </div>
     );
@@ -81,14 +42,12 @@ export default function TheatreDetailsPage() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       {/* Back Navigation */}
       <button
         type="button"
-        onClick={() =>
-          navigate("/theatre-admin/theatres")
-        }
-        className={styles.backButton}
+        onClick={() => navigate('/theatre-admin/theatres')}
+        className="inline-flex items-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-600 hover:-translate-x-0.5"
       >
         <svg
           width="18"
@@ -100,15 +59,9 @@ export default function TheatreDetailsPage() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <line
-            x1="19"
-            y1="12"
-            x2="5"
-            y2="12"
-          />
+          <line x1="19" y1="12" x2="5" y2="12" />
           <polyline points="12 19 5 12 12 5" />
         </svg>
-
         <span>My Theatres</span>
       </button>
 
@@ -123,15 +76,13 @@ export default function TheatreDetailsPage() {
       </TheatreHeader>
 
       {/* Overview */}
-      {activeTab === "OVERVIEW" && (
-        <TheatreOverview overview={overview} />
-      )}
+      {activeTab === 'OVERVIEW' && <TheatreOverview overview={overview} />}
 
       {/* Screens */}
-      {activeTab === "SCREENS" && <TheatreScreens />}
+      {activeTab === 'SCREENS' && <TheatreScreens />}
 
       {/* Shows */}
-      {activeTab === "SHOWS" && (
+      {activeTab === 'SHOWS' && (
         <TheatreShows
           totalShows={overview.statistics.totalShows}
           totalScreens={overview.statistics.totalScreens}
@@ -139,7 +90,7 @@ export default function TheatreDetailsPage() {
       )}
 
       {/* Settings */}
-      {activeTab === "SETTINGS" && <TheatreSettings />}
+      {activeTab === 'SETTINGS' && <TheatreSettings />}
     </div>
   );
 }

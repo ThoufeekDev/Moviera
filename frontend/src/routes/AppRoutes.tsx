@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-import Loader from '../shared/components/Loader/Loader';
+import { Loader } from '@/shared/ui/Loader';
 
 // Lazy Loaded Pages
 const LoginPage = lazy(() => import('../features/auth/pages/login/LoginPage'));
@@ -56,7 +56,7 @@ import PublicRoute from './PublicRoute';
 import ProtectedRoute from './ProtectedRoute';
 // import SuperAdminRoute from './SuperAdminRoute';
 
-import ComingSoon from '../shared/components/coming-soon/ComingSoon';
+import { ComingSoon } from '@/shared/ui/ComingSoon';
 import SuperAdminLayout from '../features/super-admin/layouts/SuperAdminLayout';
 import MovieManagementPage from '../features/super-admin/pages/movies-management/MovieManagementPage';
 import EditMoviePage from '../features/super-admin/pages/movies-management/movie-edit/EditMoviePage';
@@ -191,7 +191,9 @@ export default function AppRoutes() {
 
             <Route path="movies" element={<MovieManagementPage />} />
             <Route path="movies/create" element={<CreateMoviePage />} />
-            <Route path="movies/:id" element={<MovieDetailsPage />} />
+            
+            <Route path="movies/:slug" element={<MovieDetailsPage />} />
+            {/* <Route path="movies/:id" element={<MovieDetailsPage />} /> */}
             <Route path="movies/:movieId/edit" element={<EditMoviePage />} />
           </Route>
 

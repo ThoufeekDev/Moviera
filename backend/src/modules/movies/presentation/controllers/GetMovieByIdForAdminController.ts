@@ -1,7 +1,7 @@
 import { ok } from "../../../../shared/http/response";
 import { GetMovieByIdForAdminUseCase } from "../../application/use-cases/queries/GetMovieByIdForAdminUseCase";
 import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
-import { NotFoundError } from "../../../../shared/errors/NotFoundError";
+
 
 
 interface GetMovieByIdForAdminParams{

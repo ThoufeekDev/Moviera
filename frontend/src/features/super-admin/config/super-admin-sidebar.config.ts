@@ -1,4 +1,4 @@
-import type { SidebarItem } from "../../../shared/components/Sidebar/types";
+import type { SidebarItem } from '@/shared/ui/Sidebar';
 
 export const superAdminSidebarItems: SidebarItem[] = [
   {

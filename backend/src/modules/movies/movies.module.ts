@@ -17,11 +17,11 @@ import { GetLanguageUseCase } from './application/use-cases/GetLanguageUseCase';
 import { GetCinemaFormatUseCase } from './application/use-cases/GetCinemaFormatUseCase';
 import { GetGenresUseCase } from './application/use-cases/GetGenresUseCase';
 
-import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugUseCase';
+// import { GetMovieBySlugUseCase } from './application/use-cases/GetMovieBySlugUseCase';
 
 import { GetGenreController } from './presentation/controllers/GetGenreController';
 import { CreateMovieController } from './presentation/controllers/CreateMovieController';
-import { GetMovieByIdController } from './presentation/controllers/GetMovieByIdController';
+// import { GetMovieByIdController } from './presentation/controllers/GetMovieByIdController';
 import { CreatePersonController } from './presentation/controllers/CreatePersonController';
 import { GetPersonByIdController } from './presentation/controllers/GetPersonByIdController';
 import { GetPersonController } from './presentation/controllers/GetPersonController';
@@ -58,13 +58,13 @@ import { createGenreRoutes } from './presentation/routes/genre.routes';
 
 import { ListMoviesForAdminUseCase } from './application/use-cases/queries/ListMoviesForAdminUseCase';
 import { GetMovieByIdForAdminUseCase } from './application/use-cases/queries/GetMovieByIdForAdminUseCase';
-
+import { GetMovieBySlugForAdminUseCase } from './application/use-cases/queries/GetMovieBySlugForAdminUseCase';
 
 
 
 import { ListMoviesForAdminController } from './presentation/controllers/ListMoviesForAdminController';
 import { GetMovieByIdForAdminController } from './presentation/controllers/GetMovieByIdForAdminController';
-
+import { GetMovieBySlugForAdminController } from './presentation/controllers/GetMovieBySlugForAdminCotroller';
 
 
 export function buildMoviesModule(prisma: PrismaClient) {
@@ -110,7 +110,13 @@ export function buildMoviesModule(prisma: PrismaClient) {
 
   const getMovieByIdForAdminController = new GetMovieByIdForAdminController(
       new GetMovieByIdForAdminUseCase(movieQueryService)
-    )
+  )
+  
+
+   const getMovieBySlugForAdminController = new GetMovieBySlugForAdminController(
+    new GetMovieBySlugForAdminUseCase(movieQueryService),
+  );
+
   
 
 
@@ -148,15 +154,12 @@ export function buildMoviesModule(prisma: PrismaClient) {
 
   const getGenreController = new GetGenreController(new GetGenresUseCase(genreRepository));
 
-  const getMovieBySlugController = new GetMovieBySlugController(
-    new GetMovieBySlugUseCase(movieRepository),
-  );
 
   const movieRouter = createMovieRoutes({
     listMoviesForAdminController,
     getMovieByIdForAdminController,
     createMovieController,
-    getMovieBySlugController,
+    getMovieBySlugForAdminController,
     
     updateMovieController,
   });
