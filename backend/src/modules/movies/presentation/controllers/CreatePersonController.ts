@@ -2,20 +2,20 @@ import { Request, Response } from "express";
 import { CreatePersonUseCase } from "../../application/use-cases/CreatePersonUseCase";
 import { successResponse } from "../../../../shared/utils/apiResponse";
 
-
 export class CreatePersonController {
-    constructor(
-        private readonly createPersonUseCase: CreatePersonUseCase,
-    ) { }
-    
-    handle = async (req:Request,res:Response) => {
-        const { name } = req.body;
+  constructor(
+    private readonly createPersonUseCase: CreatePersonUseCase,
+  ) {}
 
-        const file = req.file;
+  handle = async (req: Request, res: Response) => {
+    const { name } = req.body;
+    const file = req.file;
 
-   
-        const person = await this.createPersonUseCase.execute({name,imageFile:file?{buffer:file.buffer}:undefined});
+    const person = await this.createPersonUseCase.execute({
+      name,
+      imageFile: file ? { buffer: file.buffer } : undefined,
+    });
 
-        successResponse(res,201,true,"Person created successsfuly",person)
-    }
+    successResponse(res, 201, true, "Person created successfully", person);
+  };
 }

@@ -1,15 +1,16 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { IMovieQueryService } from '../../../application/ports/IMovieQueryService';
 import { MovieAdminListItem } from '../../../application/read-models/MovieAdminListItem';
 import { ListMoviesForAdminQuery } from '../../../application/query-params/ListMoviesForAdminQuery';
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
 import { MovieAdminDetail } from '../../../application/read-models/MovieAdminDetail';
 import { MovieStatus } from '../../../application/query-params/MovieStatus';
-import { movieAdminListSelect } from '../selects/movieListSelector';
+import { movieAdminListSelect } from '../selects/movieListSelect';
 import { MovieAdminListItemMapper } from '../mappers/MovieAdminListItemMapper';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
-import { MovieDetailMapper } from '../mappers/MovieDetailMapper';
+import { MovieAdminDetailMapper } from '../mappers/MovieAdminDetailMapper';
 import { movieDetailSelect } from '../selects/movieDetailSelect';
+
 export class PrismaMovieQueryService implements IMovieQueryService {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -30,52 +31,75 @@ export class PrismaMovieQueryService implements IMovieQueryService {
     } = query;
 
     const skip = (page - 1) * limit;
-
     const now = new Date();
 
-    const releaseDateFilter = {
-      ...(releaseStatus === 'NOW_SHOWING' && { lte: now }),
-      ...(releaseStatus === 'UPCOMING' && { gt: now}),
-      ...(releaseDateFrom && { gte: releaseDateFrom }),
-      ...(releaseDateTo && { lte: releaseDateTo }),
-    };
+    const andConditions: Prisma.MovieWhereInput[] = [];
 
-    const where = {
-      ...(search && {
+    if (search) {
+      andConditions.push({
         title: {
           contains: search,
-          mode: 'insensitive' as const,
+          mode: 'insensitive',
         },
-      }),
+      });
+    }
 
-      ...(status && {
+    if (status) {
+      andConditions.push({
         isActive: status === MovieStatus.ACTIVE,
-      }),
+      });
+    }
 
-      ...(Object.keys(releaseDateFilter).length > 0 && {
-        releaseDate: releaseDateFilter,
-      }),
+    if (releaseStatus === 'NOW_SHOWING') {
+      andConditions.push({
+        releaseDate: { lte: now },
+      });
+    } else if (releaseStatus === 'UPCOMING') {
+      andConditions.push({
+        releaseDate: { gt: now },
+      });
+    }
 
-      ...(genreId && {
+    if (releaseDateFrom) {
+      andConditions.push({
+        releaseDate: { gte: releaseDateFrom },
+      });
+    }
+
+    if (releaseDateTo) {
+      andConditions.push({
+        releaseDate: { lte: releaseDateTo },
+      });
+    }
+
+    if (genreId) {
+      andConditions.push({
         genres: {
           some: {
             genreId,
           },
         },
-      }),
+      });
+    }
 
-      ...(languageId && {
+    if (languageId) {
+      andConditions.push({
         languages: {
           some: {
             languageId,
           },
         },
-      }),
+      });
+    }
 
-      ...(certification && {
+    if (certification) {
+      andConditions.push({
         certification,
-      }),
-    };
+      });
+    }
+
+    const where: Prisma.MovieWhereInput =
+      andConditions.length > 0 ? { AND: andConditions } : {};
 
     const [movies, total] = await Promise.all([
       this.prisma.movie.findMany({
@@ -90,7 +114,6 @@ export class PrismaMovieQueryService implements IMovieQueryService {
             id: 'asc',
           },
         ],
-
         select: movieAdminListSelect,
       }),
 
@@ -102,28 +125,21 @@ export class PrismaMovieQueryService implements IMovieQueryService {
     return toPaginatedResult(items, total, page, limit);
   }
 
-    async findAdminDetailById(id: string): Promise<MovieAdminDetail | null> {
+  async findAdminDetailById(id: string): Promise<MovieAdminDetail | null> {
     const movie = await this.prisma.movie.findUnique({
       where: { id },
-      select:movieDetailSelect,
-    })
+      select: movieDetailSelect,
+    });
 
-   
-
-      return movie ? MovieDetailMapper.toDetail(movie):null;
-    }
-  
-  async findAdminDetailBySlug(slug: string): Promise<MovieAdminDetail | null> {
-    const movie = await this.prisma.movie.findFirst({
-      where: { slug },
-      select:movieDetailSelect,
-    })
-
-    return movie ? MovieDetailMapper.toDetail(movie):null;
+    return movie ? MovieAdminDetailMapper.toDetail(movie) : null;
   }
 
+  async findAdminDetailBySlug(slug: string): Promise<MovieAdminDetail | null> {
+    const movie = await this.prisma.movie.findUnique({
+      where: { slug },
+      select: movieDetailSelect,
+    });
 
+    return movie ? MovieAdminDetailMapper.toDetail(movie) : null;
+  }
 }
-
-
-

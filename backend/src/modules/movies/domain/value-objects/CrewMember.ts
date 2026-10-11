@@ -1,23 +1,21 @@
 import { DomainError } from "../../../../shared/domain/errors/DomainError";
 
 export class CrewMember {
-    private constructor(public readonly personId: string, public readonly job: string) { };
+    private constructor(public readonly personId: string, public readonly job: string) {}
 
-    static create(input:{personId: string, job: string}): CrewMember{
-const personId = input.personId.trim();
-const job = input.job.trim();
+    static create(input: { personId: string; job: string }): CrewMember {
+        const personId = input.personId.trim();
+        const job = input.job.trim();
 
         if (!personId) throw new DomainError("Crew member requires a person");
-        if (!job) throw new DomainError("Crew job is requried")
+        if (!job) throw new DomainError("Crew job is required");
         return new CrewMember(personId, job);
     }
 
-    equals(other:CrewMember) {
+    equals(other: CrewMember): boolean {
         return (
             this.personId === other.personId &&
             this.job === other.job
-        )
-        
-        
+        );
     }
 }

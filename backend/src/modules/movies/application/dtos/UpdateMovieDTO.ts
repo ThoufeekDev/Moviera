@@ -2,42 +2,28 @@ import { Certification } from "../../domain/enums/Certification";
 
 export interface UpdateMovieDTO {
   title?: string;
-
-  description?: string;
-
+  description?: string | null;
   duration?: number;
-
   releaseDate?: Date;
-
   primaryGenreId?: string;
-
   genreIds?: string[];
-
   certification?: Certification;
-
   languageIds?: string[];
-
   cinemaFormatIds?: string[];
-
   cast?: {
     personId: string;
-    character?: string;
+    character?: string | null;
   }[];
-
   crew?: {
     personId: string;
     job: string;
   }[];
-
   posterFile?: {
     buffer: Buffer;
   };
-
   backdropFile?: {
     buffer: Buffer;
   };
-
-  trailerUrl?: string;
-
+  trailerUrl?: string | null;
   isActive?: boolean;
 }

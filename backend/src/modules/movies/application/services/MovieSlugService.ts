@@ -9,15 +9,15 @@ export class MovieSlugService {
     releaseDate: Date,
     currentMovieId?: string,
   ): Promise<string> {
-    const baseSlug = `${generateSlug(title)}-${releaseDate.getFullYear()}`;
+    const baseSlug = `${generateSlug(title)}-${releaseDate.getUTCFullYear()}`;
 
     let slug = baseSlug;
     let suffix = 2;
 
     while (true) {
-      const existingMovie = await this.movieRepository.findBySlug(slug);
+      const exists = await this.movieRepository.existsBySlug(slug, currentMovieId);
 
-      if (!existingMovie || existingMovie.id === currentMovieId) {
+      if (!exists) {
         return slug;
       }
 

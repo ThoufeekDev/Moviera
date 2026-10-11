@@ -5,61 +5,60 @@ import { MovieMapper } from '../mappers/MovieMapper';
 import { UpdateMovieData } from '../../../domain/types/UpdateMovieData';
 import { CreateMovieData } from '../../../domain/types/CreateMovieData';
 
-
 export class PrismaMovieRepository implements IMovieRepository {
-
-  constructor(private readonly prisma: PrismaClient) { };
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(data: CreateMovieData): Promise<void> {
-    //  desturctuing the data lang,cast,crew are the differenct table
     const { languageIds, genreIds, cinemaFormatIds, cast, crew, ...movieData } = data;
 
-    await this.prisma.$transaction(async (tx) => {
-      const movie = await tx.movie.create({
-        data: movieData,
-      });
+    await this.prisma.$transaction(
+      async (tx) => {
+        const movie = await tx.movie.create({
+          data: movieData,
+        });
 
-      await tx.movieLanguage.createMany({
-        data: languageIds.map((languageId) => ({
-          movieId: movie.id,
-          languageId,
-        })),
-      });
+        await tx.movieLanguage.createMany({
+          data: languageIds.map((languageId) => ({
+            movieId: movie.id,
+            languageId,
+          })),
+        });
 
-      await tx.movieGenre.createMany({
-        data: genreIds.map((genreId) => ({
-          movieId: movie.id,
-          genreId,
-        })),
-      });
+        await tx.movieGenre.createMany({
+          data: genreIds.map((genreId) => ({
+            movieId: movie.id,
+            genreId,
+          })),
+        });
 
-      await tx.movieCinemaFormat.createMany({
-        data: cinemaFormatIds.map((cinemaFormatId) => ({
-          movieId: movie.id,
-          cinemaFormatId,
-        })),
-      });
+        await tx.movieCinemaFormat.createMany({
+          data: cinemaFormatIds.map((cinemaFormatId) => ({
+            movieId: movie.id,
+            cinemaFormatId,
+          })),
+        });
 
-      await tx.movieCast.createMany({
-        data: cast.map((item) => ({
-          movieId: movie.id,
-          personId: item.personId,
-          character: item.character ?? null,
-        })),
-      });
+        await tx.movieCast.createMany({
+          data: cast.map((item) => ({
+            movieId: movie.id,
+            personId: item.personId,
+            character: item.character ?? null,
+          })),
+        });
 
-      await tx.movieCrew.createMany({
-        data: crew.map((item) => ({
-          movieId: movie.id,
-          personId: item.personId,
-          job: item.job,
-        })),
-      });
-    }, {
-      maxWait: 10000,
-      timeout:15000
-    });
-    
+        await tx.movieCrew.createMany({
+          data: crew.map((item) => ({
+            movieId: movie.id,
+            personId: item.personId,
+            job: item.job,
+          })),
+        });
+      },
+      {
+        maxWait: 10000,
+        timeout: 15000,
+      },
+    );
   }
 
   async findById(id: string): Promise<Movie | null> {
@@ -134,128 +133,22 @@ export class PrismaMovieRepository implements IMovieRepository {
     return movie ? MovieMapper.toDomain(movie) : null;
   }
 
-  // async findAll(query: MovieQuery): Promise<PaginatedResult<Movie>> {
-  //   const {
-  //     page = 1,
-  //     limit = 12,
-  //     search,
-  //     status,
-  //     sortBy = 'createdAt',
-  //     sortOrder = 'desc',
-  //   } = query;
+  async existsBySlug(slug: string, excludeId?: string): Promise<boolean> {
+    const count = await this.prisma.movie.count({
+      where: {
+        slug,
+        ...(excludeId ? { NOT: { id: excludeId } } : {}),
+      },
+    });
 
-  //   const skip = (page - 1) * limit;
-
-  //   const where = {
-  //     ...(search && {
-  //       title: {
-  //         contains: search,
-  //         mode: 'insensitive' as const,
-  //       },
-  //     }),
-
-  //     ...(status && {
-  //       isActive: status === MovieStatus.ACTIVE,
-  //     }),
-  //   };
-
-  //   const [movies, total] = await Promise.all([
-  //     this.prisma.movie.findMany({
-  //       where,
-  //       skip,
-  //       take: limit,
-
-  //       orderBy: {
-  //         [sortBy]: sortOrder,
-  //       },
-
-  //       include: {
-  //         primaryGenre: true,
-
-  //         languages: {
-  //           include: {
-  //             language: true,
-  //           },
-  //         },
-
-  //         cinemaFormats: {
-  //           include: {
-  //             cinemaFormat: true,
-  //           },
-  //         },
-
-  //         cast: {
-  //           include: {
-  //             person: true,
-  //           },
-  //         },
-
-  //         crew: {
-  //           include: {
-  //             person: true,
-  //           },
-  //         },
-  //         genres: {
-  //           include: {
-  //             genre: true,
-  //           },
-  //         },
-  //       },
-  //     }),
-
-  //     this.prisma.movie.count({
-  //       where,
-  //     }),
-  //   ]);
-
-  //   return {
-  //     items: movies.map((movie) => MovieMapper.toDomain(movie)),
-
-  //     pagination: {
-  //       page,
-  //       limit,
-  //       total,
-  //       totalPages: Math.ceil(total / limit),
-  //     },
-  //   };
-  // }
-
-  /**
-   *
-   *
-   *  !Implement @transaction on UpdateMovie
-   *  ? The main idea is to make all these operation part of one database
-   *  * Movie Update
-   *  * Languages
-   *  * Cinema formats
-   *  * Cast
-   *  * Crew
-   *
-   * ^ Wat is transaction ?
-   * * treat multiple database operations as one single unit of work
-   * ^ The Rule is Eaither everything success or nothing is changed
-   *  ! This is often called atomicity
-   *
-   * ^ why i here use transaction look at my
-   * &updateMovie() is not updating just one table
-   * * one patch can updates all of these ...
-   *
-   * &tx means
-   * ! Start a transaction. Everything I execute using tx
-   * ! belongs to this transaction
-   *
-   */
+    return count > 0;
+  }
 
   async updateMovie(id: string, movie: UpdateMovieData): Promise<void> {
-    // Put every remaining property into a new object called movieData.
     const { languageIds, cinemaFormatIds, genreIds, cast, crew, ...movieData } = movie;
 
-    // ? why Everything inside transaction
-    // ? must use the transaction client tx
     await this.prisma.$transaction(
       async (tx) => {
-
-
         if (Object.keys(movieData).length > 0) {
           await tx.movie.update({
             where: { id },
@@ -339,10 +232,10 @@ export class PrismaMovieRepository implements IMovieRepository {
             });
           }
         }
-      }, {
-        timeout:15000
-      }
+      },
+      {
+        timeout: 15000,
+      },
     );
-  
   }
 }

@@ -1,9 +1,13 @@
-// ! dependancy wireing 
+// dependency wiring
 
 import prisma from "../config/database";
+import { CloudinaryStorageService } from "../shared/infrastructure/storage/CloudinaryStorageService";
 import { buildMoviesModule } from "../modules/movies/movies.module";
+
+const storageService = new CloudinaryStorageService();
 
 export const container = {
     prisma,
-    movies: buildMoviesModule(prisma),
-}
+    storageService,
+    movies: buildMoviesModule(prisma, storageService),
+};

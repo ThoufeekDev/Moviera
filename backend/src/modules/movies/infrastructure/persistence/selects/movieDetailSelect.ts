@@ -15,6 +15,7 @@ export const movieDetailSelect = {
 
   primaryGenre: {
     select: {
+      id: true,
       name: true,
     },
   },
@@ -28,6 +29,9 @@ export const movieDetailSelect = {
         },
       },
     },
+    orderBy: {
+      id: 'asc',
+    },
   },
 
   languages: {
@@ -39,7 +43,11 @@ export const movieDetailSelect = {
         },
       },
     },
+    orderBy: {
+      id: 'asc',
+    },
   },
+
   cinemaFormats: {
     select: {
       cinemaFormat: {
@@ -49,11 +57,15 @@ export const movieDetailSelect = {
         },
       },
     },
+    orderBy: {
+      id: 'asc',
+    },
   },
 
   cast: {
     select: {
       id: true,
+      personId: true,
       character: true,
       person: {
         select: {
@@ -63,10 +75,15 @@ export const movieDetailSelect = {
         },
       },
     },
+    orderBy: {
+      id: 'asc',
+    },
   },
+
   crew: {
     select: {
       id: true,
+      personId: true,
       job: true,
       person: {
         select: {
@@ -75,6 +92,9 @@ export const movieDetailSelect = {
           imageUrl: true,
         },
       },
+    },
+    orderBy: {
+      id: 'asc',
     },
   },
 } satisfies Prisma.MovieSelect;

@@ -5,26 +5,24 @@ export interface CreateMovieDTO {
   description?: string;
   duration: number;
   releaseDate: Date;
-  languages: string[];
+  languageIds: string[];
   cast: {
     personId: string;
     character?: string;
-
   }[];
-
   crew: {
     personId: string;
     job: string;
   }[];
   primaryGenreId: string;
-  genreIds:string[]
+  genreIds: string[];
   certification: Certification;
-  cinemaFormatIds:string[]
+  cinemaFormatIds: string[];
   trailerUrl?: string;
   posterFile?: {
     buffer: Buffer;
-  }
+  };
   backdropFile?: {
-    buffer:Buffer
-  }
+    buffer: Buffer;
+  };
 }

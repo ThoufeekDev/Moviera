@@ -152,6 +152,7 @@ async rollbackUploads(
     try {
       await this.storageService.deleteImage(publicId);
     } catch (error) {
+      console.error(`Failed to delete image with publicId: ${publicId}`, error);
     }
   }
 }

@@ -1,21 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 import { Person } from "../../../domain/entities/Person";
-import { IPersonRepository } from "../../../domain/repositories/IPersonRepository";
+import { CreatePersonData, IPersonRepository } from "../../../domain/repositories/IPersonRepository";
 import { PersonMapper } from "../mappers/PersonMapper";
 
 export class PrismaPersonRepository implements IPersonRepository {
   constructor(private readonly prisma: PrismaClient) {}
-  async create(person: Person): Promise<Person> {
+
+  async create(data: CreatePersonData): Promise<Person> {
     const createdPerson = await this.prisma.person.create({
       data: {
-        name: person.name,
-        imageUrl: person.imageUrl,
+        name: data.name,
+        imageUrl: data.imageUrl ?? null,
+        imagePublicId: data.imagePublicId ?? null,
       },
     });
 
-  
-
-    return PersonMapper.toDomain(createdPerson)
+    return PersonMapper.toDomain(createdPerson);
   }
 
   async findById(id: string): Promise<Person | null> {
@@ -23,22 +23,20 @@ export class PrismaPersonRepository implements IPersonRepository {
       where: { id },
     });
 
-
-    return person?PersonMapper.toDomain(person):null
+    return person ? PersonMapper.toDomain(person) : null;
   }
 
-async findByIds(ids: string[]): Promise<Person[]> {
-  const persons = await this.prisma.person.findMany({
-    where: {
-      id: {
-        in: ids,
+  async findByIds(ids: string[]): Promise<Person[]> {
+    const persons = await this.prisma.person.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
       },
-    },
-  });
+    });
 
-
-  return PersonMapper.toDomainList(persons);
-}
+    return PersonMapper.toDomainList(persons);
+  }
 
   async findByName(name: string): Promise<Person | null> {
     const person = await this.prisma.person.findFirst({
@@ -50,10 +48,7 @@ async findByIds(ids: string[]): Promise<Person[]> {
       },
     });
 
-  
-
-  
-     return person ? PersonMapper.toDomain(person) : null;
+    return person ? PersonMapper.toDomain(person) : null;
   }
 
   async findAll(): Promise<Person[]> {
@@ -63,19 +58,15 @@ async findByIds(ids: string[]): Promise<Person[]> {
       },
     });
 
-   
     return PersonMapper.toDomainList(people);
   }
-    
-    
-    async update(id: string, data: { name?: string; imageUrl?: string | null; }): Promise<Person> {
-        const updatedPerson = await this.prisma.person.update({
-            where: { id },
-            data,
-        })
 
+  async update(id: string, data: { name?: string; imageUrl?: string | null; imagePublicId?: string | null }): Promise<Person> {
+    const updatedPerson = await this.prisma.person.update({
+      where: { id },
+      data,
+    });
 
-      
-       return PersonMapper.toDomain(updatedPerson);
-    }
+    return PersonMapper.toDomain(updatedPerson);
+  }
 }

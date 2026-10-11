@@ -24,7 +24,7 @@ export interface UpdateMovieData {
 
   cast?: {
     personId: string;
-    character?: string;
+    character?: string | null;
   }[];
 
   crew?: {

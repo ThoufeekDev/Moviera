@@ -17,11 +17,11 @@ export interface CreateMovieData {
 
   languageIds: string[];
   cinemaFormatIds: string[];
-  certification:Certification
+  certification: Certification;
 
   cast: {
     personId: string;
-    character?: string;
+    character?: string | null;
   }[];
 
   crew: {

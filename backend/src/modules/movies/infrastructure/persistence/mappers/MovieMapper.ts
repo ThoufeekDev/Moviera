@@ -1,17 +1,13 @@
 import { Prisma } from '@prisma/client';
 import { Movie } from '../../../domain/entities/Movie';
-import { Language } from '../../../domain/entities/Language';
-// import { MovieCast } from '../../domain/entities/MovieCast';
-// import { MovieCrew } from '../../domain/entities/MovieCrew';
-// import { Person } from '../../domain/entities/Person';
-
+import { LanguageMapper } from './LanguageMapper';
+import { GenreMapper } from './GenreMapper';
+import { CinemaFormatMapper } from './CinemaFormatMapper';
 import { CastMember } from '../../../domain/value-objects/CastMember';
 import { CrewMember } from '../../../domain/value-objects/CrewMember';
-import { CinemaFormat } from '../../../domain/entities/CinemaFormat';
-import { Genre } from '../../../domain/entities/Genre';
 import { Certification } from '../../../domain/enums/Certification';
-// import { MovieCast } from '../../domain/entities/MovieCast';
 import { ImageRef } from '../../../domain/value-objects/ImageRef';
+
 type MovieWithRelations = Prisma.MovieGetPayload<{
   include: {
     primaryGenre: true;
@@ -44,59 +40,20 @@ type MovieWithRelations = Prisma.MovieGetPayload<{
 }>;
 
 export class MovieMapper {
-  // take a prismaMovie table and converts into Domain Movie table
-
   static toDomain(movie: MovieWithRelations): Movie {
-    const languages = movie.languages.map(
-      (movieLanguage) =>
-        new Language(
-          movieLanguage.language.id,
-          movieLanguage.language.name,
-          movieLanguage.language.code,
-        ),
+    const languages = movie.languages.map((movieLanguage) =>
+      LanguageMapper.toDomain(movieLanguage.language),
     );
 
-    const primaryGenre = new Genre(
-      movie.primaryGenre.id,
-      movie.primaryGenre.name,
-      movie.primaryGenre.slug,
-      movie.primaryGenre.isActive,
-      movie.primaryGenre.createdAt,
-      movie.primaryGenre.updatedAt,
+    const primaryGenre = GenreMapper.toDomain(movie.primaryGenre);
+
+    const genres = movie.genres.map((movieGenre) =>
+      GenreMapper.toDomain(movieGenre.genre),
     );
 
-    const genres = movie.genres.map(
-      (movieGenre) =>
-        new Genre(
-          movieGenre.genre.id,
-          movieGenre.genre.name,
-          movieGenre.genre.slug,
-          movieGenre.genre.isActive,
-          movieGenre.genre.createdAt,
-          movieGenre.genre.updatedAt,
-        ),
+    const cinemaFormats = movie.cinemaFormats.map((movieCinemaFormat) =>
+      CinemaFormatMapper.toDomain(movieCinemaFormat.cinemaFormat),
     );
-
-    const cinemaFormats = movie.cinemaFormats.map(
-      (movieCinemaFormat) =>
-        new CinemaFormat(
-          movieCinemaFormat.cinemaFormat.id,
-          movieCinemaFormat.cinemaFormat.name,
-          movieCinemaFormat.cinemaFormat.slug,
-          movieCinemaFormat.cinemaFormat.isActive,
-          movieCinemaFormat.cinemaFormat.createdAt,
-          movieCinemaFormat.cinemaFormat.updatedAt,
-        ),
-    );
-
-    // const cast = movie.cast.map(
-    //   (movieCast) =>
-    //     new MovieCast(
-    //       movieCast.id,
-    //       new Person(movieCast.person.id, movieCast.person.name, movieCast.person.imageUrl),
-    //       movieCast.character,
-    //     ),
-    // );
 
     const cast = movie.cast.map((movieCast) =>
       CastMember.create({
@@ -104,15 +61,6 @@ export class MovieMapper {
         character: movieCast.character,
       }),
     );
-
-    // const crew = movie.crew.map(
-    //   (movieCrew) =>
-    //     new MovieCrew(
-    //       movieCrew.id,
-    //       new Person(movieCrew.person.id, movieCrew.person.name, movieCrew.person.imageUrl),
-    //       movieCrew.job,
-    //     ),
-    // );
 
     const crew = movie.crew.map((movieCrew) =>
       CrewMember.create({
@@ -156,23 +104,5 @@ export class MovieMapper {
       cast,
       crew,
     );
-  }
-
-  static toPersistence(movie: Movie) {
-    return {
-      title: movie.title,
-      slug: movie.slug,
-      description: movie.description,
-      duration: movie.duration,
-      releaseDate: movie.releaseDate,
-      primaryGenreId: movie.primaryGenre.id,
-      certification: movie.certification,
-      posterUrl: movie.poster?.url ?? null,
-      posterPublicId: movie.poster?.publicId ?? null,
-      backdropUrl: movie.backdrop?.url ?? null,
-      backdropPublicId: movie.backdrop?.publicId ?? null,
-      trailerUrl: movie.trailerUrl,
-      isActive: movie.isActive,
-    };
   }
 }

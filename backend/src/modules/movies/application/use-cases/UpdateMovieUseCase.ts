@@ -1,20 +1,18 @@
 import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
 import { NotFoundError } from '../../../../shared/errors/NotFoundError';
-
 import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
-
 import { UpdateMovieRequest } from '../dtos/UpdateMovieRequest';
 import { MovieReferenceValidator } from '../services/MovieReferenceValidator';
 import { IUseCase } from '../../../../shared/application/interfaces/IUseCase';
 import { MovieSlugService } from '../services/MovieSlugService';
 import { MovieImageService } from '../services/MovieImageService';
+
 export class UpdateMovieUseCase implements IUseCase<UpdateMovieRequest, void> {
   constructor(
     private readonly movieRepository: IMovieRepository,
     private readonly movieReferenceValidator: MovieReferenceValidator,
     private readonly movieSlugService: MovieSlugService,
     private readonly movieImageService: MovieImageService,
-  
   ) {}
 
   async execute(request: UpdateMovieRequest): Promise<void> {
@@ -28,7 +26,7 @@ export class UpdateMovieUseCase implements IUseCase<UpdateMovieRequest, void> {
       throw new NotFoundError('Movie not found');
     }
 
-    // await this.movieReferenceValidator.validateForUpdate(movie, existingMovie);
+    await this.movieReferenceValidator.validateForUpdate(movie, existingMovie);
 
     const updateData: UpdateMovieData = {
       ...movieData,
@@ -37,7 +35,7 @@ export class UpdateMovieUseCase implements IUseCase<UpdateMovieRequest, void> {
     if (movie.title && movie.title !== existingMovie.title) {
       updateData.slug = await this.movieSlugService.generateUniqueSlug(
         movie.title,
-        movie.releaseDate??existingMovie.releaseDate,
+        movie.releaseDate ?? existingMovie.releaseDate,
         existingMovie.id,
       );
     }
@@ -48,12 +46,11 @@ export class UpdateMovieUseCase implements IUseCase<UpdateMovieRequest, void> {
 
     try {
       await this.movieRepository.updateMovie(id, updateData);
-    
     } catch (error) {
       await this.movieImageService.rollbackUploads(images);
       throw error;
     }
 
-      await this.movieImageService.cleanupOldImages(existingMovie,images)
+    await this.movieImageService.cleanupOldImages(existingMovie, images);
   }
 }

@@ -5,11 +5,13 @@ export class PersonMapper {
     id: string;
     name: string;
     imageUrl: string | null;
+    imagePublicId?: string | null;
   }): Person {
     return new Person(
       data.id,
       data.name,
-      data.imageUrl
+      data.imageUrl,
+      data.imagePublicId ?? null,
     );
   }
 
@@ -18,6 +20,7 @@ export class PersonMapper {
       id: string;
       name: string;
       imageUrl: string | null;
+      imagePublicId?: string | null;
     }[]
   ): Person[] {
     return data.map((person) => this.toDomain(person));

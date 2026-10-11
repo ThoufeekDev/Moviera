@@ -14,6 +14,7 @@ export interface MovieAdminDetail {
   isActive: boolean;
 
   primaryGenre: {
+    id: string;
     name: string;
   };
 
@@ -33,15 +34,17 @@ export interface MovieAdminDetail {
   }[];
 
   cast: {
-      id: string;
-      name: string;
+    id: string;
+    personId: string;
+    name: string;
     character: string | null;
-    profileImageUrl:string | null;
+    profileImageUrl: string | null;
   }[];
 
   crew: {
-      id: string;
-      name: string;
+    id: string;
+    personId: string;
+    name: string;
     job: string;
     profileImageUrl: string | null;
   }[];

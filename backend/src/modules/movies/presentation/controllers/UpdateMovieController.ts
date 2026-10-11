@@ -1,27 +1,20 @@
-import { Request, Response } from 'express';
+import { HttpRequest, HttpResponse } from '../../../../shared/http/HttpTypes';
+import { ok } from '../../../../shared/http/response';
 import { UpdateMovieUseCase } from '../../application/use-cases/UpdateMovieUseCase';
-import { successResponse } from '../../../../shared/utils/apiResponse';
+import { UpdateMovieDTO } from '../../application/dtos/UpdateMovieDTO';
 
 export class UpdateMovieController {
   constructor(private readonly updateMovieUseCase: UpdateMovieUseCase) {}
 
-  handle = async (req: Request<{ id: string }>, res: Response) => {
-    const files = req.files as {
-      [fieldname: string]: Express.Multer.File[];
-    };
+  handle = async (
+    req: HttpRequest<{ id: string }, UpdateMovieDTO>,
+  ): Promise<HttpResponse> => {
+    const posterFile = req.files?.poster?.[0];
+    const backdropFile = req.files?.backdrop?.[0];
 
-    const posterFile = files?.poster?.[0];
-    const backdropFile = files?.backdrop?.[0];
-
-    const movieToUpdate = {
+    const movieToUpdate: UpdateMovieDTO = {
       ...req.body,
-
-      duration: req.body.duration ? Number(req.body.duration) : undefined,
-
-      releaseDate: req.body.releaseDate ? new Date(req.body.releaseDate) : undefined,
-
       posterFile: posterFile ? { buffer: posterFile.buffer } : undefined,
-
       backdropFile: backdropFile ? { buffer: backdropFile.buffer } : undefined,
     };
 
@@ -30,7 +23,6 @@ export class UpdateMovieController {
       data: movieToUpdate,
     });
 
-
-    successResponse(res, 200, true, 'Movie successfully updated');
+    return ok(undefined, 'Movie updated successfully');
   };
 }
