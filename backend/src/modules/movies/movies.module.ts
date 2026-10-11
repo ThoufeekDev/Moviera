@@ -1,14 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 
-import { PrismaMovieRepository } from './infrastructure/repositories/PrismaMovieRepository';
-import { PrismaGenreRepository } from './infrastructure/repositories/PrismaGenreRepository';
-import { PrismaLanguageRepository } from './infrastructure/repositories/PrismaLanguageRepository';
-import { PrismaCinemaFormatRepository } from './infrastructure/repositories/PrismaCinemaFormatRepository';
-import { PrismaPersonRepository } from './infrastructure/repositories/PrismaPersonRepository';
+import { PrismaMovieRepository } from './infrastructure/persistence/repositories/PrismaMovieRepository';
+import { PrismaGenreRepository } from './infrastructure/persistence/repositories/PrismaGenreRepository';
+import { PrismaLanguageRepository } from './infrastructure/persistence/repositories/PrismaLanguageRepository';
+import { PrismaCinemaFormatRepository } from './infrastructure/persistence/repositories/PrismaCinemaFormatRepository';
+import { PrismaPersonRepository } from './infrastructure/persistence/repositories/PrismaPersonRepository';
 
 import { PrismaMovieQueryService } from './infrastructure/persistence/queries/PrismaMovieQueryService';
 
-import { CreateMovieUseCase } from './application/use-cases/CreateMovieUseCase';
+import { CreateMovieUseCase } from './application/commands/CreateMovieUseCase';
 // import { GetMovieByIdUseCase } from './application/use-cases/GetMovieByIdUseCase';
 import { CreatePersonUseCase } from './application/use-cases/CreatePersonUseCase';
 import { GetPersonByIdUseCase } from './application/use-cases/GetPersonByIdUseCase';
@@ -30,7 +30,7 @@ import { GetCinemaFormatController } from './presentation/controllers/GetCinemaF
 
 
 
-import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
+// import { GetMovieBySlugController } from './presentation/controllers/GetMovieBySlugController';
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
 import { UpdateMovieUseCase } from './application/use-cases/UpdateMovieUseCase';
 import { CloudinaryStorageService } from '../../shared/infrastructure/storage/CloudinaryStorageService';
@@ -56,9 +56,9 @@ import { createGenreRoutes } from './presentation/routes/genre.routes';
 
 
 
-import { ListMoviesForAdminUseCase } from './application/use-cases/queries/ListMoviesForAdminUseCase';
-import { GetMovieByIdForAdminUseCase } from './application/use-cases/queries/GetMovieByIdForAdminUseCase';
-import { GetMovieBySlugForAdminUseCase } from './application/use-cases/queries/GetMovieBySlugForAdminUseCase';
+import { ListMoviesForAdminUseCase } from './application/queries/ListMoviesForAdminUseCase';
+import { GetMovieByIdForAdminUseCase } from './application/queries/GetMovieByIdForAdminUseCase';
+import { GetMovieBySlugForAdminUseCase } from './application/queries/GetMovieBySlugForAdminUseCase';
 
 
 

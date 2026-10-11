@@ -1,4 +1,4 @@
-import { Language } from "../../domain/entities/Language";
+import { Language } from "../../../domain/entities/Language";
 
 export class LanguageMapper {
   static toDomain(language: {

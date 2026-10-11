@@ -1,5 +1,5 @@
 import { ok } from "../../../../shared/http/response";
-import { GetMovieByIdForAdminUseCase } from "../../application/use-cases/queries/GetMovieByIdForAdminUseCase";
+import { GetMovieByIdForAdminUseCase } from "../../application/queries/GetMovieByIdForAdminUseCase";
 import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
 
 

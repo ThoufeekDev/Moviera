@@ -1,14 +1,10 @@
-import { Movie } from '../../domain/entities/Movie';
-import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
+import { Movie } from '../../../domain/entities/Movie';
+import { IMovieRepository } from '../../../domain/repositories/IMovieRepository';
 import { PrismaClient } from '@prisma/client';
 import { MovieMapper } from '../mappers/MovieMapper';
-import { UpdateMovieData } from '../../domain/types/UpdateMovieData';
-import { CreateMovieData } from '../../domain/types/CreateMovieData';
+import { UpdateMovieData } from '../../../domain/types/UpdateMovieData';
+import { CreateMovieData } from '../../../domain/types/CreateMovieData';
 
-
-import { PaginatedResult } from '../../../../shared/types/Pagination';
-
-import { MovieStatus } from '../../application/queries/MovieStatus';
 
 export class PrismaMovieRepository implements IMovieRepository {
 
@@ -59,7 +55,11 @@ export class PrismaMovieRepository implements IMovieRepository {
           job: item.job,
         })),
       });
+    }, {
+      maxWait: 10000,
+      timeout:15000
     });
+    
   }
 
   async findById(id: string): Promise<Movie | null> {

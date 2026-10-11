@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { Genre } from "../../domain/entities/Genre";
-import { IGenreRepository } from "../../domain/repositories/IGenreRepository";
+import { Genre } from "../../../domain/entities/Genre";
+import { IGenreRepository } from "../../../domain/repositories/IGenreRepository";
 import { GenreMapper } from "../mappers/GenreMapper";
 
 export class PrismaGenreRepository implements IGenreRepository {

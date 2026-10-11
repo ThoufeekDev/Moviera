@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { Certification } from '../../domain/enums/Certification';
-import { MovieSortBy } from '../../application/queries/MovieSortBy';
-import { MovieStatus } from '../../application/queries/MovieStatus';
+import { MovieSortBy } from '../../application/query-params/MovieSortBy';
+import { MovieStatus } from '../../application/query-params/MovieStatus';
 
 export const ListMoviesForAdminValidator = z
   .object({

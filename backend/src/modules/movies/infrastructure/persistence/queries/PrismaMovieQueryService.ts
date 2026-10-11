@@ -1,14 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { IMovieQueryService } from '../../../application/ports/IMovieQueryService';
 import { MovieAdminListItem } from '../../../application/read-models/MovieAdminListItem';
-import { ListMoviesForAdminQuery } from '../../../application/queries/ListMoviesForAdminQuery';
+import { ListMoviesForAdminQuery } from '../../../application/query-params/ListMoviesForAdminQuery';
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
 import { MovieAdminDetail } from '../../../application/read-models/MovieAdminDetail';
-import { MovieStatus } from '../../../application/queries/MovieStatus';
+import { MovieStatus } from '../../../application/query-params/MovieStatus';
 import { movieAdminListSelect } from '../selects/movieListSelector';
 import { MovieAdminListItemMapper } from '../mappers/MovieAdminListItemMapper';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
-import { NotFoundError } from '../../../../../shared/errors/NotFoundError';
 import { MovieDetailMapper } from '../mappers/MovieDetailMapper';
 import { movieDetailSelect } from '../selects/movieDetailSelect';
 export class PrismaMovieQueryService implements IMovieQueryService {
@@ -119,8 +118,6 @@ export class PrismaMovieQueryService implements IMovieQueryService {
       where: { slug },
       select:movieDetailSelect,
     })
-    
-    if (!movie) throw new NotFoundError('Movie not found');
 
     return movie ? MovieDetailMapper.toDetail(movie):null;
   }

@@ -1,8 +1,8 @@
 
-import { IMovieQueryService } from "../../ports/IMovieQueryService";
-import { IUseCase } from "../../../../../shared/application/interfaces/IUseCase";
-import { MovieAdminDetail } from "../../read-models/MovieAdminDetail";
-import { NotFoundError } from "../../../../../shared/errors/NotFoundError";
+import { IMovieQueryService } from "../ports/IMovieQueryService";
+import { IUseCase } from "../../../../shared/application/interfaces/IUseCase";
+import { MovieAdminDetail } from "../read-models/MovieAdminDetail";
+import { NotFoundError } from "../../../../shared/errors/NotFoundError";
 
 export interface GetMovieBySlugForAdminRequest {
     slug:string

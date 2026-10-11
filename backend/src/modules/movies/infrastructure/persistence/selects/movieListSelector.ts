@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { constants } from "node:http2";
+
 
 
 export const movieAdminListSelect  = {

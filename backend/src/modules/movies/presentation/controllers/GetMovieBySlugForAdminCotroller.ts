@@ -1,7 +1,7 @@
 import { ok } from "../../../../shared/http/response";
 import { HttpRequest ,HttpResponse} from "../../../../shared/http/HttpTypes";
-import { GetMovieBySlugForAdminRequest } from "../../application/use-cases/queries/GetMovieBySlugForAdminUseCase";
-import { GetMovieBySlugForAdminUseCase } from "../../application/use-cases/queries/GetMovieBySlugForAdminUseCase";
+import { GetMovieBySlugForAdminRequest } from "../../application/queries/GetMovieBySlugForAdminUseCase";
+import { GetMovieBySlugForAdminUseCase } from "../../application/queries/GetMovieBySlugForAdminUseCase";
 
 
 interface GetMovieBySlugForAdminParams extends GetMovieBySlugForAdminRequest { };

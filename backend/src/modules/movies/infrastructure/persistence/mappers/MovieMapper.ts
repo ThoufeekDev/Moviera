@@ -1,12 +1,17 @@
 import { Prisma } from '@prisma/client';
-import { Movie } from '../../domain/entities/Movie';
-import { Language } from '../../domain/entities/Language';
-import { MovieCast } from '../../domain/entities/MovieCast';
-import { MovieCrew } from '../../domain/entities/MovieCrew';
-import { Person } from '../../domain/entities/Person';
-import { CinemaFormat } from '../../domain/entities/CinemaFormat';
-import { Genre } from '../../domain/entities/Genre';
-import { Certification } from '../../domain/enums/Certification';
+import { Movie } from '../../../domain/entities/Movie';
+import { Language } from '../../../domain/entities/Language';
+// import { MovieCast } from '../../domain/entities/MovieCast';
+// import { MovieCrew } from '../../domain/entities/MovieCrew';
+// import { Person } from '../../domain/entities/Person';
+
+import { CastMember } from '../../../domain/value-objects/CastMember';
+import { CrewMember } from '../../../domain/value-objects/CrewMember';
+import { CinemaFormat } from '../../../domain/entities/CinemaFormat';
+import { Genre } from '../../../domain/entities/Genre';
+import { Certification } from '../../../domain/enums/Certification';
+// import { MovieCast } from '../../domain/entities/MovieCast';
+import { ImageRef } from '../../../domain/value-objects/ImageRef';
 type MovieWithRelations = Prisma.MovieGetPayload<{
   include: {
     primaryGenre: true;
@@ -84,23 +89,53 @@ export class MovieMapper {
         ),
     );
 
-    const cast = movie.cast.map(
-      (movieCast) =>
-        new MovieCast(
-          movieCast.id,
-          new Person(movieCast.person.id, movieCast.person.name, movieCast.person.imageUrl),
-          movieCast.character,
-        ),
+    // const cast = movie.cast.map(
+    //   (movieCast) =>
+    //     new MovieCast(
+    //       movieCast.id,
+    //       new Person(movieCast.person.id, movieCast.person.name, movieCast.person.imageUrl),
+    //       movieCast.character,
+    //     ),
+    // );
+
+    const cast = movie.cast.map((movieCast) =>
+      CastMember.create({
+        personId: movieCast.personId,
+        character: movieCast.character,
+      }),
     );
 
-    const crew = movie.crew.map(
-      (movieCrew) =>
-        new MovieCrew(
-          movieCrew.id,
-          new Person(movieCrew.person.id, movieCrew.person.name, movieCrew.person.imageUrl),
-          movieCrew.job,
-        ),
+    // const crew = movie.crew.map(
+    //   (movieCrew) =>
+    //     new MovieCrew(
+    //       movieCrew.id,
+    //       new Person(movieCrew.person.id, movieCrew.person.name, movieCrew.person.imageUrl),
+    //       movieCrew.job,
+    //     ),
+    // );
+
+    const crew = movie.crew.map((movieCrew) =>
+      CrewMember.create({
+        personId: movieCrew.personId,
+        job: movieCrew.job,
+      }),
     );
+
+    const poster =
+      movie.posterUrl && movie.posterPublicId
+        ? ImageRef.create({
+            url: movie.posterUrl,
+            publicId: movie.posterPublicId,
+          })
+        : null;
+
+    const backdrop =
+      movie.backdropUrl && movie.backdropPublicId
+        ? ImageRef.create({
+            url: movie.backdropUrl,
+            publicId: movie.backdropPublicId,
+          })
+        : null;
 
     return new Movie(
       movie.id,
@@ -114,10 +149,8 @@ export class MovieMapper {
       genres,
       Certification[movie.certification],
       cinemaFormats,
-      movie.posterUrl,
-      movie.posterPublicId,
-      movie.backdropUrl,
-      movie.backdropPublicId,
+      poster,
+      backdrop,
       movie.trailerUrl,
       movie.isActive,
       cast,
@@ -134,10 +167,10 @@ export class MovieMapper {
       releaseDate: movie.releaseDate,
       primaryGenreId: movie.primaryGenre.id,
       certification: movie.certification,
-      posterUrl: movie.posterUrl,
-      posterPublicId: movie.posterPublicId,
-      backdropUrl: movie.backdropUrl,
-      backdropPublicId: movie.backdropPublicId,
+      posterUrl: movie.poster?.url ?? null,
+      posterPublicId: movie.poster?.publicId ?? null,
+      backdropUrl: movie.backdrop?.url ?? null,
+      backdropPublicId: movie.backdrop?.publicId ?? null,
       trailerUrl: movie.trailerUrl,
       isActive: movie.isActive,
     };

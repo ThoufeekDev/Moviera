@@ -1,9 +1,9 @@
-import { Person } from './Person';
+// import { Person } from './Person';
 
-export class MovieCast {
-  constructor(
-    public readonly id: string,
-    public readonly person: Person,
-    public readonly character: string | null,
-  ) {}
-}
+// export class MovieCast {
+//   constructor(
+//     public readonly id: string,
+//     public readonly person: Person,
+//     public readonly character: string | null,
+//   ) {}
+// }

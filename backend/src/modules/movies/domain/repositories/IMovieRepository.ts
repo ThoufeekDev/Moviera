@@ -1,7 +1,4 @@
 
-// import { ListMoviesForAdminQuery } from "../../application/queries/ListMoviesForAdminQuery";
-// ;
-// import { PaginatedResult } from "../../../../shared/types/Pagination";
 import { Movie } from "../entities/Movie";
 import { CreateMovieData } from "../types/CreateMovieData";
 import { UpdateMovieData } from "../types/UpdateMovieData";

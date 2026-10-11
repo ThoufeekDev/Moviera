@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { Person } from "../../domain/entities/Person";
-import { IPersonRepository } from "../../domain/repositories/IPersonRepository";
+import { Person } from "../../../domain/entities/Person";
+import { IPersonRepository } from "../../../domain/repositories/IPersonRepository";
 import { PersonMapper } from "../mappers/PersonMapper";
 
 export class PrismaPersonRepository implements IPersonRepository {

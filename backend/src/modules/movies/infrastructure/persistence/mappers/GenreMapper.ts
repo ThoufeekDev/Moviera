@@ -1,4 +1,4 @@
-import { Genre } from "../../domain/entities/Genre";
+import { Genre } from "../../../domain/entities/Genre";
 
 export class GenreMapper {
   static toDomain(data: {

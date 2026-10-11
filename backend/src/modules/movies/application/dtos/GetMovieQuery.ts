@@ -1,6 +1,6 @@
-import { MovieStatus } from '../queries/MovieStatus';
-import { MovieSortBy } from '../queries/MovieSortBy';
-import { SortOrder } from '../queries/SortOrder';
+import { MovieStatus } from '../query-params/MovieStatus';
+import { MovieSortBy } from '../query-params/MovieSortBy';
+import { SortOrder } from '../query-params/SortOrder';
 
 export interface GetMoviesQueryDTO {
   page?: number;

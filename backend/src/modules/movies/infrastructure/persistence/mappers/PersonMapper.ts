@@ -1,4 +1,4 @@
-import { Person } from "../../domain/entities/Person";
+import { Person } from "../../../domain/entities/Person";
 
 export class PersonMapper {
   static toDomain(data: {

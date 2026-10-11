@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { CinemaFormat } from '../../domain/entities/CinemaFormat';
-import { ICinemaFormatRepository } from '../../domain/repositories/ICinemaFormatRepository';
+import { CinemaFormat } from '../../../domain/entities/CinemaFormat';
+import { ICinemaFormatRepository } from '../../../domain/repositories/ICinemaFormatRepository';
 import { CinemaFormatMapper } from '../mappers/CinemaFormatMapper';
 
 export class PrismaCinemaFormatRepository implements ICinemaFormatRepository {

@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
-import { CreateMovieUseCase } from '../../application/use-cases/CreateMovieUseCase';
-import { successResponse } from '../../../../shared/utils/apiResponse';
+import { HttpRequest,HttpResponse } from '../../../../shared/http/HttpTypes';
+import { created } from '../../../../shared/http/response';
+import { CreateMovieUseCase } from '../../application/commands/CreateMovieUseCase';
+import { CreateMovieDTO } from '../../application/dtos/CreateMovieDTO';
 
 
 export class CreateMovieController {
@@ -8,29 +9,25 @@ export class CreateMovieController {
     private readonly createMovieUseCase: CreateMovieUseCase,
   ) {}
 
-  handle = async (req: Request, res: Response) => {
-    const files = req.files as {
-      [fieldname: string]: Express.Multer.File[];
-    };
-    
-
-    const posterFile = files?.poster?.[0];
-    const backdropFile = files?.backdrop?.[0];
-
-
+  execute = async (req: HttpRequest<unknown,CreateMovieDTO,unknown>):Promise<HttpResponse> =>{
+  
+        const posterFile = req.files?.poster?.[0];
+    const backdropFile = req.files?.backdrop?.[0];
 
     await this.createMovieUseCase.execute({
       ...req.body,
-
-      // multer change the type to string  
-      duration: Number(req.body.duration),
-
-      releaseDate: new Date(req.body.releaseDate),
-      posterFile:posterFile?{buffer:posterFile.buffer}:undefined,
-      backdropFile:backdropFile?{buffer:backdropFile.buffer}:undefined
+      posterFile: posterFile
+        ? { buffer: posterFile.buffer }
+        : undefined,
+      backdropFile: backdropFile
+        ? { buffer: backdropFile.buffer }
+        : undefined,
     });
 
+    return created(undefined,'Movie created succesfully..')
 
-    successResponse(res, 201, true, 'Movie created successfully');
+
+
+
   };
 }

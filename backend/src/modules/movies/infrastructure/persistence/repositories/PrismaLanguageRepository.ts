@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { Language } from '../../domain/entities/Language';
-import { ILanguageRepository } from '../../domain/repositories/ILanguageRepository';
+import { Language } from '../../../domain/entities/Language';
+import { ILanguageRepository } from '../../../domain/repositories/ILanguageRepository';
 import { LanguageMapper } from '../mappers/LanguageMapper';
 
 export class PrismaLanguageRepository implements ILanguageRepository {

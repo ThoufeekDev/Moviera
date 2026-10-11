@@ -1,4 +1,4 @@
-import { CinemaFormat } from "../../domain/entities/CinemaFormat";
+import { CinemaFormat } from "../../../domain/entities/CinemaFormat";
 
 export class CinemaFormatMapper {
   static toDomain(data: {

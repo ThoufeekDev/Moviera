@@ -1,5 +1,5 @@
-import { ListMoviesForAdminUseCase } from "../../application/use-cases/queries/ListMoviesForAdminUseCase";
-import { ListMoviesForAdminQuery } from "../../application/queries/ListMoviesForAdminQuery";
+import { ListMoviesForAdminUseCase } from "../../application/queries/ListMoviesForAdminUseCase";
+import { ListMoviesForAdminQuery } from "../../application/query-params/ListMoviesForAdminQuery";
 import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
 import { ok } from "../../../../shared/http/response";
 

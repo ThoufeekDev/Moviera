@@ -105,21 +105,21 @@ export class MovieImageService {
 
     if (
       images.poster &&
-      existingMovie.posterPublicId &&
-      existingMovie.posterPublicId !== images.poster.publicId
+      existingMovie.poster?.publicId &&
+      existingMovie.poster.publicId !== images.poster.publicId
     ) {
       deletions.push(
-        this.deleteSafely(existingMovie.posterPublicId),
+        this.deleteSafely(existingMovie.poster.publicId),
       );
     }
 
     if (
       images.backdrop &&
-      existingMovie.backdropPublicId &&
-      existingMovie.backdropPublicId !== images.backdrop.publicId
+      existingMovie.backdrop?.publicId &&
+      existingMovie.backdrop.publicId !== images.backdrop.publicId
     ) {
       deletions.push(
-        this.deleteSafely(existingMovie.backdropPublicId),
+        this.deleteSafely(existingMovie.backdrop.publicId),
       );
     }
 

@@ -28,7 +28,7 @@ export class UpdateMovieUseCase implements IUseCase<UpdateMovieRequest, void> {
       throw new NotFoundError('Movie not found');
     }
 
-    await this.movieReferenceValidator.validateForUpdate(movie, existingMovie);
+    // await this.movieReferenceValidator.validateForUpdate(movie, existingMovie);
 
     const updateData: UpdateMovieData = {
       ...movieData,

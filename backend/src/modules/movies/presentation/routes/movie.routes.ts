@@ -9,11 +9,11 @@ import { Role } from "../../../../shared/enums/Role";
 import { upload } from "../../../../shared/middleware/upload.middleware";
 import { updateMovieSchema } from "../validators/UpdateMovieValidator";
 
-import { CreateMovieController } from "../controllers/CreateMovieController";
-import { GetMovieBySlugController } from "../controllers/GetMovieBySlugController";
+
+// import { GetMovieBySlugController } from "../controllers/GetMovieBySlugController";
 import { UpdateMovieController } from "../controllers/UpdateMovieController";
 
-
+import { CreateMovieController } from "../controllers/CreateMovieController";
 import { ListMoviesForAdminController } from "../controllers/ListMoviesForAdminController";
 import { ListMoviesForAdminValidator } from "../validators/ListMoviesForAdminValidator";
 import { adapt } from "../../../../shared/http/expressAdapter";
@@ -40,7 +40,7 @@ export function createMovieRoutes(controllers: MovieRouteControllers):Router{
   
 
 
-  movieRoute.post('/', ...admin, files, validate({ body: createMovieSchema }), controllers.createMovieController.handle)
+  movieRoute.post('/', ...admin, files, validate({ body: createMovieSchema }), adapt(controllers.createMovieController.execute))
     
   
 
