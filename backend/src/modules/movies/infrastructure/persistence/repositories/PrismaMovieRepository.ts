@@ -97,42 +97,6 @@ export class PrismaMovieRepository implements IMovieRepository {
     return movie ? MovieMapper.toDomain(movie) : null;
   }
 
-  async findBySlug(slug: string): Promise<Movie | null> {
-    const movie = await this.prisma.movie.findUnique({
-      where: { slug },
-      include: {
-        primaryGenre: true,
-        languages: {
-          include: {
-            language: true,
-          },
-        },
-        cinemaFormats: {
-          include: {
-            cinemaFormat: true,
-          },
-        },
-        cast: {
-          include: {
-            person: true,
-          },
-        },
-        crew: {
-          include: {
-            person: true,
-          },
-        },
-        genres: {
-          include: {
-            genre: true,
-          },
-        },
-      },
-    });
-
-    return movie ? MovieMapper.toDomain(movie) : null;
-  }
-
   async existsBySlug(slug: string, excludeId?: string): Promise<boolean> {
     const count = await this.prisma.movie.count({
       where: {

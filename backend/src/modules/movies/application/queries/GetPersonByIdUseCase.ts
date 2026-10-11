@@ -7,11 +7,10 @@ export class GetPersonByIdUseCase {
 
   async execute(id: string): Promise<Person> {
     const person = await this.personRepository.findById(id);
-         
-      
-     
-    if (!person) 
+
+    if (!person) {
       throw new NotFoundError('Person not found');
+    }
 
     return person;
   }

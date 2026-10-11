@@ -1,21 +1,24 @@
-import { Request, Response } from "express";
-import { CreatePersonUseCase } from "../../application/use-cases/CreatePersonUseCase";
-import { successResponse } from "../../../../shared/utils/apiResponse";
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { created } from "../../../../shared/http/response";
+import { CreatePersonUseCase } from "../../application/commands/CreatePersonUseCase";
+
+interface CreatePersonBody {
+  name: string;
+}
 
 export class CreatePersonController {
   constructor(
     private readonly createPersonUseCase: CreatePersonUseCase,
   ) {}
 
-  handle = async (req: Request, res: Response) => {
-    const { name } = req.body;
-    const file = req.file;
+  handle = async (req: HttpRequest<unknown, CreatePersonBody>): Promise<HttpResponse> => {
+    const file = req.file ?? req.files?.image?.[0];
 
     const person = await this.createPersonUseCase.execute({
-      name,
+      name: req.body.name,
       imageFile: file ? { buffer: file.buffer } : undefined,
     });
 
-    successResponse(res, 201, true, "Person created successfully", person);
+    return created(person, "Person created successfully");
   };
 }

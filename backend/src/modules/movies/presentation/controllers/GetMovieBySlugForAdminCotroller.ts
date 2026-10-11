@@ -1,1 +1,0 @@
-export { GetMovieBySlugForAdminController } from './GetMovieBySlugForAdminController';

@@ -32,9 +32,14 @@ export class UpdateMovieUseCase implements IUseCase<UpdateMovieRequest, void> {
       ...movieData,
     };
 
-    if (movie.title && movie.title !== existingMovie.title) {
+    const titleChanged = movie.title !== undefined && movie.title !== existingMovie.title;
+    const yearChanged =
+      movie.releaseDate !== undefined &&
+      movie.releaseDate.getUTCFullYear() !== existingMovie.releaseDate.getUTCFullYear();
+
+    if (titleChanged || yearChanged) {
       updateData.slug = await this.movieSlugService.generateUniqueSlug(
-        movie.title,
+        movie.title ?? existingMovie.title,
         movie.releaseDate ?? existingMovie.releaseDate,
         existingMovie.id,
       );

@@ -1,21 +1,12 @@
-import { Request, Response } from "express";
-import { GetGenresUseCase } from "../../application/use-cases/GetGenresUseCase";
-import { successResponse } from "../../../../shared/utils/apiResponse";
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { ok } from "../../../../shared/http/response";
+import { GetGenresUseCase } from "../../application/queries/GetGenresUseCase";
 
 export class GetGenreController {
-  constructor(
-    private readonly useCase: GetGenresUseCase
-  ) {}
+  constructor(private readonly useCase: GetGenresUseCase) {}
 
-  handle = async (req: Request, res: Response) => {
+  handle = async (_req: HttpRequest): Promise<HttpResponse> => {
     const genres = await this.useCase.execute();
-
-    successResponse(
-      res,
-      200,
-      true,
-      "Genres fetched successfully",
-      genres
-    );
+    return ok(genres, "Genres fetched successfully");
   };
 }

@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import { GetLanguageUseCase } from "../../application/use-cases/GetLanguageUseCase";
-import { successResponse } from "../../../../shared/utils/apiResponse";
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { ok } from "../../../../shared/http/response";
+import { GetLanguageUseCase } from "../../application/queries/GetLanguageUseCase";
 
 export class GetLanguageController {
   constructor(private readonly useCase: GetLanguageUseCase) {}
 
-  handle = async (req: Request, res: Response) => {
+  handle = async (_req: HttpRequest): Promise<HttpResponse> => {
     const languages = await this.useCase.execute();
-    successResponse(res, 200, true, "Languages fetched successfully", languages);
+    return ok(languages, "Languages fetched successfully");
   };
 }

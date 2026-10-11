@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import { GetPersonsUseCase } from "../../application/use-cases/GetPersonUseCase";
-import { successResponse } from "../../../../shared/utils/apiResponse";
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { ok } from "../../../../shared/http/response";
+import { GetPersonsUseCase } from "../../application/queries/GetPersonUseCase";
 
 export class GetPersonController {
   constructor(private readonly useCase: GetPersonsUseCase) {}
 
-  handle = async (req: Request, res: Response) => {
-    const person = await this.useCase.execute();
-    successResponse(res, 200, true, "People fetched successfully", person);
+  handle = async (_req: HttpRequest): Promise<HttpResponse> => {
+    const people = await this.useCase.execute();
+    return ok(people, "People fetched successfully");
   };
 }

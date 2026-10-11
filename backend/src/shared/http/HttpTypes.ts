@@ -10,6 +10,7 @@ export interface HttpRequest<P = unknown, B = unknown, Q = unknown>{
         
     };
     files?: Record<string, { buffer: Buffer }[]>;
+    file?: { buffer: Buffer };
 }
 
 export interface HttpResponse<T = unknown>{

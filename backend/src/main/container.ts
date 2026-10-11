@@ -2,7 +2,7 @@
 
 import prisma from "../config/database";
 import { CloudinaryStorageService } from "../shared/infrastructure/storage/CloudinaryStorageService";
-import { buildMoviesModule } from "../modules/movies/movies.module";
+import { buildMoviesModule } from "../modules/movies";
 
 const storageService = new CloudinaryStorageService();
 

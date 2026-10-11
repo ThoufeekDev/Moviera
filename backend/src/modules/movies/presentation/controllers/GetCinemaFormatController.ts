@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import { GetCinemaFormatUseCase } from "../../application/use-cases/GetCinemaFormatUseCase";
-import { successResponse } from "../../../../shared/utils/apiResponse";
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { ok } from "../../../../shared/http/response";
+import { GetCinemaFormatUseCase } from "../../application/queries/GetCinemaFormatUseCase";
 
 export class GetCinemaFormatController {
   constructor(private readonly useCase: GetCinemaFormatUseCase) {}
 
-  handle = async (req: Request, res: Response) => {
+  handle = async (_req: HttpRequest): Promise<HttpResponse> => {
     const cinemaFormats = await this.useCase.execute();
-    successResponse(res, 200, true, "Cinema formats fetched successfully", cinemaFormats);
+    return ok(cinemaFormats, "Cinema formats fetched successfully");
   };
 }

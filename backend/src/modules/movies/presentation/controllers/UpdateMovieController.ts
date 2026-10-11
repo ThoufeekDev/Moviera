@@ -1,6 +1,6 @@
 import { HttpRequest, HttpResponse } from '../../../../shared/http/HttpTypes';
 import { ok } from '../../../../shared/http/response';
-import { UpdateMovieUseCase } from '../../application/use-cases/UpdateMovieUseCase';
+import { UpdateMovieUseCase } from '../../application/commands/UpdateMovieUseCase';
 import { UpdateMovieDTO } from '../../application/dtos/UpdateMovieDTO';
 
 export class UpdateMovieController {

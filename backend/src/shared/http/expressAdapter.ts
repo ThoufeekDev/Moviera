@@ -20,6 +20,7 @@ export const adapt =
               }
             : undefined,
         files: req.files as Record<string, { buffer: Buffer }[]> | undefined,
+        file: req.file ? { buffer: req.file.buffer } : undefined,
       });
 
       return res.status(result.status).json(result.body);

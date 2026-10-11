@@ -7,7 +7,6 @@ describe('MovieSlugService', () => {
     const mockRepo: IMovieRepository = {
       create: vi.fn(),
       findById: vi.fn(),
-      findBySlug: vi.fn(),
       existsBySlug: vi.fn().mockResolvedValue(false),
       updateMovie: vi.fn(),
     };
@@ -26,7 +25,6 @@ describe('MovieSlugService', () => {
     const mockRepo: IMovieRepository = {
       create: vi.fn(),
       findById: vi.fn(),
-      findBySlug: vi.fn(),
       existsBySlug: vi
         .fn()
         .mockResolvedValueOnce(true)

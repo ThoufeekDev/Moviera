@@ -1,5 +1,5 @@
 import { Router } from 'express';
-
+import { adapt } from '../../../../shared/http/expressAdapter';
 import { GetCinemaFormatController } from '../controllers/GetCinemaFormatController';
 
 interface CinemaFormatRouteController {
@@ -9,6 +9,6 @@ interface CinemaFormatRouteController {
 export function createCinemaFormatRoutes(controllers: CinemaFormatRouteController): Router {
   const cinemaFormatRoute = Router();
 
-  cinemaFormatRoute.get('/', controllers.getCinemaFormatController.handle);
+  cinemaFormatRoute.get('/', adapt(controllers.getCinemaFormatController.handle));
   return cinemaFormatRoute;
 }

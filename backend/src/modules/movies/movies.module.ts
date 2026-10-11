@@ -8,13 +8,14 @@ import { PrismaPersonRepository } from './infrastructure/persistence/repositorie
 import { PrismaMovieQueryService } from './infrastructure/persistence/queries/PrismaMovieQueryService';
 
 import { CreateMovieUseCase } from './application/commands/CreateMovieUseCase';
-import { CreatePersonUseCase } from './application/use-cases/CreatePersonUseCase';
-import { GetPersonByIdUseCase } from './application/use-cases/GetPersonByIdUseCase';
-import { GetPersonsUseCase } from './application/use-cases/GetPersonUseCase';
-import { GetLanguageUseCase } from './application/use-cases/GetLanguageUseCase';
-import { GetCinemaFormatUseCase } from './application/use-cases/GetCinemaFormatUseCase';
-import { GetGenresUseCase } from './application/use-cases/GetGenresUseCase';
-import { UpdateMovieUseCase } from './application/use-cases/UpdateMovieUseCase';
+import { CreatePersonUseCase } from './application/commands/CreatePersonUseCase';
+import { UpdateMovieUseCase } from './application/commands/UpdateMovieUseCase';
+
+import { GetPersonByIdUseCase } from './application/queries/GetPersonByIdUseCase';
+import { GetPersonsUseCase } from './application/queries/GetPersonUseCase';
+import { GetLanguageUseCase } from './application/queries/GetLanguageUseCase';
+import { GetCinemaFormatUseCase } from './application/queries/GetCinemaFormatUseCase';
+import { GetGenresUseCase } from './application/queries/GetGenresUseCase';
 import { ListMoviesForAdminUseCase } from './application/queries/ListMoviesForAdminUseCase';
 import { GetMovieByIdForAdminUseCase } from './application/queries/GetMovieByIdForAdminUseCase';
 import { GetMovieBySlugForAdminUseCase } from './application/queries/GetMovieBySlugForAdminUseCase';
