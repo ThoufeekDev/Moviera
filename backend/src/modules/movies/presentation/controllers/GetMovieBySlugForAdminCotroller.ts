@@ -14,7 +14,6 @@ export class GetMovieBySlugForAdminController {
         console.log('backend triggered');
          
         const movie = await this.getMovieBySlugByAdmin.execute({ slug: req.params.slug });
-        console.log('after fetching movie ',movie)
         return ok(movie,"Movie detail fetch succesfull")
     }
 

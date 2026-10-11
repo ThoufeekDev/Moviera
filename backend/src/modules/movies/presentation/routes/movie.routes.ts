@@ -36,7 +36,7 @@ export function createMovieRoutes(controllers: MovieRouteControllers):Router{
   //& Admin
   movieRoute.get('/admin', validate({ query: ListMoviesForAdminValidator }), adapt(controllers.listMoviesForAdminController.execute))
   movieRoute.get('/admin/:slug',...admin,adapt(controllers.getMovieBySlugForAdminController.execute));
-  movieRoute.get('/admin/:id', ...admin, adapt(controllers.getMovieByIdForAdminController.execute))
+  // movieRoute.get('/admin/:id', ...admin, adapt(controllers.getMovieByIdForAdminController.execute))
   
 
 
