@@ -10,10 +10,10 @@ export default function AuthBrandHeader({ title, description }: AuthBrandHeaderP
     <header className="mb-6 flex flex-col items-center text-center">
       <MovieraLogo size="md" />
 
-      <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900">
+      <h2 className="mt-4 text-xl md:text-2xl font-bold tracking-tight text-ink">
         {title}
       </h2>
-      <p className="mt-1 text-sm text-slate-500">
+      <p className="mt-1 text-xs md:text-sm text-ink-muted leading-relaxed">
         {description}
       </p>
     </header>

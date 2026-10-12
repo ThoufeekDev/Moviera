@@ -1,8 +1,8 @@
-// features/auth/components/SocialLoginButtons.tsx
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
-import { useAuthStore } from "../stores/auth.store";
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
+import { useAuthStore } from '../stores/auth.store';
+
 export default function SocialLoginButtons() {
-  const googleLogin = useAuthStore((state) => state.googleLogin)
+  const googleLogin = useAuthStore((state) => state.googleLogin);
 
   const handleSuccess = async (response: CredentialResponse) => {
     try {
@@ -10,24 +10,21 @@ export default function SocialLoginButtons() {
         console.error('Google credential is missing');
         return;
       }
-     
-       await googleLogin(response.credential);
 
+      await googleLogin(response.credential);
     } catch (error) {
       console.error('Google login failed:', error);
     }
   };
+
   return (
-    <div className="social-grid">
-
-
+    <div className="flex w-full justify-center my-3">
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={() => {
-          console.log('Google Login Failed');
+          console.error('Google Login Failed');
         }}
       />
-
     </div>
   );
 }

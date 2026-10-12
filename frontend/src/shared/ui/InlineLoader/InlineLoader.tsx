@@ -18,11 +18,11 @@ export default function InlineLoader({
   className,
 }: InlineLoaderProps) {
   return (
-    <div className={cn('inline-flex items-center gap-2.5 text-slate-500', className)}>
+    <div className={cn('inline-flex items-center gap-2.5 text-ink-muted', className)}>
       <div
         className={cn(
-          'animate-spin rounded-full border-slate-200 border-t-brand-500',
-          sizeClasses[size]
+          'animate-spin rounded-full border-border border-t-brand-600',
+          sizeClasses[size],
         )}
       />
       {text && <span className="text-sm font-medium">{text}</span>}

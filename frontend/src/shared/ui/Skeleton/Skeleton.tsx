@@ -2,20 +2,19 @@ import { type HTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/shared/lib/cn';
 
-// ── Variants ──────────────────────────────────────────────────────────────────
-
-const skeletonVariants = cva('skeleton-shimmer', {
+const skeletonVariants = cva('bg-surface-muted animate-pulse select-none', {
   variants: {
     variant: {
-      text: 'h-[1em] mb-[0.4em] rounded',
+      text: 'h-[1em] mb-[0.4em] rounded-sm',
       circular: 'rounded-full',
       rectangular: 'rounded-none',
-      rounded: 'rounded-lg',
+      rounded: 'rounded-md',
     },
   },
+  defaultVariants: {
+    variant: 'rounded',
+  },
 });
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface SkeletonProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -24,8 +23,6 @@ export interface SkeletonProps
   height?: string;
   borderRadius?: string;
 }
-
-// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Skeleton({
   width,
@@ -40,6 +37,7 @@ export default function Skeleton({
     <div
       className={cn(skeletonVariants({ variant }), className)}
       style={{ width, height, borderRadius, ...style }}
+      aria-hidden="true"
       {...props}
     />
   );

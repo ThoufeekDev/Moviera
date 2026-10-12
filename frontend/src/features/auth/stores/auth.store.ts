@@ -8,7 +8,7 @@ import {
   verifyOtpPaylod,
   resendOtp,
   googleLogin
-} from '../services/auth.service';
+} from '../api/auth.api';
 
 
 import type { User } from '../types/auth.types';

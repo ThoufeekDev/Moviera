@@ -17,7 +17,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="text-xs font-semibold text-slate-700 dark:text-slate-300"
+            className="text-sm font-medium text-ink"
           >
             {label}
           </label>
@@ -27,28 +27,36 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             id={selectId}
             ref={ref}
             disabled={disabled}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${selectId}-error` : undefined}
             className={cn(
-              'w-full appearance-none rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100',
-              error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',
-              className
+              'h-11 min-h-[44px] w-full appearance-none rounded-md border border-border bg-surface px-3.5 pr-10 text-base text-ink transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2',
+              'disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-muted',
+              error && 'border-danger-600 focus-visible:ring-danger-600',
+              className,
             )}
             {...props}
           >
             {children}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-ink-muted">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </div>
         </div>
-        {error && <p className="text-xs text-rose-500">{error}</p>}
+        {error && (
+          <p id={`${selectId}-error`} role="alert" className="text-xs md:text-sm font-medium text-danger-600">
+            {error}
+          </p>
+        )}
         {helperText && !error && (
-          <p className="text-xs text-slate-500">{helperText}</p>
+          <p className="text-xs md:text-sm text-ink-muted">{helperText}</p>
         )}
       </div>
     );
-  }
+  },
 );
 
 Select.displayName = 'Select';

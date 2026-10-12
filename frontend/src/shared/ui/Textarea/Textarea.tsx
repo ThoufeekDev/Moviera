@@ -17,7 +17,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label
             htmlFor={textareaId}
-            className="text-xs font-semibold text-slate-700 dark:text-slate-300"
+            className="text-sm font-medium text-ink"
           >
             {label}
           </label>
@@ -27,20 +27,28 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           rows={rows}
           disabled={disabled}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${textareaId}-error` : undefined}
           className={cn(
-            'w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100',
-            error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',
-            className
+            'w-full rounded-md border border-border bg-surface px-3.5 py-2.5 text-base text-ink transition-colors placeholder:text-ink-muted',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2',
+            'disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-muted',
+            error && 'border-danger-600 focus-visible:ring-danger-600',
+            className,
           )}
           {...props}
         />
-        {error && <p className="text-xs text-rose-500">{error}</p>}
+        {error && (
+          <p id={`${textareaId}-error`} role="alert" className="text-xs md:text-sm font-medium text-danger-600">
+            {error}
+          </p>
+        )}
         {helperText && !error && (
-          <p className="text-xs text-slate-500">{helperText}</p>
+          <p className="text-xs md:text-sm text-ink-muted">{helperText}</p>
         )}
       </div>
     );
-  }
+  },
 );
 
 Textarea.displayName = 'Textarea';

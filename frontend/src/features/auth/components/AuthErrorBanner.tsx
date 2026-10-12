@@ -7,11 +7,11 @@ export default function AuthErrorBanner({ message }: AuthErrorBannerProps) {
 
   return (
     <div
-      className="mb-5 flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-left text-xs font-medium text-rose-800"
+      className="mb-5 flex items-center gap-2 rounded-md border border-brand-100 bg-brand-50 px-3.5 py-2.5 text-left text-xs md:text-sm font-medium text-danger-600"
       role="alert"
     >
       <svg
-        className="h-4 w-4 shrink-0 text-rose-600"
+        className="h-4 w-4 shrink-0 text-danger-600"
         viewBox="0 0 16 16"
         fill="currentColor"
         aria-hidden="true"
@@ -22,7 +22,7 @@ export default function AuthErrorBanner({ message }: AuthErrorBannerProps) {
           clipRule="evenodd"
         />
       </svg>
-      <span className="leading-relaxed">{message}</span>
+      <span className="leading-snug">{message}</span>
     </div>
   );
 }

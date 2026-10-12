@@ -17,7 +17,8 @@ function ChevronIcon({ isExpanded }: { isExpanded: boolean }) {
       strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn('transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]', isExpanded && 'rotate-180 text-brand-500')}
+      className={cn('transition-transform duration-150', isExpanded && 'rotate-180 text-brand-500')}
+      aria-hidden="true"
     >
       <polyline points="6 9 12 15 18 9" />
     </svg>
@@ -28,7 +29,7 @@ function DefaultItemIcon({ label }: { label: string }) {
   const lower = label.toLowerCase();
   if (lower.includes('dashboard')) {
     return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
         <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
       </svg>
@@ -36,7 +37,7 @@ function DefaultItemIcon({ label }: { label: string }) {
   }
   if (lower.includes('movie') || lower.includes('film')) {
     return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
         <line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" />
         <line x1="2" y1="12" x2="22" y2="12" /><line x1="2" y1="7" x2="7" y2="7" />
@@ -47,7 +48,7 @@ function DefaultItemIcon({ label }: { label: string }) {
   }
   if (lower.includes('theatre') || lower.includes('screen')) {
     return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
       </svg>
@@ -55,7 +56,7 @@ function DefaultItemIcon({ label }: { label: string }) {
   }
   if (lower.includes('user') || lower.includes('admin')) {
     return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
       </svg>
@@ -63,14 +64,14 @@ function DefaultItemIcon({ label }: { label: string }) {
   }
   if (lower.includes('setting') || lower.includes('config')) {
     return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="3" />
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
       </svg>
     );
   }
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="3" />
     </svg>
   );
@@ -79,23 +80,22 @@ function DefaultItemIcon({ label }: { label: string }) {
 // ── Shared class strings ──────────────────────────────────────────────────────
 
 const navItemBase = [
-  'flex w-full min-h-[46px] items-center gap-[0.85rem] rounded-xl',
-  'border border-transparent bg-transparent px-[0.9rem] py-[0.7rem]',
-  'text-left text-[0.925rem] font-medium no-underline',
-  'text-[rgba(186,186,206,0.7)]',
+  'flex w-full min-h-[44px] items-center gap-3 rounded-md',
+  'border border-transparent bg-transparent px-3 py-2.5',
+  'text-left text-sm font-medium no-underline text-nav-ink/75',
   'cursor-pointer select-none',
-  'transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
-  'hover:bg-[rgba(248,68,100,0.08)] hover:border-[rgba(248,68,100,0.15)] hover:text-white hover:translate-x-[3px]',
-  'active:scale-[0.98]',
+  'transition-colors duration-150',
+  'hover:bg-white/10 hover:text-nav-ink',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2',
 ].join(' ');
 
 const navItemActive = [
-  '!text-white !bg-gradient-to-r from-brand-500 to-brand-700 !border-transparent',
-  'font-semibold shadow-[0_6px_18px_rgba(248,68,100,0.35)]',
+  '!text-white !bg-brand-600 !border-transparent',
+  'font-semibold shadow-card',
 ].join(' ');
 
 const navItemParentActive = [
-  '!text-brand-500 !bg-[rgba(248,68,100,0.1)] !border-[rgba(248,68,100,0.25)] font-semibold',
+  '!text-white !bg-white/10 font-semibold',
 ].join(' ');
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -153,17 +153,17 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
             onClick={() => toggleItem(item.label)}
             aria-expanded={isExpanded}
           >
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[rgba(186,186,206,0.5)] transition-colors duration-200">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center text-nav-ink/60">
               {item.icon ?? <DefaultItemIcon label={item.label} />}
             </span>
             <span className="flex-1 truncate">{item.label}</span>
-            <span className="ml-auto flex items-center justify-center text-[rgba(186,186,206,0.5)]">
+            <span className="ml-auto flex items-center justify-center text-nav-ink/60">
               <ChevronIcon isExpanded={isExpanded} />
             </span>
           </button>
 
           {isExpanded && (
-            <div className="flex flex-col gap-1 border-l-2 border-[rgba(248,68,100,0.2)] pl-[1.15rem] ml-4 [animation:subMenuSlideDown_0.22s_ease-out_forwards]">
+            <div className="flex flex-col gap-1 border-l border-white/15 pl-3 ml-4">
               {item.children?.map((child) => (
                 <NavLink
                   key={child.path}
@@ -171,15 +171,16 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
                   onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      'flex min-h-[40px] items-center gap-3 rounded-lg px-[0.85rem] py-[0.55rem]',
-                      'text-[0.865rem] font-medium no-underline text-[rgba(186,186,206,0.7)]',
-                      'transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
-                      'hover:text-white hover:bg-[rgba(255,255,255,0.05)] hover:translate-x-[3px]',
-                      isActive && '!text-brand-500 !bg-[rgba(248,68,100,0.14)] font-semibold',
+                      'flex min-h-[40px] items-center gap-2.5 rounded-md px-3 py-2',
+                      'text-xs md:text-sm font-medium no-underline text-nav-ink/75',
+                      'transition-colors duration-150',
+                      'hover:text-nav-ink hover:bg-white/10',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600',
+                      isActive && '!text-white !bg-brand-600/40 font-semibold',
                     )
                   }
                 >
-                  <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center text-[rgba(186,186,206,0.5)] transition-colors duration-200">
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center text-nav-ink/60">
                     {child.icon ?? <DefaultItemIcon label={child.label} />}
                   </span>
                   <span className="truncate">{child.label}</span>
@@ -198,7 +199,7 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
         onClick={() => setIsOpen(false)}
         className={({ isActive }) => cn(navItemBase, isActive && navItemActive)}
       >
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[rgba(186,186,206,0.5)] transition-colors duration-200">
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center text-nav-ink/60">
           {item.icon ?? <DefaultItemIcon label={item.label} />}
         </span>
         <span className="truncate">{item.label}</span>
@@ -208,29 +209,29 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Top Navigation Header (hidden on lg+) */}
-      <header className="fixed inset-x-0 top-0 z-[990] hidden h-16 items-center justify-between bg-[rgba(15,18,29,0.92)] px-5 backdrop-blur-xl border-b border-[rgba(255,255,255,0.07)] text-white max-md:flex">
+      {/* Mobile Top Navigation Header (hidden on md+) */}
+      <header className="fixed inset-x-0 top-0 z-40 hidden h-14 md:h-16 items-center justify-between bg-nav px-4 text-nav-ink border-b border-white/10 max-md:flex">
         <button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-[10px] border-none bg-[rgba(248,68,100,0.08)] text-brand-500 transition-all duration-200 hover:bg-[rgba(248,68,100,0.18)]"
+          className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-nav-ink hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           onClick={() => setIsOpen(true)}
           aria-label="Open navigation"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="4" y1="6" x2="20" y2="6" />
             <line x1="4" y1="12" x2="20" y2="12" />
             <line x1="4" y1="18" x2="20" y2="18" />
           </svg>
         </button>
         <div className="flex items-center">
-          {logo ?? <MovieraLogo size="sm" showText={false} />}
+          {logo ?? <MovieraLogo size="sm" variant="light" showText={true} />}
         </div>
       </header>
 
       {/* Backdrop overlay for mobile drawer */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[999] bg-black/70 backdrop-blur-[4px] [animation:overlayFade_0.25s_ease-out]"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
@@ -239,37 +240,26 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
       {/* Main Sidebar Panel */}
       <aside
         className={cn(
-          // Layout
-          'fixed left-0 top-0 z-[1000] flex h-dvh w-[260px] flex-col',
-          // Background (dark theme)
-          'bg-slate-950',
-          '[background-image:linear-gradient(180deg,rgba(248,68,100,0.03)_0%,transparent_40%)]',
-          // Border
-          'border-r border-[rgba(255,255,255,0.07)]',
-          // Scrollbar
-          'overflow-y-auto scrollbar-thin',
-          '[scrollbar-color:rgba(248,68,100,0.2)_transparent]',
-          '[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:bg-[rgba(248,68,100,0.2)]',
-          // Padding & colour
-          'px-4 py-6 text-white',
-          // Mobile: translate off-screen, slide in when open
-          'transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
-          'max-md:-translate-x-full max-md:w-[280px] max-md:shadow-[10px_0_30px_rgba(0,0,0,0.5)]',
+          'fixed left-0 top-0 z-50 flex h-dvh w-[260px] flex-col',
+          'bg-nav text-nav-ink border-r border-white/10',
+          'overflow-y-auto px-4 py-6',
+          'transition-transform duration-200 ease-out',
+          'max-md:-translate-x-full max-md:w-[280px] max-md:shadow-float max-md:pb-[calc(1.5rem+env(safe-area-inset-bottom))]',
           isOpen && 'max-md:translate-x-0',
         )}
       >
         {/* Logo row */}
-        <div className="mb-3 flex items-center justify-between border-b border-[rgba(255,255,255,0.07)] px-2 pb-6">
-          <div className="flex items-center gap-3">
-            {logo ?? <MovieraLogo size="md" showText={false} subtitle="Admin Management System" />}
+        <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-5">
+          <div className="flex items-center">
+            {logo ?? <MovieraLogo size="md" variant="light" showText={true} subtitle="Admin Panel" />}
           </div>
           <button
             type="button"
-            className="hidden h-9 w-9 items-center justify-center rounded-lg border-none bg-[rgba(255,255,255,0.06)] text-[rgba(186,186,206,0.7)] transition-all duration-200 hover:bg-[rgba(248,68,100,0.15)] hover:text-brand-500 max-md:flex"
+            className="hidden h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-nav-ink hover:bg-white/10 max-md:flex"
             onClick={() => setIsOpen(false)}
             aria-label="Close navigation"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -277,35 +267,35 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-1 flex-col gap-1">
+        <nav className="flex flex-1 flex-col gap-1.5" aria-label="Admin Sidebar">
           {items.map(renderItem)}
         </nav>
 
         {/* Footer / Logout */}
-        <div className="mt-auto border-t border-[rgba(255,255,255,0.07)] pt-4">
+        <div className="mt-auto border-t border-white/10 pt-4">
           <button
             type="button"
             onClick={onLogout}
             className={cn(
-              'group flex w-full min-h-[44px] items-center justify-center gap-3 rounded-xl',
-              'border border-[rgba(248,68,100,0.2)] bg-[rgba(248,68,100,0.08)]',
-              'px-4 py-[0.65rem] text-[0.9rem] font-semibold text-brand-500',
-              'transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
-              'hover:bg-gradient-to-r hover:from-brand-500 hover:to-brand-700 hover:border-transparent hover:text-white',
-              'hover:shadow-[0_4px_14px_rgba(248,68,100,0.35)] hover:-translate-y-px',
-              'active:translate-y-px active:shadow-none',
+              'group flex w-full min-h-[44px] items-center justify-center gap-2.5 rounded-md',
+              'border border-white/15 bg-white/5',
+              'px-4 py-2.5 text-sm font-medium text-nav-ink',
+              'transition-colors duration-150',
+              'hover:bg-brand-600 hover:text-white hover:border-brand-600',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2',
             )}
           >
             <svg
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="shrink-0 transition-transform duration-200 group-hover:translate-x-[2px]"
+              className="shrink-0"
+              aria-hidden="true"
             >
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />

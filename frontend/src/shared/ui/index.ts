@@ -17,3 +17,4 @@ export * from './Sidebar';
 export * from './ComingSoon';
 export * from './MovieraLogo';
 export * from './ImageUpload';
+export * from './EmptyState';

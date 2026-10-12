@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Cropper, { type Area } from 'react-easy-crop';
 import getCroppedImg from './cropImage';
-import { cn } from '@/shared/lib/cn';
+import { Button } from '@/shared/ui/Button';
 
 interface Props {
   imageSrc: string;
@@ -36,24 +36,24 @@ export default function ImageCropModal({ imageSrc, onClose, onCropDone }: Props)
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-[99999] flex items-center justify-center bg-[rgba(15,23,42,0.82)] p-4 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 p-0 md:p-4 backdrop-blur-xs"
     >
-      <div className="flex w-full max-w-[620px] flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)]">
+      <div className="flex w-full max-w-2xl flex-col overflow-hidden rounded-t-xl md:rounded-lg border border-border bg-surface shadow-float">
         {/* Header */}
-        <header className="flex items-center justify-between bg-slate-900 px-5 py-[0.875rem]">
-          <span className="text-[0.875rem] font-semibold text-white">Crop &amp; Adjust Banner Image</span>
+        <header className="flex items-center justify-between border-b border-border bg-nav px-5 py-3.5 text-nav-ink">
+          <span className="text-sm md:text-base font-bold">Crop &amp; Adjust Image</span>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
-            className="cursor-pointer border-none bg-transparent p-[0.2rem] text-slate-400 transition-colors duration-150 hover:text-white"
+            aria-label="Close dialog"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-nav-ink/70 hover:bg-white/10 hover:text-nav-ink"
           >
             ✕
           </button>
         </header>
 
-        {/* Crop area (react-easy-crop controls its own styles) */}
-        <div className="relative h-80 w-full bg-slate-950">
+        {/* Crop area */}
+        <div className="relative h-80 w-full bg-black">
           <Cropper
             image={imageSrc}
             crop={crop}
@@ -66,28 +66,25 @@ export default function ImageCropModal({ imageSrc, onClose, onCropDone }: Props)
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-5 py-[0.875rem]">
-          <button
+        <div className="flex items-center justify-end gap-3 border-t border-border bg-surface px-5 py-3.5">
+          <Button
             type="button"
+            variant="ghost"
+            size="md"
             onClick={onClose}
-            className="cursor-pointer rounded-lg border border-slate-300 bg-transparent px-5 py-2 text-[0.825rem] font-semibold text-slate-600 transition-all duration-150 hover:bg-slate-200 hover:text-slate-900"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="primary"
+            size="md"
             onClick={handleSave}
+            loading={isProcessing}
             disabled={isProcessing}
-            className={cn(
-              'cursor-pointer rounded-lg border border-transparent bg-sky-600 px-5 py-2',
-              'text-[0.825rem] font-semibold text-white shadow-[0_4px_12px_rgba(2,132,199,0.25)]',
-              'transition-all duration-150',
-              'hover:not(:disabled):bg-sky-700',
-              'disabled:cursor-not-allowed disabled:opacity-60',
-            )}
           >
-            {isProcessing ? 'Processing Image…' : 'Apply Crop & Use Photo'}
-          </button>
+            Apply Crop &amp; Save
+          </Button>
         </div>
       </div>
     </div>

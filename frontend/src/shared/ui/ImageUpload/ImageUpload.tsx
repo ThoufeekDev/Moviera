@@ -47,28 +47,28 @@ export default function ImageUpload({ label, onImageSelect, className }: ImageUp
   };
 
   return (
-    <div className={cn('flex w-full flex-col gap-2', className)}>
-      <label className="text-[0.775rem] font-semibold text-slate-600">{label}</label>
+    <div className={cn('flex w-full flex-col gap-1.5', className)}>
+      <label className="text-sm font-medium text-ink">{label}</label>
 
       {preview ? (
-        <div className="flex items-center gap-4 rounded-lg border border-slate-200 bg-white px-3 py-2">
+        <div className="flex items-center gap-4 rounded-md border border-border bg-surface px-3.5 py-2.5">
           <img
             src={preview}
-            alt="Selected Banner Preview"
-            className="h-[50px] w-[90px] rounded-md border border-slate-300 object-cover"
+            alt="Selected Preview"
+            className="h-12 w-20 rounded-md border border-border object-cover"
           />
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="cursor-pointer rounded-md border border-slate-300 bg-slate-100 px-[0.65rem] py-[0.3rem] text-[0.75rem] font-semibold text-slate-900 transition-all duration-150 hover:bg-slate-200"
+              className="inline-flex min-h-[36px] cursor-pointer items-center justify-center rounded-md border border-border bg-surface-muted px-3 py-1.5 text-xs md:text-sm font-medium text-ink transition hover:bg-border"
             >
               Change Photo
             </button>
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="cursor-pointer rounded-md border border-rose-300 bg-transparent px-[0.65rem] py-[0.3rem] text-[0.75rem] font-semibold text-danger-700 transition-all duration-150 hover:bg-danger-100"
+              className="inline-flex min-h-[36px] cursor-pointer items-center justify-center rounded-md border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs md:text-sm font-medium text-danger-600 transition hover:bg-brand-100"
             >
               Remove
             </button>
@@ -77,30 +77,39 @@ export default function ImageUpload({ label, onImageSelect, className }: ImageUp
       ) : (
         <div
           onClick={() => fileInputRef.current?.click()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              fileInputRef.current?.click();
+            }
+          }}
           className={cn(
-            'flex cursor-pointer flex-col items-center justify-center gap-[0.35rem] rounded-lg border border-dashed border-slate-300 bg-white px-5 py-4 text-center text-sky-600',
-            'transition-all duration-[180ms] ease-out',
-            'hover:border-sky-500 hover:bg-sky-50',
+            'flex min-h-[100px] cursor-pointer flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-border bg-surface px-5 py-4 text-center',
+            'transition-colors duration-150',
+            'hover:border-brand-600 hover:bg-brand-50/30',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2',
           )}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-muted" aria-hidden="true">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="17 8 12 3 7 8" />
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
-          <span className="text-[0.8rem] font-semibold text-slate-900">
-            Click to upload hospital photo (JPG, PNG)
+          <span className="text-sm font-medium text-ink">
+            Click to upload photo (JPG, PNG, WebP)
           </span>
-          <span className="text-[0.7rem] text-slate-400">Max 5MB • 16:9 Aspect Ratio</span>
+          <span className="text-xs text-ink-muted">Max 5MB • 16:9 Aspect Ratio</span>
         </div>
       )}
 
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp"
         onChange={handleChange}
         className="hidden"
+        aria-label={label}
       />
 
       {isCropOpen && (

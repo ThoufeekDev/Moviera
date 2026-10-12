@@ -13,11 +13,11 @@ export interface ModalProps {
 }
 
 const sizeClasses = {
-  sm: 'max-w-md',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-4xl',
-  full: 'max-w-[95vw]',
+  sm: 'md:max-w-md',
+  md: 'md:max-w-lg',
+  lg: 'md:max-w-2xl',
+  xl: 'md:max-w-4xl',
+  full: 'md:max-w-[95vw]',
 };
 
 export default function Modal({
@@ -55,27 +55,33 @@ export default function Modal({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/70 p-4 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 p-0 md:p-4 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
         className={cn(
-          'relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl transition-all dark:border-slate-800 dark:bg-slate-900',
+          // Mobile bottom sheet / desktop centered dialog
+          'relative w-full max-h-[90dvh] overflow-y-auto rounded-t-xl md:rounded-lg border border-border bg-surface shadow-float transition-all',
           sizeClasses[size],
-          className
+          className,
         )}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Handle for mobile bottom sheet */}
+        <div className="flex justify-center pt-2.5 pb-1 md:hidden">
+          <div className="h-1.5 w-12 rounded-full bg-border" />
+        </div>
+
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
-            <div>
+          <div className="flex items-center justify-between border-b border-border px-5 py-4 md:px-6">
+            <div className="pr-4">
               {title && (
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-ink">
                   {title}
                 </h3>
               )}
               {description && (
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-xs md:text-sm text-ink-muted">
                   {description}
                 </p>
               )}
@@ -84,10 +90,10 @@ export default function Modal({
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Close modal"
-                className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
+                aria-label="Close dialog"
+                className="inline-flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-ink-muted transition hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -95,7 +101,7 @@ export default function Modal({
           </div>
         )}
 
-        <div className="px-6 py-4">{children}</div>
+        <div className="p-5 md:p-6">{children}</div>
       </div>
     </div>
   );
