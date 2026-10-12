@@ -9,7 +9,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@fontsource-variable/roboto': resolve(__dirname, './src/fonts/roboto/index.css'),
     },
   },
 });

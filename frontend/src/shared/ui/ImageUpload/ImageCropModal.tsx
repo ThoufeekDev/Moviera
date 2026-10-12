@@ -7,9 +7,10 @@ interface Props {
   imageSrc: string;
   onClose: () => void;
   onCropDone: (file: File) => void;
+  aspect?: number;
 }
 
-export default function ImageCropModal({ imageSrc, onClose, onCropDone }: Props) {
+export default function ImageCropModal({ imageSrc, onClose, onCropDone, aspect = 16 / 9 }: Props) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -58,7 +59,7 @@ export default function ImageCropModal({ imageSrc, onClose, onCropDone }: Props)
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            aspect={16 / 9}
+            aspect={aspect}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}

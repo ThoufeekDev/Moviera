@@ -1,19 +1,14 @@
 import type { Movie } from "../types/movie.types";
 import api from '@/shared/lib/axios';
 
-
-interface GetMovieslugResponse {
-    statusCode:number,
-    success: boolean,
-    message: string,
-    data:Movie
+interface GetMovieSlugResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: Movie;
 }
 
-
-export const getMovieBySlug = async (slug: string) => {
-    
-    const response = await api.get<GetMovieslugResponse>(`/movies/admin/${slug}`);
-    
-    return response.data.data
-}
-
+export const getMovieBySlug = async (slug: string): Promise<Movie> => {
+  const response = await api.get<GetMovieSlugResponse>(`/movies/admin/slug/${slug}`);
+  return response.data.data;
+};

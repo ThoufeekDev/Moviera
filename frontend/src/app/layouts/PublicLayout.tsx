@@ -1,8 +1,8 @@
 import { type ReactNode, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { MovieraLogo } from '@/shared/ui/MovieraLogo';
 import { Button } from '@/shared/ui/Button';
-import { useAuthStore } from '@/features/auth';
+import { useAuthStore } from '@/features/auth/stores/auth.store';
 
 interface PublicLayoutProps {
   children?: ReactNode;
@@ -137,10 +137,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <Link to="/theatre-admin/login" className="hover:text-white transition-colors">
               List Your Show
             </Link>
-            <Link to="/register" className="hover:text-white transition-colors">
+            <Link to="/" className="hover:text-white transition-colors">
               Offers
             </Link>
-            <Link to="/admin" className="hover:text-white transition-colors">
+            <Link to="/theatre-admin/login" className="hover:text-white transition-colors">
               Portal Access
             </Link>
           </div>
@@ -149,7 +149,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
       {/* ── Main Content Body ────────────────────────────────────────────── */}
       <main className="flex-1 min-w-0">
-        {children}
+        {children ?? <Outlet />}
       </main>
 
       {/* ── Footer (bg-nav text-nav-ink) ─────────────────────────────────── */}
@@ -181,7 +181,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/register" className="hover:text-white transition-colors">
+                  <Link to="/register/user" className="hover:text-white transition-colors">
                     Create Account
                   </Link>
                 </li>
@@ -216,7 +216,6 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           {/* Bottom Copyright Strip */}
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-nav-ink/60">
             <p>&copy; {new Date().getFullYear()} Moviera. All rights reserved.</p>
-            <p className="text-nav-ink/40">Crafted with BookMyShow-inspired design language</p>
           </div>
         </div>
       </footer>

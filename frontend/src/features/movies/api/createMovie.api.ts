@@ -54,8 +54,6 @@ export const createMovie = async (
     }
 
     const response = await api.post('/movies', formData);
-    
-    console.log('response after creating the movie',response)
     return response.data;
     
 }

@@ -1,18 +1,16 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 // apis
-import { getPerson, type Person } from "../api/getPerson.api";
+import { getPersons, type Person } from "../api/getPerson.api";
 import { createPerson, type createPersonData } from "../api/createPerson.api";
 
 export const usePersons = () => {
     return useQuery({
-        // This uniquely identifies this query.
-        // Think of it as the name of the cache.
         queryKey: ["persons"],
-        // queryfn use when you need the persons data, execute getPersons()
-        queryFn:getPerson
-    })
-}
+        queryFn: getPersons,
+        staleTime: 1000 * 60 * 15,
+    });
+};
 
 
 export const useCreatePerson = () => {

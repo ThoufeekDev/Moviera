@@ -1,25 +1,12 @@
-export interface MovieLanguage {
-  id: string;
-  name: string;
-  code: string;
-}
+import type { Genre, Language, CinemaFormat } from './referenceData.types';
 
-export interface MovieGenre {
-  id: string;
-  name: string;
-  slug: string;
-  isActive: boolean;
-}
-
-export interface MovieCinemaFormat {
-  id: string;
-  name: string;
-  slug: string;
-  isActive: boolean;
-}
+export type MovieLanguage = Language;
+export type MovieGenre = Genre;
+export type MovieCinemaFormat = CinemaFormat;
 
 export interface MovieCastMember {
   id: string;
+  personId: string;
   name: string;
   character: string | null;
   profileImageUrl: string | null;
@@ -27,6 +14,7 @@ export interface MovieCastMember {
 
 export interface MovieCrewMember {
   id: string;
+  personId: string;
   name: string;
   job: string;
   profileImageUrl: string | null;

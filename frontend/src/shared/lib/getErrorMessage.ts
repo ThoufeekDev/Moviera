@@ -1,9 +1,4 @@
-import axios from 'axios';
+import { ApiError } from './ApiError';
 
-export const getErrorMessage = (error: unknown): string => {
-  if (axios.isAxiosError(error)) {
-    return error.response?.data?.message || 'Something went Wrong';
-  }
-
-  return 'Something went wrong';
-};
+export const getErrorMessage = (e: unknown): string =>
+  e instanceof ApiError ? e.message : 'Something went wrong';

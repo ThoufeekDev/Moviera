@@ -1,14 +1,10 @@
-import api from "@/shared/lib/axios";
+import api from '@/shared/lib/axios';
+import type { ApiResponse } from '@/shared/types/apiResponse';
+import type { Language } from '../types/referenceData.types';
 
-
-export interface Language{
-    id: string;
-    name: string;
-    code: string
-    
-}
+export type { Language };
 
 export const getLanguages = async (): Promise<Language[]> => {
-    const response = await api.get('/language');
-    return response.data.data
-}
+  const response = await api.get<ApiResponse<Language[]>>('/language');
+  return response.data.data;
+};

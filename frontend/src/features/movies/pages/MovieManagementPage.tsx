@@ -6,15 +6,20 @@ import { ErrorState } from '@/shared/ui/ErrorState';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { useToggleMovieStatus } from '../hooks/useToggleMovieStatus';
 import { useMovies } from '../hooks/useMovies';
+import { useGenres } from '../hooks/useGenre';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 
 export default function MovieManagementPage() {
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
   const [search, setSearch] = useState('');
+  const [genreId, setGenreId] = useState('');
+  const [status, setStatus] = useState<'' | 'ACTIVE' | 'INACTIVE'>('');
   const [page, setPage] = useState(1);
 
   const limit = 8;
   const debouncedSearch = useDebounce(search, 700);
+
+  const { data: genresData } = useGenres();
 
   const handleToggleStatus = (movieId: string, currentStatus: boolean) => {
     toggleMovieStatus({
@@ -27,70 +32,12 @@ export default function MovieManagementPage() {
     page,
     limit,
     search: debouncedSearch || undefined,
+    genreId: genreId || undefined,
+    status: status || undefined,
   });
 
   const movies = data?.items ?? [];
   const pagination = data?.pagination;
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6 lg:p-8">
-        <header className="flex flex-col gap-1">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink">
-            Movies
-          </h1>
-          <p className="text-sm text-ink-muted">Manage all movies in Moviera.</p>
-        </header>
-
-        <section className="flex flex-wrap items-center gap-3">
-          <div className="relative flex min-w-[240px] flex-1 items-center">
-            <svg
-              className="pointer-events-none absolute left-3.5 h-4 w-4 text-ink-muted"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="search"
-              placeholder="Search movies..."
-              className="h-11 w-full rounded-md border border-border bg-surface pl-10 pr-4 text-base md:text-sm text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-            />
-          </div>
-          <select className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink-muted" disabled>
-            <option value="">All Genres</option>
-          </select>
-          <select className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink-muted" disabled>
-            <option value="">All Status</option>
-          </select>
-        </section>
-
-        {isFetching && (
-          <div className="inline-flex items-center gap-2 self-start rounded-full border border-brand-500/20 bg-brand-50 px-3.5 py-1.5 text-xs font-semibold text-brand-600">
-            <span className="h-2 w-2 rounded-full bg-brand-600 animate-ping" aria-hidden="true" />
-            <span>Loading Movies...</span>
-          </div>
-        )}
-
-        <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <MovieCardSkeleton key={index} />
-          ))}
-        </section>
-      </div>
-    );
-  }
 
   if (isError) {
     return (
@@ -142,18 +89,50 @@ export default function MovieManagementPage() {
           />
         </div>
 
-        <select className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2">
+        <select
+          value={genreId}
+          onChange={(e) => {
+            setGenreId(e.target.value);
+            setPage(1);
+          }}
+          className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+        >
           <option value="">All Genres</option>
+          {genresData?.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
         </select>
 
-        <select className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2">
+        <select
+          value={status}
+          onChange={(e) => {
+            setStatus(e.target.value as '' | 'ACTIVE' | 'INACTIVE');
+            setPage(1);
+          }}
+          className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+        >
           <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
         </select>
       </section>
 
-      {movies.length === 0 ? (
+      {isFetching && !isLoading && (
+        <div className="inline-flex items-center gap-2 self-start rounded-full border border-brand-500/20 bg-brand-50 px-3.5 py-1.5 text-xs font-semibold text-brand-600">
+          <span className="h-2 w-2 rounded-full bg-brand-600 animate-ping" aria-hidden="true" />
+          <span>Refreshing Movies...</span>
+        </div>
+      )}
+
+      {isLoading ? (
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <MovieCardSkeleton key={index} />
+          ))}
+        </section>
+      ) : movies.length === 0 ? (
         <EmptyState
           title="No movies found"
           description="Movies created by the Super Admin will appear here."

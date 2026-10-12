@@ -8,10 +8,7 @@ interface GetMyTheatresResponse {
   data: Theatre[];
 }
 
-export const getMyTheatres = async ():Promise<Theatre[]> => {
-     console.log('triggered');
-     
-    const respone = await api.get<GetMyTheatresResponse>('/theatres/my-theatres');
-     console.log('response is ',respone.data.data)
-    return respone.data.data
-}
+export const getMyTheatres = async (): Promise<Theatre[]> => {
+  const response = await api.get<GetMyTheatresResponse>('/theatres/my-theatres');
+  return response.data.data;
+};

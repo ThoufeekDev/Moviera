@@ -80,7 +80,10 @@ export const updateMovieSchema = z.object({
   trailerUrl: z
     .string()
     .trim()
-    .url('Please enter a valid trailer URL')
+    .refine(
+      (val) => !val || (val.startsWith('https://') && /^https:\/\/[^\s/$.?#].[^\s]*$/i.test(val)),
+      'Trailer URL must be a valid https URL',
+    )
     .optional()
     .or(z.literal('')),
 

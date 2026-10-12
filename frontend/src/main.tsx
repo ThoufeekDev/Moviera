@@ -10,22 +10,16 @@ import './styles/globals.css';
 
 
 
-// const qeuryClient = new QueryClient()
+import env from '@/shared/lib/env';
 
-
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-// const clientId = env.googleClientId;
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
-           <GoogleOAuthProvider clientId={clientId}>
-      <App />
-    </GoogleOAuthProvider>
+        <GoogleOAuthProvider clientId={env.googleClientId}>
+          <App />
+        </GoogleOAuthProvider>
       </ErrorBoundary>
- 
     </QueryClientProvider>
-
   </StrictMode>,
 );

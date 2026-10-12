@@ -140,7 +140,7 @@ export default function MovieCard({ movie, onToggleStatus }: MovieCardProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <Link
-              to={`/super-admin/movies/${movie.slug}`}
+              to={`/super-admin/movies/${movie.id}`}
               className="inline-flex min-h-[44px] items-center gap-1 rounded-md border border-border bg-surface px-3 py-2 text-sm font-medium text-ink shadow-card transition-colors hover:border-brand-600 hover:bg-brand-50 hover:text-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
               <span>View Details</span>

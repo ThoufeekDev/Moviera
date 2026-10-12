@@ -1,12 +1,13 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MovieDetailSkeleton from '../components/MovieDetailSkeleton';
 import { useToggleMovieStatus } from '../hooks/useToggleMovieStatus';
-import { useMovieBySlug } from '../hooks/useMovieBySlug';
+import { useMovieById } from '../hooks/useMovieById';
 
 export default function MovieDetailsPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { id, slug } = useParams<{ id?: string; slug?: string }>();
   const navigate = useNavigate();
-  const { data: movie, isLoading, isError, refetch } = useMovieBySlug(slug);
+  const movieId = id || slug;
+  const { data: movie, isLoading, isError, refetch } = useMovieById(movieId);
   const { mutate: toggleMovieStatus, isPending: isTogglingStatus } = useToggleMovieStatus();
 
   if (isLoading) {

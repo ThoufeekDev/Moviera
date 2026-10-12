@@ -5,20 +5,19 @@ import {
   logoutUser,
   getProfile,
   registerUser,
-  verifyOtpPaylod,
+  verifyOtpPayload,
   resendOtp,
   googleLogin
 } from '../api/auth.api';
 
-
 import type { User } from '../types/auth.types';
-
 
 import type { LoginDTO } from '../types/dto/Login.dto';
 import type { RegisterDTO } from '../types/dto/Register.dto';
 import type { VerifyOtpDTO } from '../types/dto/VerifyOtp.dto';
 import type { ResendOtp } from '../types/dto/ResendOtp.dto';
 import type { ResendOtpResponse } from '../types/dto/ResendOtpResponse.dto';
+
 interface AuthStore {
   user: User | null;
 
@@ -32,13 +31,15 @@ interface AuthStore {
 
   logout: () => Promise<void>;
 
+  clear: () => void;
+
   fetchProfile: () => Promise<void>;
 
   verifyOtpAndLogin: (data: VerifyOtpDTO) => Promise<void>;
 
   resendOtp: (data: ResendOtp) => Promise<ResendOtpResponse>;
   
-  googleLogin: (credential:string)=> Promise<void>;
+  googleLogin: (credential: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -46,6 +47,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isAuthenticated: false,
   isLoading: false,
   isCheckingAuth: true,
+
+  clear: () => {
+    set({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isCheckingAuth: false,
+    });
+  },
 
   register: async (data) => {
     try {
@@ -69,9 +79,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({
         isLoading: true,
       });
-    const user =   await loginUser(data);
-
-      // const profile = await getProfile();
+      const user = await loginUser(data);
 
       set({
         user,
@@ -90,52 +98,37 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   googleLogin: async (credential) => {
     try {
       set({
-        isLoading:true,
-      })
+        isLoading: true,
+      });
 
       await googleLogin(credential);
       const profile = await getProfile();
       set({
         user: profile,
-        isAuthenticated:true
-      })
+        isAuthenticated: true,
+      });
     } catch (error) {
-          console.error(error);
-          throw error;
+      console.error(error);
+      throw error;
     } finally {
-          set({
-            isLoading: false,
-          });
+      set({
+        isLoading: false,
+      });
     }
   },
 
   logout: async () => {
     try {
       await logoutUser();
+    } catch (error) {
+      console.error(error);
+    } finally {
       set({
         user: null,
         isAuthenticated: false,
       });
-    } catch (error) {
-      console.error(error);
-      throw error;
     }
   },
-
-  // logout: async () => {
-  //   try {
-  //     await logoutUser();
-  //   } catch (error) {
-  //     console.error('Logout request failed:', error);
-  //   } finally {
-  //     useHospitalStore.getState().resetHospital();
-
-  //     set({
-  //       user: null,
-  //       isAuthenticated: false,
-  //     });
-  //   }
-  // },
 
   fetchProfile: async () => {
     try {
@@ -167,7 +160,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({
         isLoading: true,
       });
-      await verifyOtpPaylod(data);
+      await verifyOtpPayload(data);
       await get().fetchProfile();
     } catch (error) {
       console.error(error);

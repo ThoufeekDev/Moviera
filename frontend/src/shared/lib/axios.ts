@@ -1,11 +1,23 @@
-import { normalizeApiError } from './normalizeApiError';
 import axios from 'axios';
+import env from './env';
+import { normalizeApiError } from './normalizeApiError';
 
-import { refreshAccessToken } from '@/features/auth/api/auth.api';
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: env.apiBaseUrl,
   withCredentials: true,
 });
+
+const bareAxios = axios.create({
+  baseURL: env.apiBaseUrl,
+  withCredentials: true,
+});
+
+type AuthFailureHandler = () => void;
+let authFailureHandler: AuthFailureHandler | null = null;
+
+export const setAuthFailureHandler = (handler: AuthFailureHandler) => {
+  authFailureHandler = handler;
+};
 
 // ========================================
 // REFRESH TOKEN LOCK
@@ -19,7 +31,6 @@ let isRefreshing = false;
 
 type FailedQueueItem = {
   resolve: () => void;
-
   reject: (reason?: unknown) => void;
 };
 
@@ -50,20 +61,12 @@ const processQueue = (error: unknown = null) => {
 // ========================================
 
 api.interceptors.response.use(
-  // SUCCESS RESPONSE
-
   (response) => response,
-
-  // ERROR RESPONSE
 
   async (error) => {
     const originalRequest = error.config as typeof error.config & {
       _retry?: boolean;
     };
-
-    // ====================================
-    // ACCESS TOKEN EXPIRED
-    // ====================================
 
     if (
       error.response?.status === 401 &&
@@ -71,15 +74,7 @@ api.interceptors.response.use(
       originalRequest.url !== '/auth/refresh-token' &&
       originalRequest.url !== '/auth/login'
     ) {
-      // ==================================
-      // PREVENT INFINITE RETRY LOOP
-      // ==================================
-
       originalRequest._retry = true;
-
-      // ==================================
-      // IF REFRESH ALREADY RUNNING
-      // ==================================
 
       if (isRefreshing) {
         return new Promise<void>((resolve, reject) => {
@@ -92,40 +87,17 @@ api.interceptors.response.use(
         });
       }
 
-      // ==================================
-      // START REFRESH PROCESS
-      // ==================================
-
       isRefreshing = true;
 
       try {
-        // ================================
-        // REQUEST NEW ACCESS TOKEN
-        // ================================
-
-        // await api.post('/auth/refresh-token');
-        await refreshAccessToken();
-
-        // ================================
-        // RETRY WAITING REQUESTS
-        // ================================
-
+        await bareAxios.post('/auth/refresh-token');
         processQueue();
-
-        // ================================
-        // RETRY ORIGINAL REQUEST
-        // ================================
-
         return api(originalRequest);
       } catch (refreshError) {
-        // ================================
-        // REJECT WAITING REQUESTS
-        // ================================
-
         processQueue(refreshError);
-
-        console.log('Refresh token expired');
-
+        if (authFailureHandler) {
+          authFailureHandler();
+        }
         return Promise.reject(normalizeApiError(refreshError));
       } finally {
         isRefreshing = false;

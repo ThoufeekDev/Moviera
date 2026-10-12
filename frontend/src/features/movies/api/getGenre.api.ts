@@ -1,14 +1,10 @@
-import api from "@/shared/lib/axios";
+import api from '@/shared/lib/axios';
+import type { ApiResponse } from '@/shared/types/apiResponse';
+import type { Genre } from '../types/referenceData.types';
 
-export interface Genre {
-  id: string;
-  name: string;
-  slug: string;
-  isActive: boolean;
-}
+export type { Genre };
 
 export const getGenres = async (): Promise<Genre[]> => {
-  const response = await api.get("/genre");
-
+  const response = await api.get<ApiResponse<Genre[]>>('/genre');
   return response.data.data;
 };

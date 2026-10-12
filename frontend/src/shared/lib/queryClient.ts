@@ -1,26 +1,17 @@
 import { QueryClient } from '@tanstack/react-query';
+import { ApiError } from './ApiError';
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-         retry:(failureCount, error: any) =>{
-                const status = error?.response?.status;
-
-                // Don't retry client-side errors
-                if (status >= 400 && status < 500) {
-                    return false;
-                }
-                 
-                // Retry server/network errors up to 2 times
-                return failureCount < 2;
-            },
-            retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
-        },
-        mutations: {
-            // Don't automatically retry mutations
-            retry:false
-        }
-    }
+  defaultOptions: {
+    queries: {
+      retry: (count, e) =>
+        !(e instanceof ApiError && e.statusCode >= 400 && e.statusCode < 500) && count < 2,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
+    },
+    mutations: {
+      retry: false,
+    },
+  },
 });
 
 export default queryClient;

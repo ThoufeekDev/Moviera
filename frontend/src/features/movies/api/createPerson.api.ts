@@ -1,28 +1,20 @@
-import api from "@/shared/lib/axios";
+import api from '@/shared/lib/axios';
+import type { ApiResponse } from '@/shared/types/apiResponse';
+import type { Person } from '../types/person.types';
 
-export interface createPersonData {
-    name: string;
-    image?: File;
+export interface CreatePersonData {
+  name: string;
+  image?: File;
 }
 
-export interface Person{
-    id: string;
-    name: string;
-    imageUrl:string | null
-}
+export type createPersonData = CreatePersonData;
+export type { Person };
 
-interface CreatePersonResponse {
-  message: string;
-  data: Person;
-}
+export const createPerson = async (data: CreatePersonData): Promise<Person> => {
+  const formData = new FormData();
+  formData.append('name', data.name);
+  if (data.image) formData.append('image', data.image);
 
-
-export const createPerson = async (data:createPersonData):Promise<Person> => {
-    const formData = new FormData();
-
-    formData.append('name', data.name);
-    if (data.image) formData.append('image', data.image);
-
-    const response = await api.post<CreatePersonResponse>('/persons', formData);
-    return response.data.data
-}
+  const response = await api.post<ApiResponse<Person>>('/persons', formData);
+  return response.data.data;
+};

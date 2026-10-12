@@ -9,6 +9,7 @@ import AuthBrandHeader from '../components/AuthBrandHeader';
 import { verifyOtpSchema, type VerifyOtpFormData } from '../schemas/verifyOtp.schema';
 import { Button } from '@/shared/ui/Button';
 import { Role } from '@/shared/constants/Role';
+import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 
 const OTP_LENGTH = 6;
 
@@ -43,7 +44,7 @@ export default function VerifyOtpPage() {
       setOtpExpireIn(response.data.otpExpireAt);
       setResendSuccess(response.message);
     } catch (error: any) {
-      setOtpError(error.response?.data?.message || 'Failed to resend OTP');
+      setOtpError(getErrorMessage(error) || 'Failed to resend OTP');
     }
   }
 
@@ -118,7 +119,7 @@ export default function VerifyOtpPage() {
         navigate('/');
       }
     } catch (error: any) {
-      setOtpError(error.response?.data?.message || 'Invalid or expired verification code.');
+      setOtpError(getErrorMessage(error) || 'Invalid or expired verification code.');
     } finally {
       setIsSubmitting(false);
     }

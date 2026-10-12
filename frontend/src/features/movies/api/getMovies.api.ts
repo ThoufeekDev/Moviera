@@ -19,6 +19,7 @@ export interface GetMoviesParams {
   page?: number;
   limit?: number;
   search?: string;
+  genreId?: string;
   status?: 'ACTIVE' | 'INACTIVE';
   sortBy?: 'title' | 'releaseDate' | 'createdAt' | 'updatedAt';
   sortOrder?: 'asc' | 'desc';

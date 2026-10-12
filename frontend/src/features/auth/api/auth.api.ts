@@ -11,19 +11,14 @@ export const registerUser = async (data: RegisterDTO) => {
   return response.data.data
 };
 
-export const verifyOtpPaylod = async (data: VerifyOtpDTO) => {
+export const verifyOtpPayload = async (data: VerifyOtpDTO) => {
   const response = await api.post('/auth/verify-otp', data);
   return response.data.data;
 };
 
 export const loginUser = async (data: LoginDTO) => {
-
-        const response = await api.post('/auth/login', data);
-
-        return response.data.data;
-  
-
-  // return response.data.user
+  const response = await api.post('/auth/login', data);
+  return response.data.data;
 };
 
 export const logoutUser = async () => {
@@ -33,16 +28,11 @@ export const logoutUser = async () => {
 
 export const getProfile = async () => {
   const response = await api.get('/auth/profile');
-
-  // return response.data;
   return response.data.data;
 };
 
 export const refreshAccessToken = async () => {
-  console.log('refreshAccessToken triggered');
-  
-await api.post('/auth/refresh-token');
-  
+  await api.post('/auth/refresh-token');
 };
 
 

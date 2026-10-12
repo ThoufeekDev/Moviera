@@ -38,10 +38,10 @@ export default async function getCroppedImg(imageSrc: string, pixelCrop: Area | 
     canvas.toBlob(
       (blob) => {
         if (!blob) {
-          resolve(new File([], 'hospital-banner.jpg', { type: 'image/jpeg' }));
+          resolve(new File([], 'cropped-image.jpg', { type: 'image/jpeg' }));
           return;
         }
-        const file = new File([blob], 'hospital-banner.jpg', {
+        const file = new File([blob], 'cropped-image.jpg', {
           type: 'image/jpeg',
         });
         resolve(file);
