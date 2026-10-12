@@ -1,36 +1,38 @@
-import { AuthenticatedRequest } from "../../../../shared/types/AuthenticateRequest";
-import { successResponse } from "../../../../shared/utils/apiResponse";
-import { GetTheatreOverviewUseCase } from "../../application/use-cases/GetTheatreOverviewUseCase";
-import { Response } from "express";
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { ok } from "../../../../shared/http/response";
 import { UnauthorizedError } from "../../../../shared/errors/UnauthorizedError";
-import { TheatreResponseMapper } from "../mappers/TheatreResponseMapper";
+import { GetTheatreOverviewUseCase } from "../../application/queries/GetTheatreOverviewUseCase";
+import { TheatreResponseMapper } from "../response-mappers/TheatreResponseMapper";
 
-export interface TheatreParams{
-    theatreId:string
+export interface GetTheatreOverviewParams {
+  theatreId: string;
 }
 
-export class GetTheatreOverviewcontroller {
+export class GetTheatreOverviewController {
+  constructor(
+    private readonly getTheatreOverviewUseCase: GetTheatreOverviewUseCase,
+  ) {}
 
-    constructor(private readonly getTheatreOverviewController: GetTheatreOverviewUseCase) { }
-    
-    handle = async (req:AuthenticatedRequest<{theatreId:string}>,res:Response) => {
-             if (!req.userId) {
-        throw new UnauthorizedError("Authentication required");
+  handle = async (
+    req: HttpRequest<GetTheatreOverviewParams>,
+  ): Promise<HttpResponse> => {
+    if (!req.user?.userId) {
+      throw new UnauthorizedError("Authentication required");
     }
-        const overview = await this.getTheatreOverviewController.execute(
-            req.params.theatreId,
-            req.userId
-        )
 
+    const overview = await this.getTheatreOverviewUseCase.execute(
+      req.params.theatreId,
+      req.user.userId,
+    );
 
-        const data = {
-            ...overview,
-            theatre: TheatreResponseMapper.toResponse(
-                overview.theatre.theatre,
-                overview.theatre.city
-            )
-        }
-        
-        successResponse(res,200,true,"Theatre overview retrieved succesfully",data)
-    }
+    const data = {
+      ...overview,
+      theatre: TheatreResponseMapper.toResponse(
+        overview.theatre.theatre,
+        overview.theatre.city,
+      ),
+    };
+
+    return ok(data, "Theatre overview retrieved successfully");
+  };
 }

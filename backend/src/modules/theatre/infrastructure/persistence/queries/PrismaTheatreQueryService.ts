@@ -1,25 +1,15 @@
-import { Theatre } from '../../domain/entities/Theatre';
-import prisma from '../../../../config/database';
-
-import { ITheatreRepository } from '../../domain/repositories/ITheatreRepository';
+import { PrismaClient } from '@prisma/client';
+import { ITheatreQueryService } from '../../../application/ports/ITheatreQueryService';
+import { TheatreOverview } from '../../../application/read-models/TheatreOverview';
+import { TheatreWithCity } from '../../../application/read-models/TheatreWithCity';
 import { TheatreMapper } from '../mappers/TheatreMapper';
-import type { TheatreWithCity } from '../../domain/types/TheatreWithCity';
-import type { TheatreOverview } from '../../domain/types/TheatreOverView';
 import { TheatreOverviewFacilityMapper } from '../mappers/TheatreOverviewFacilityMapper';
 
-export class PrismaTheatreRepository implements ITheatreRepository {
-  async findById(id: string): Promise<Theatre | null> {
-    const theatre = await prisma.theatre.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    return theatre ? TheatreMapper.toDomain(theatre) : null;
-  }
+export class PrismaTheatreQueryService implements ITheatreQueryService {
+  constructor(private readonly prisma: PrismaClient) {}
 
   async findByAdminId(adminId: string): Promise<TheatreWithCity[]> {
-    const assignments = await prisma.theatreAdminAssignment.findMany({
+    const assignments = await this.prisma.theatreAdminAssignment.findMany({
       where: {
         userId: adminId,
         isActive: true,
@@ -42,26 +32,8 @@ export class PrismaTheatreRepository implements ITheatreRepository {
     }));
   }
 
-  async findByIdForAdmin(theatreId: string, adminId: string): Promise<Theatre | null> {
-    const assignment = await prisma.theatreAdminAssignment.findFirst({
-      where: {
-        theatreId,
-        userId: adminId,
-        isActive: true,
-        theatre: {
-          isActive: true,
-        },
-      },
-      include: {
-        theatre: true,
-      },
-    });
-
-    return assignment ? TheatreMapper.toDomain(assignment.theatre) : null;
-  }
-
-  async getOverView(theatreId: string, adminId: string): Promise<TheatreOverview | null> {
-    const assignment = await prisma.theatreAdminAssignment.findFirst({
+  async getOverview(theatreId: string, adminId: string): Promise<TheatreOverview | null> {
+    const assignment = await this.prisma.theatreAdminAssignment.findFirst({
       where: {
         theatreId,
         userId: adminId,
@@ -106,16 +78,16 @@ export class PrismaTheatreRepository implements ITheatreRepository {
     const totalScreens = theatre.screens.length;
 
     const totalSeats = theatre.screens.reduce((total, screen) => {
-      return (total += screen._count.seats);
+      return total + screen._count.seats;
     }, 0);
 
     const totalShows = theatre.screens.reduce((total, screen) => {
-      return (total += screen._count.shows);
+      return total + screen._count.shows;
     }, 0);
 
     const totalReviews = theatre._count.reviews;
 
-    const reviewAggregate = await prisma.theatreReview.aggregate({
+    const reviewAggregate = await this.prisma.theatreReview.aggregate({
       where: {
         theatreId,
       },

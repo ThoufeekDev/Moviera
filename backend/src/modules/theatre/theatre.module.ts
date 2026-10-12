@@ -1,62 +1,69 @@
-// & PrismaRepos
+import { PrismaClient } from '@prisma/client';
 
-import { PrismaTheatreRepository } from "./infrastructure/repositories/PrismaTheatreRepository";
-import { PrismaScreenRepository } from "./infrastructure/repositories/PrismaScreenRepository";
-import { PrismaSeatRepository } from "./infrastructure/repositories/PrismaSeatRepository";
+import { PrismaTheatreRepository } from './infrastructure/persistence/repositories/PrismaTheatreRepository';
+import { PrismaScreenRepository } from './infrastructure/persistence/repositories/PrismaScreenRepository';
+import { PrismaSeatRepository } from './infrastructure/persistence/repositories/PrismaSeatRepository';
+import { PrismaTheatreQueryService } from './infrastructure/persistence/queries/PrismaTheatreQueryService';
 
+import { CreateScreenUseCase } from './application/commands/CreateScreenUseCase';
+import { CreateSeatUseCase } from './application/commands/CreateSeatUseCase';
+import { GetMyTheatresUseCase } from './application/queries/GetMyTheatresUseCase';
+import { GetTheatreOverviewUseCase } from './application/queries/GetTheatreOverviewUseCase';
 
-
-// ! UseCases
-                     
-
-import { CreateScreenUseCase } from "./application/use-cases/CreateScreenUseCase";
-import { CreateSeatUseCase } from "./application/use-cases/CreateSeatUseCase";
-import { GetMyTheatresUseCase } from "./application/use-cases/GetMyTheatresUseCase";
-import { GetTheatreOverviewUseCase } from "./application/use-cases/GetTheatreOverviewUseCase";
-
-
-
-// ! Controllers
-                    
-
-import { CreateScreenController } from "./presentation/controllers/CreateScreenController";
+import { CreateScreenController } from './presentation/controllers/CreateScreenController';
 import { CreateSeatController } from './presentation/controllers/CreateSeatController';
-import { GetMyTheatresController } from "./presentation/controllers/GetMyTheatresController";
-import { GetTheatreOverviewcontroller } from "./presentation/controllers/GetTheatreOverviewController";
+import { GetMyTheatresController } from './presentation/controllers/GetMyTheatresController';
+import { GetTheatreOverviewController } from './presentation/controllers/GetTheatreOverviewController';
 
+import { createTheatreRoutes } from './presentation/routes/theatre.routes';
+import { createSeatRoutes } from './presentation/routes/seat.routes';
 
-export function buildTheatreModule() {
+export function buildTheatreModule(prisma: PrismaClient) {
+  // Repositories & Query Service
+  const theatreRepository = new PrismaTheatreRepository(prisma);
+  const screenRepository = new PrismaScreenRepository(prisma);
+  const seatRepository = new PrismaSeatRepository(prisma);
+  const theatreQueryService = new PrismaTheatreQueryService(prisma);
 
-    // &repositories
+  // Use cases
+  const createScreenUseCase = new CreateScreenUseCase(
+    screenRepository,
+    theatreRepository,
+  );
+  const createSeatUseCase = new CreateSeatUseCase(
+    seatRepository,
+    screenRepository,
+  );
+  const getMyTheatresUseCase = new GetMyTheatresUseCase(theatreQueryService);
+  const getTheatreOverviewUseCase = new GetTheatreOverviewUseCase(
+    theatreQueryService,
+  );
 
-    const theatreRepository = new PrismaTheatreRepository();
-    const screenRepository = new PrismaScreenRepository();
-    const seatRepository = new PrismaSeatRepository();
+  // Controllers
+  const createScreenController = new CreateScreenController(
+    createScreenUseCase,
+  );
+  const createSeatController = new CreateSeatController(createSeatUseCase);
+  const getMyTheatresController = new GetMyTheatresController(
+    getMyTheatresUseCase,
+  );
+  const getTheatreOverviewController = new GetTheatreOverviewController(
+    getTheatreOverviewUseCase,
+  );
 
-    // ^ Controllers
+  // Routers
+  const theatreRouter = createTheatreRoutes({
+    getMyTheatresController,
+    createScreenController,
+    getTheatreOverviewController,
+  });
 
-    const createScreenController = new CreateScreenController(
-        new CreateScreenUseCase(screenRepository,theatreRepository)
-    )
+  const seatRouter = createSeatRoutes({
+    createSeatController,
+  });
 
-    const createSeatController = new CreateSeatController(
-        new CreateSeatUseCase(seatRepository,screenRepository)
-    )
-
-    const getMyTheatresController = new GetMyTheatresController(
-        new GetMyTheatresUseCase(theatreRepository)
-    )
-
-    const getTheatreOverViewController = new GetTheatreOverviewcontroller(
-        new GetTheatreOverviewUseCase(theatreRepository)
-    )
-
-
-
-    return {
-        createScreenController,
-        createSeatController,
-        getMyTheatresController,
-        getTheatreOverViewController
-    }
+  return {
+    theatreRouter,
+    seatRouter,
+  };
 }

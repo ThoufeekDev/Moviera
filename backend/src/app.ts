@@ -3,8 +3,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import authRoutes from './modules/auth/presentation/routes/auth.routes';
-import theatreRoute from './modules/theatre/presentation/routes/theatre.route';
-import seatRoute from './modules/theatre/presentation/routes/seat.route';
 import { container } from './main/container';
 import { errorHandler } from './shared/middleware/errrorHandler';
 
@@ -34,8 +32,8 @@ app.use('/genre', container.movies.genreRouter);
 app.use('/genres', container.movies.genreRouter);
 
 // Theatre Module
-app.use('/theatres', theatreRoute);
-app.use('/theatres', seatRoute);
+app.use('/theatres', container.theatre.theatreRouter);
+app.use('/theatres', container.theatre.seatRouter);
 
 // Error Handling Middleware
 app.use(errorHandler);

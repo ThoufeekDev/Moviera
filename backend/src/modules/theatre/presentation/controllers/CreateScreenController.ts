@@ -1,9 +1,7 @@
-import type { Response } from "express";
-
-import { CreateScreenUseCase } from "../../application/use-cases/CreateScreenUseCase";
-import { successResponse } from "../../../../shared/utils/apiResponse";
-import { AuthenticatedRequest } from "../../../../shared/types/AuthenticateRequest";
-
+import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
+import { created } from "../../../../shared/http/response";
+import { UnauthorizedError } from "../../../../shared/errors/UnauthorizedError";
+import { CreateScreenUseCase } from "../../application/commands/CreateScreenUseCase";
 
 interface CreateScreenRequestBody {
   theatreId: string;
@@ -11,29 +9,21 @@ interface CreateScreenRequestBody {
 }
 
 export class CreateScreenController {
-  constructor(
-    private readonly createScreenUseCase: CreateScreenUseCase,
-  ) {}
+  constructor(private readonly createScreenUseCase: CreateScreenUseCase) {}
 
   handle = async (
-    req: AuthenticatedRequest<
-      Record<string, string>,
-CreateScreenRequestBody
-    >,
-    res: Response,
-  ): Promise<Response> => {
+    req: HttpRequest<unknown, CreateScreenRequestBody>,
+  ): Promise<HttpResponse> => {
+    if (!req.user?.userId) {
+      throw new UnauthorizedError("Authentication required");
+    }
+
     const screen = await this.createScreenUseCase.execute({
       theatreId: req.body.theatreId,
       name: req.body.name,
-      adminId: req.userId!,
+      adminId: req.user.userId,
     });
 
-    return successResponse(
-      res,
-      201,
-      true,
-      "Screen created successfully",
-      screen,
-    );
+    return created(screen, "Screen created successfully");
   };
 }

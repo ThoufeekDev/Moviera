@@ -1,4 +1,4 @@
-import type { TheatreOverviewFacility } from '../../domain/types/TheatreOverviewFacility';
+import type { TheatreOverviewFacility } from '../../../application/read-models/TheatreOverviewFacility';
 
 export class TheatreOverviewFacilityMapper {
   static toDomain(

@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { SeatType } from '../../domain/enums/SeatType';
+
 export const createSeatSchema = z.object({
-  screenId: z.string().trim().min(1, 'Screen ID is required'),
+  screenId: z.string().trim().min(1, 'Screen ID is required').optional(),
 
   rowLabel: z
     .string()
@@ -22,3 +23,5 @@ export const createSeatSchema = z.object({
 
   type: z.enum(SeatType),
 });
+
+export type CreateSeatInput = z.infer<typeof createSeatSchema>;

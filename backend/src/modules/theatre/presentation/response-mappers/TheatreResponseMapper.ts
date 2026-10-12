@@ -1,9 +1,9 @@
 import { Theatre } from "../../domain/entities/Theatre";
-import type { TheatreWithCity } from "../../domain/types/TheatreWithCity";
+import type { TheatreWithCity } from "../../application/read-models/TheatreWithCity";
 
 export class TheatreResponseMapper {
-    static toResponse(theatre: Theatre,city:TheatreWithCity['city']) {
-        return {
+  static toResponse(theatre: Theatre, city: TheatreWithCity['city']) {
+    return {
       id: theatre.id,
       cityId: theatre.cityId,
       name: theatre.name,
@@ -19,10 +19,10 @@ export class TheatreResponseMapper {
       isActive: theatre.isActive,
       licenseNumber: theatre.licenseNumber,
       createdAt: theatre.createdAt,
-            updatedAt: theatre.updatedAt,
-      city
-        }
-    }
+      updatedAt: theatre.updatedAt,
+      city,
+    };
+  }
 
   static toResponseList(theatres: TheatreWithCity[]) {
     return theatres.map(({ theatre, city }) =>

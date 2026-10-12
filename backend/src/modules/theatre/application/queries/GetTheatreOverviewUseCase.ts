@@ -1,11 +1,11 @@
 import { BadRequestError } from '../../../../shared/errors/BadRequestError';
 import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
-import { ITheatreRepository } from '../../domain/repositories/ITheatreRepository';
-import { TheatreOverview } from '../../domain/types/TheatreOverView';
+import type { ITheatreQueryService } from '../ports/ITheatreQueryService';
+import type { TheatreOverview } from '../read-models/TheatreOverview';
 
 export class GetTheatreOverviewUseCase {
-  constructor(private readonly theatreRepository: ITheatreRepository) {}
+  constructor(private readonly theatreQueryService: ITheatreQueryService) {}
 
   async execute(theatreId: string, adminId: string): Promise<TheatreOverview> {
     if (!theatreId) {
@@ -16,7 +16,7 @@ export class GetTheatreOverviewUseCase {
       throw new UnauthorizedError('Authentication required');
     }
 
-    const theatre = await this.theatreRepository.getOverView(theatreId, adminId);
+    const theatre = await this.theatreQueryService.getOverview(theatreId, adminId);
     if (!theatre) {
       throw new NotFoundError('Theatre not found');
     }

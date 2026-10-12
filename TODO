@@ -8,15 +8,14 @@
 
 ## Authentication & Authorization
 
-✔ Implement OTP Expiration / Timeout @started(26-09-01 11:21) @done(26-09-01 13:49) @lasted(2h28m54s)
-✔ Implement Resend OTP @done(26-09-04 04:41)
-✔ Implement Google OAuth @done(26-09-05 00:13)
-✘ Implement Apple OAuth @cancelled(26-09-01 03:03)
-✘ Apple OAuth — Cancelled
-☐ Implement Forgot Password on Login Page
-✔ Implement Role-Based Access Control @done(26-09-22 03:03)
-✔ Implement Super Admin Authorization & Authentication @done(26-09-16 23:23)
-☐ Implement Theatre Admin Authorization
+✔ OTP Expiration / Timeout @done(26-09-01)
+✔ Resend OTP @done(26-09-04)
+✔ Google OAuth @done(26-09-05)
+✘ Apple OAuth @cancelled(26-09-01)
+☐ Forgot Password on Login Page
+✔ Role-Based Access Control @done(26-09-22)
+✔ Super Admin Authentication & Authorization @done(26-09-16)
+☐ Theatre Admin Authorization (can manage only assigned theatres)
 
 ## User Application
 
@@ -30,87 +29,95 @@
 ## Movie Module
 
 ✔ Create Movie — Super Admin
-✔ Get All Movies — Public
-✔ Get Movie by ID — Public
-✔ Get By Lanugage - Super Admin @done(26-09-16 23:25)
-✔ Update Movie — Super Admin @started(26-09-07 00:47) @done(26-09-22 03:00) @lasted(2w1d2h13m6s)
-✔ Active & Deactivate Movie — Super Admin @done(26-09-22 03:00)
-✘ Add Movie Module Tests @cancelled(26-09-17 11:26)
-✔ Implement Search with debouncing concept @done(26-09-24 14:38)
-✘ filter by Genre & Status @cancelled(26-09-24 14:38)
-✔ implement Pagination @done(26-09-24 14:38)
+✔ Update Movie — Super Admin @done(26-09-22)
+✔ Activate / Deactivate Movie — Super Admin @done(26-09-22)
+✔ Admin Movie List: Search (Debounced) @done(26-09-24)
+✔ Admin Movie List: Pagination @done(26-09-24)
+✔ Admin Movie List: Filter by Language @done(26-09-16)
+✔ Admin Movie List: Filter by Genre, Certification, Status, Release Date
+✔ Admin Movie Detail (by ID and Slug)
+☐ Public: List Movies (active only)
+☐ Public: Movie Detail by Slug
+✔ Movie Module Tests — initial set (slug service, update use case, value objects, schemas, controller)
+☐ Movie Module Tests — create use case, query use cases, routes
 
 ## Theatre Module
-✔ Theatre Admin Login @started(26-09-24 14:38) @done(26-10-01 13:41) @lasted(6d23h3m21s)
-☐ Create Theatre — Theatre Admin
-✔ Get All Theatres — Public @done(26-10-01 13:41)
-✔ Get Theatre by ID — Public @done(26-10-01 13:41)
+
+✔ Theatre Admin Login @done(26-10-01)
+✔ Create Theatre — Theatre Admin @done(26-10-12)
+✔ Get All Theatres — Public @done(26-10-01)
+✔ Get Theatre by ID — Public @done(26-10-01)
 ☐ Update Theatre — Theatre Admin
 ☐ Deactivate Theatre — Theatre Admin
-☐ Add Theatre Module Tests
+☐ Theatre Module Tests
 
 ## Screen & Seat Layout
 
-☐ Create Screen
+✔ Create Screen @done(26-10-12)
 ☐ Update Screen
 ☐ Deactivate Screen
 ☐ Configure Seats
-☐ Store Seat `x` Position
-☐ Store Seat `y` Position
-☐ Store Seat `rotation`
+☐ Store Seat Position (x, y) and Rotation
 ☐ Return Seat Layout to Frontend
-☐ Add Screen & Seat Layout Tests
+☐ Screen & Seat Layout Tests
 
 ## Shows
 
 ☐ Create Show
 ☐ Validate Show Timing
-☐ Generate `ShowSeat` Records from Screen Seats
+☐ Generate ShowSeat Records from Screen Seats
 ☐ Get Shows by Movie
 ☐ Get Shows by Theatre
 ☐ Get Shows by Date
 ☐ Get Shows by Movie + Theatre + Date
-☐ Add Shows Module Tests
+☐ Shows Module Tests
 
-## Booking
+## Booking & Payment
 
 ☐ Check Seat Availability
-☐ Implement Redis Seat Locking
-☐ Implement Seat Lock Expiration
+☐ Redis Seat Locking
+☐ Seat Lock Expiration
 ☐ Create Booking
 ☐ Handle Booking Expiration
-☐ Integrate Stripe Payment
-☐ Create Stripe Checkout / Payment Flow
-☐ Implement Stripe Webhook
+☐ Stripe Payment Flow (Checkout)
+☐ Stripe Webhook
 ☐ Verify Payment
 ☐ Confirm Booking After Successful Payment
 ☐ Release Seats After Failed / Expired Payment
 ☐ Generate QR Ticket
 ☐ Return Booking / Ticket Details
-☐ Add Booking Module Tests
+☐ Booking Module Tests
+
+## Architecture & Refactor (current focus)
+
+✔ Movies Module Restructure (commands / queries, query service, value objects, schemas)
+☐ Movies Module: Apply Review Fixes (admin route auth, detail-by-id route, person response mapper, schema fixes)
+☐ Theatre Module Restructure (same layout as Movies, ownership checks in use cases)
+☐ Frontend Restructure (feature-based folders)
+☐ Frontend Design System (consistent theme, responsive on all devices)
 
 ## Quality & Testing
 
-✔ Expand Backend Unit Test Coverage @done(26-09-01 03:05)
-☐ Add Backend Integration Tests
-☐ Add Frontend Unit Tests
-☐ Add Frontend Component Tests
-✔ Configure Test Coverage Reporting @done(26-09-01 03:05)
-☐ Add API Error-Handling Tests
-☐ Add Authentication Tests
-☐ Add Authorization Tests
-☐ Add Movie Flow Integration Tests
-☐ Add Theatre Flow Integration Tests
-☐ Add Show Flow Integration Tests
-☐ Add Seat Locking Tests
-☐ Add Booking & Payment Flow Tests
+✔ Expand Backend Unit Test Coverage @done(26-09-01)
+✔ Configure Test Coverage Reporting @done(26-09-01)
+☐ Backend Integration Tests
+☐ Frontend Unit Tests
+☐ Frontend Component Tests
+☐ API Error-Handling Tests
+☐ Authentication Tests
+☐ Authorization Tests
+☐ Movie Flow Integration Tests
+☐ Theatre Flow Integration Tests
+☐ Show Flow Integration Tests
+☐ Seat Locking Tests
+☐ Booking & Payment Flow Tests
 
 ## Deployment & Production Readiness
 
-☐ Configure Production Environment Variables
-☐ Configure Production Docker Setup
-☐ Configure CI/CD Pipeline
-☐ Add Automated Test Execution in CI
+☐ Production Environment Variables
+☐ Production Docker Setup
+☐ CI/CD Pipeline
+☐ Automated Test Execution in CI
 ☐ Production Logging & Monitoring
 ☐ Production Database Setup
 ☐ Production Redis Setup
@@ -120,30 +127,27 @@
 ☐ Health Check Endpoint
 ☐ Production Security Review
 
+## Milestones (planned order)
 
+### 1. Super Admin
+✔ Super Admin Login
+✔ Add Movies
+✔ Update Movies
+✔ List All Movies
 
+### 2. Theatre Admin: Setup
+✔ Theatre Admin Login
+✔ Create Theatre
+✔ Create Screen
+☐ Customize Seat Layout
 
-## Week 1  Super ADMIN 
-☐ Super Admin Login system
-☐ Admin can add Movies
-☐ Admin Can update Movies
-☐ List All Movies 
+### 3. Theatre Admin: Operations
+☐ Create Shows
+☐ Create Seats
+☐ Manage Bookings
 
-## Week 2 ADMIN 
-☐ Admin Login System
-☐ Admin Can create theatre
-☐ Admin Can customize the seat based on their layout
-☐ admin can create screen 
-
-## Week 3 ADmin 
-☐ admin can create shows
-☐ admin can create seats
-☐ admin can manage bookings
-
-## Week 4 Users
-☐ User can Login
-☐ Landing Page 
-☐ Use can see current Available running movies
-☐ User can book the movies 
-
-
+### 4. Users
+✔ User Login
+☐ Landing Page
+☐ See Currently Running Movies
+☐ Book Movies
