@@ -2,7 +2,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-import authRoutes from './modules/auth/presentation/routes/auth.routes';
 import { container } from './main/container';
 import { errorHandler } from './shared/middleware/errrorHandler';
 
@@ -19,7 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Auth
-app.use('/auth', authRoutes);
+app.use('/auth', container.auth.authRouter);
 
 // Movies Module (Catalog & Management)
 app.use('/movies', container.movies.movieRouter);

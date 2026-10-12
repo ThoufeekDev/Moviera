@@ -6,3 +6,5 @@ export const loginSchema = z.object({
   password: z.string().min(6),
   role: z.enum(Role),
 });
+
+export type LoginInput = z.infer<typeof loginSchema>;

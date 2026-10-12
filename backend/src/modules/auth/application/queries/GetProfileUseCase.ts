@@ -4,7 +4,7 @@ import { UserMapper } from '../mappers/UserMapper';
 import { ProfileResponseDTO } from '../dtos/response/ProfileResponseDTO';
 
 export class GetProfileUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(userId: string): Promise<ProfileResponseDTO> {
     const user = await this.userRepository.findById(userId);

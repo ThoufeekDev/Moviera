@@ -1,16 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import app from '../../../../app';
-import request from 'supertest';
+import { LoginController } from './LoginController';
+import { LoginUserUseCase } from '../../application/commands/LoginUserUseCase';
 import { Role } from '../../../../shared/enums/Role';
-import { makeLoginUserCase } from '../../infrastructure/factories/makeLoginUserCase';
 
-vi.mock('../../infrastructure/factories/makeLoginUserCase', () => ({
-  makeLoginUserCase: vi.fn(),
-}));
-
-describe('AuthController - Login', () => {
-  it('should login user succesfully', async () => {
-    vi.mocked(makeLoginUserCase).mockReturnValue({
+describe('LoginController', () => {
+  it('should login user successfully and return cookies in framework-agnostic response', async () => {
+    const mockUseCase = {
       execute: vi.fn().mockResolvedValue({
         user: {
           id: 'user-id-123',
@@ -19,17 +14,24 @@ describe('AuthController - Login', () => {
           role: Role.USER,
         },
       }),
-    } as any);
+    } as unknown as LoginUserUseCase;
 
-    const response = await request(app).post('/auth/login').send({
-      email: 'john@example.com',
-      password: 'correct-password',
-      role: Role.USER,
+    const controller = new LoginController(mockUseCase);
+
+    const response = await controller.handle({
+      params: undefined,
+      query: undefined,
+      body: {
+        email: 'john@example.com',
+        password: 'correct-password',
+        role: Role.USER,
+      },
     });
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.data.email).toBe('john@example.com');
-    expect(response.header['set-cookie']).toBeDefined();
+    expect(response.body.data?.email).toBe('john@example.com');
+    expect(response.cookies).toBeDefined();
+    expect(response.cookies).toHaveLength(2);
   });
 });

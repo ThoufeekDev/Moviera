@@ -1,11 +1,10 @@
-
 import { Role } from "../enums/Role";
 import { Response } from "express";
 import { generateAccessToken } from "./generateAccessToken";
 import { generateRefreshToken } from "./generateRefreshToken";
-export async function setAuthCookies(res:Response,userId:string,role:Role) {
-     console.log("trigger setAuthCookies userId and role is ",userId,role);
-     
+import { HttpCookie } from "../http/HttpTypes";
+
+export function buildAuthCookies(userId: string, role: Role): HttpCookie[] {
   const accessToken = generateAccessToken({
     userId,
     role,
@@ -15,27 +14,60 @@ export async function setAuthCookies(res:Response,userId:string,role:Role) {
     userId,
     role,
   });
-    
-      res.cookie('accessToken', accessToken, {
+
+  return [
+    {
+      name: 'accessToken',
+      value: accessToken,
+      options: {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
         maxAge: 15 * 60 * 1000,
-      });
-
-      res.cookie('refreshToken', refreshToken, {
+      },
+    },
+    {
+      name: 'refreshToken',
+      value: refreshToken,
+      options: {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      },
+    },
+  ];
 }
 
-export function setAccessTokenCookie(res: Response, accessToken: string): void{
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        maxAge: 15 * 60 * 1000,
-      });
+export function buildAccessTokenCookie(accessToken: string): HttpCookie {
+  return {
+    name: 'accessToken',
+    value: accessToken,
+    options: {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+    },
+  };
+}
+
+export async function setAuthCookies(res: Response, userId: string, role: Role) {
+  const cookies = buildAuthCookies(userId, role);
+  for (const cookie of cookies) {
+    if (cookie.options) {
+      res.cookie(cookie.name, cookie.value, cookie.options);
+    } else {
+      res.cookie(cookie.name, cookie.value);
+    }
+  }
+}
+
+export function setAccessTokenCookie(res: Response, accessToken: string): void {
+  const cookie = buildAccessTokenCookie(accessToken);
+  if (cookie.options) {
+    res.cookie(cookie.name, cookie.value, cookie.options);
+  } else {
+    res.cookie(cookie.name, cookie.value);
+  }
 }

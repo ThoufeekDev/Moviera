@@ -51,10 +51,10 @@ export default function MovieraLogo({
         <div className="flex flex-col text-left leading-none">
           {showText && (
             <span className="font-bold tracking-tight font-sans">
-              <span className={variant === 'light' ? 'text-white' : 'text-ink'}>
+              {/* <span className={variant === 'light' ? 'text-white' : 'text-ink'}>
                 Movie
               </span>
-              <span className="text-brand-600">ra</span>
+              <span className="text-brand-600">ra</span> */}
             </span>
           )}
           {subtitle && (

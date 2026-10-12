@@ -1,5 +1,6 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { Role } from '../../../../shared/enums/Role';
+import { User } from '../../domain/entities/User';
 
 export class GoogleLoginUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -9,7 +10,7 @@ export class GoogleLoginUseCase {
     email: string;
     name: string;
     avatar: string | null;
-  }) {
+  }): Promise<User> {
     const existingGoogleUser = await this.userRepository.findByGoogleId(data.googleId);
     const existingEmailUser = await this.userRepository.findByEmail(data.email);
     if (existingGoogleUser) {
