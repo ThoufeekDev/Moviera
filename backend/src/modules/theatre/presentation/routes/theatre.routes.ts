@@ -9,16 +9,21 @@ import { getTheatreOverviewParamSchema } from "../schemas/TheatreParamsSchema";
 import { GetMyTheatresController } from "../controllers/GetMyTheatresController";
 import { CreateScreenController } from "../controllers/CreateScreenController";
 import { GetTheatreOverviewController } from "../controllers/GetTheatreOverviewController";
+import { AssignTheatreAdminController } from "../controllers/AssignTheatreAdminController";
+import { assignTheatreAdminSchema } from "../schemas/AssignTheatreAdminSchema";
 
 interface TheatreRouteControllers {
   getMyTheatresController: GetMyTheatresController;
   createScreenController: CreateScreenController;
   getTheatreOverviewController: GetTheatreOverviewController;
+  assignTheatreAdminController: AssignTheatreAdminController;
+
 }
 
 export function createTheatreRoutes(controllers: TheatreRouteControllers): Router {
   const router = Router();
   const theatreAdmin = [authenticateUser, authorizeRoles(Role.THEATRE_ADMIN)];
+  const superAdmin = [authenticateUser, authorizeRoles(Role.SUPER_ADMIN)];
 
   router.get(
     "/my-theatres",
@@ -39,6 +44,16 @@ export function createTheatreRoutes(controllers: TheatreRouteControllers): Route
     validate({ params: getTheatreOverviewParamSchema }),
     adapt(controllers.getTheatreOverviewController.handle),
   );
+
+  router.post(
+    '/admin-assignments',
+    ...superAdmin,
+    validate({ body: assignTheatreAdminSchema }),
+    adapt(controllers.assignTheatreAdminController.handle)
+  )
+
+
+
 
   return router;
 }

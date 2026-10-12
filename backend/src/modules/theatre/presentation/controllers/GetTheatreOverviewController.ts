@@ -22,7 +22,10 @@ export class GetTheatreOverviewController {
 
     const overview = await this.getTheatreOverviewUseCase.execute(
       req.params.theatreId,
-      req.user.userId,
+      {
+        userId: req.user.userId,
+        role: req.user.role,
+      }
     );
 
     const data = {

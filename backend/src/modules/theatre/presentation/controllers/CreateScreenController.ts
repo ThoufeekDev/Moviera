@@ -18,12 +18,12 @@ export class CreateScreenController {
       throw new UnauthorizedError("Authentication required");
     }
 
-    const screen = await this.createScreenUseCase.execute({
+     await this.createScreenUseCase.execute({
       theatreId: req.body.theatreId,
       name: req.body.name,
-      adminId: req.user.userId,
+      actor:req.user,
     });
 
-    return created(screen, "Screen created successfully");
+    return created("Screen created successfully");
   };
 }

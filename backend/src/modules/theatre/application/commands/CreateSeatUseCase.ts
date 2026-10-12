@@ -2,6 +2,7 @@ import { Seat } from "../../domain/entities/Seat";
 import { ISeatRepository } from "../../domain/repositories/ISeatRepository";
 import { CreateSeatDTO } from "../dtos/CreateSeatDTO";
 import { IScreenRepository } from "../../domain/repositories/IScreenRepository";
+import type { ITheatreAccessPolicy } from "../ports/ITheatreAccessPolicy";
 import { NotFoundError } from "../../../../shared/errors/NotFoundError";
 import { ConflictError } from "../../../../shared/errors/ConflictError";
 
@@ -9,6 +10,7 @@ export class CreateSeatUseCase {
   constructor(
     private readonly seatRepository: ISeatRepository,
     private readonly screenRepository: IScreenRepository,
+    private readonly theatreAccessPolicy:ITheatreAccessPolicy,
   ) {}
 
   async execute(seat: CreateSeatDTO): Promise<Seat> {
@@ -17,6 +19,8 @@ export class CreateSeatUseCase {
     if (!screen) throw new NotFoundError("Screen not found");
 
     if (!screen.isActive) throw new ConflictError("Screen is inActive");
+
+    await this.theatreAccessPolicy.assertCanManage(seat.actor,screen.theatreId)
 
     const label = `${seat.rowLabel}$${seat.seatNumber}`;
 
