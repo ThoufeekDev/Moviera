@@ -1,7 +1,7 @@
 import { IGenreRepository } from "../../domain/repositories/IGenreRepository";
 import { Genre } from "../../domain/entities/Genre";
 
-export class GetGenresUseCase {
+export class ListGenresUseCase {
   constructor(private readonly genreRepository: IGenreRepository) {}
 
   async execute(): Promise<Genre[]> {

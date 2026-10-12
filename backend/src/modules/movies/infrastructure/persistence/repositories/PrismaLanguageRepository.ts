@@ -4,9 +4,8 @@ import { ILanguageRepository } from '../../../domain/repositories/ILanguageRepos
 import { LanguageMapper } from '../mappers/LanguageMapper';
 
 export class PrismaLanguageRepository implements ILanguageRepository {
+  constructor(private readonly prisma: PrismaClient) {}
 
-  constructor(private readonly prisma: PrismaClient) { }
-  
   async findAll(): Promise<Language[]> {
     const languages = await this.prisma.language.findMany({
       orderBy: {
@@ -14,50 +13,18 @@ export class PrismaLanguageRepository implements ILanguageRepository {
       },
     });
 
-
     return LanguageMapper.toDomainList(languages);
   }
 
-  async findById(id: string): Promise<Language | null> {
-    const language = await this.prisma.language.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    
-
-   
-
-    return language ? LanguageMapper.toDomain(language) : null;
-  }
-
- async findByIds(ids: string[]): Promise<Language[]> {
+  async findByIds(ids: string[]): Promise<Language[]> {
     const languages = await this.prisma.language.findMany({
       where: {
         id: {
-            in:ids
+          in: ids,
         },
-       
-        }
-    })
-    
-  
-    return LanguageMapper.toDomainList(languages);
-   
-  }
-
-  async findByCode(code: string): Promise<Language | null> {
-    const language = await this.prisma.language.findUnique({
-      where: {
-        code,
       },
     });
 
-   
-
-        return language
-      ? LanguageMapper.toDomain(language)
-      : null;
+    return LanguageMapper.toDomainList(languages);
   }
 }

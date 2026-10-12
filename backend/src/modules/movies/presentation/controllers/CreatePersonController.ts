@@ -1,6 +1,7 @@
 import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
 import { created } from "../../../../shared/http/response";
 import { CreatePersonUseCase } from "../../application/commands/CreatePersonUseCase";
+import { PersonResponseMapper } from "../response-mappers/PersonResponseMapper";
 
 interface CreatePersonBody {
   name: string;
@@ -19,6 +20,6 @@ export class CreatePersonController {
       imageFile: file ? { buffer: file.buffer } : undefined,
     });
 
-    return created(person, "Person created successfully");
+    return created(PersonResponseMapper.toResponse(person), "Person created successfully");
   };
 }

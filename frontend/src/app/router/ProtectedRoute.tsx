@@ -22,9 +22,6 @@ export default function ProtectedRoute({ children,allowedRoles}: Props) {
 
   if(allowedRoles && !allowedRoles.includes(user.role)) return <RoleRedirect/>
 
-  // if (user?.role !== Role.USER) {
-  //   return <RoleRedirect/>
-  // }
 
   return children;
 }

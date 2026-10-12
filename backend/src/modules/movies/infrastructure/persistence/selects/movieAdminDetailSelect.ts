@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-export const movieDetailSelect = {
+export const movieAdminDetailSelect = {
   id: true,
   title: true,
   slug: true,

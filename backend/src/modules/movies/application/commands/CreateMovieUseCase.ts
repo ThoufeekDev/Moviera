@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { IMovieRepository } from '../../domain/repositories/IMovieRepository';
 import { CreateMovieDTO } from '../dtos/CreateMovieDTO';
 import { CreateMovieData } from '../../domain/types/CreateMovieData';
@@ -6,7 +5,6 @@ import { IUseCase } from '../../../../shared/application/interfaces/IUseCase';
 import { MovieSlugService } from '../services/MovieSlugService';
 import { MovieImageService } from '../services/MovieImageService';
 import { MovieReferenceValidator } from '../services/MovieReferenceValidator';
-import { ConflictError } from '../../../../shared/errors/ConflictError';
 
 export class CreateMovieUseCase
   implements IUseCase<CreateMovieDTO, void>
@@ -62,12 +60,6 @@ export class CreateMovieUseCase
       await this.movieRepository.create(movieData);
     } catch (error) {
       await this.movieImageService.rollbackUploads(images);
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictError('A movie with this slug or title already exists');
-      }
       throw error;
     }
   }

@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
-import { GetPersonController } from './GetPersonController';
-import { GetPersonsUseCase } from '../../application/queries/GetPersonUseCase';
+import { ListPersonsController } from './ListPersonsController';
+import { ListPersonsUseCase } from '../../application/queries/ListPersonsUseCase';
 import { Person } from '../../domain/entities/Person';
 
-describe('GetPersonController', () => {
+describe('ListPersonsController', () => {
   it('should return 200 and list of people in framework-agnostic HttpResponse', async () => {
     const mockUseCase = {
       execute: vi.fn().mockResolvedValue([
         new Person('p-1', 'Christopher Nolan', 'https://example.com/nolan.jpg', 'img-1'),
       ]),
-    } as unknown as GetPersonsUseCase;
+    } as unknown as ListPersonsUseCase;
 
-    const controller = new GetPersonController(mockUseCase);
+    const controller = new ListPersonsController(mockUseCase);
 
     const response = await controller.handle({
       params: undefined,
@@ -21,8 +21,9 @@ describe('GetPersonController', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('People fetched successfully');
-    const data = response.body.data as Person[];
+    const data = response.body.data as Record<string, unknown>[];
     expect(data).toHaveLength(1);
     expect(data[0].name).toBe('Christopher Nolan');
+    expect(data[0]).not.toHaveProperty('imagePublicId');
   });
 });

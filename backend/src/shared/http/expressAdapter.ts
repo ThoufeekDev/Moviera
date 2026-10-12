@@ -8,10 +8,11 @@ export const adapt =
   <P = unknown, B = unknown, Q = unknown, R = unknown>(controller: Controller<P, B, Q, R>) =>
   async (req: AuthenticatedRequest & ValidatedRequest, res: Response, next: NextFunction) => {
     try {
+      const validated = res.locals?.validated ?? req.validated;
       const result = await controller({
-        params: (req.validated?.params ?? req.params) as P,
-        body: (req.validated?.body ?? req.body) as B,
-        query: (req.validated?.query ?? req.query) as Q,
+        params: (validated?.params ?? req.params) as P,
+        body: (validated?.body ?? req.body) as B,
+        query: (validated?.query ?? req.query) as Q,
         user:
           req.userId && req.role
             ? {

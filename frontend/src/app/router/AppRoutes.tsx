@@ -47,14 +47,10 @@ const NotFoundPage = lazy(() => import('@/shared/components/NotFoundPage'));
 
 // Route Components
 
-// import TheatreAdminRoute from './TheatreAdminRoute';
-import RoleRedirect from './RoleRedirect';
-// import TheatreAdminPublicRoute from './TheatreAdminPublicRoute';
-// import TheatreAdminLayoutWrapper from './TheatreAdminLayoutWrapper';
 
+import RoleRedirect from './RoleRedirect';
 import PublicRoute from './PublicRoute';
 import ProtectedRoute from './ProtectedRoute';
-// import SuperAdminRoute from './SuperAdminRoute';
 
 import { ComingSoon } from '@/shared/ui/ComingSoon';
 import SuperAdminLayout from '@/app/layouts/SuperAdminLayout';

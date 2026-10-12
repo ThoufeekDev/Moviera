@@ -12,5 +12,4 @@ export interface IPersonRepository {
   findByIds(ids: string[]): Promise<Person[]>;
   findByName(name: string): Promise<Person | null>;
   findAll(): Promise<Person[]>;
-  update(id: string, data: { name?: string; imageUrl?: string | null; imagePublicId?: string | null }): Promise<Person>;
 }

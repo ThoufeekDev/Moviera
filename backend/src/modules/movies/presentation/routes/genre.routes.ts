@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { adapt } from '../../../../shared/http/expressAdapter';
-import { GetGenreController } from '../controllers/GetGenreController';
+import { ListGenresController } from '../controllers/ListGenresController';
 
-interface GetGenreRouteControllers {
-  getGenreController: GetGenreController;
+interface GenreRouteControllers {
+  listGenresController: ListGenresController;
 }
 
-export function createGenreRoutes(controllers: GetGenreRouteControllers): Router {
+export function createGenreRoutes(controllers: GenreRouteControllers): Router {
   const genreRoute = Router();
 
-  genreRoute.get('/', adapt(controllers.getGenreController.handle));
+  genreRoute.get('/', adapt(controllers.listGenresController.handle));
 
   return genreRoute;
 }

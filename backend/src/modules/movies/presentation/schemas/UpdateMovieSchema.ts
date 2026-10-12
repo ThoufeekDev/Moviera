@@ -1,39 +1,42 @@
 import { z } from 'zod';
 import { Certification } from '../../domain/enums/Certification';
 import { jsonArray, uniqueIds } from './shared/arrayUtils';
+import { aliasLanguages } from './shared/aliasLanguages';
 
 export const updateMovieSchema = z.preprocess(
-  (val: any) => {
-    if (val && typeof val === 'object') {
-      if (val.languages && !val.languageIds) {
-        val.languageIds = val.languages;
-      }
-    }
-    return val;
-  },
+  aliasLanguages,
   z.object({
     title: z.string().trim().min(1).optional(),
 
     description: z.string().nullable().optional(),
 
-    duration: z.coerce.number().positive().optional(),
+    duration: z.coerce.number().int().positive().optional(),
 
     releaseDate: z.coerce.date().optional(),
 
     primaryGenreId: z.string().trim().min(1).optional(),
 
     genreIds: jsonArray(
-      uniqueIds('Duplicate genre IDs are not allowed'),
+      uniqueIds('Duplicate genre IDs are not allowed').refine(
+        (ids) => ids.length > 0,
+        'At least one genre is required',
+      ),
     ).optional(),
 
     certification: z.enum(Certification).optional(),
 
     languageIds: jsonArray(
-      uniqueIds('Duplicate language IDs are not allowed'),
+      uniqueIds('Duplicate language IDs are not allowed').refine(
+        (ids) => ids.length > 0,
+        'At least one language is required',
+      ),
     ).optional(),
 
     cinemaFormatIds: jsonArray(
-      uniqueIds('Duplicate cinema format IDs are not allowed'),
+      uniqueIds('Duplicate cinema format IDs are not allowed').refine(
+        (ids) => ids.length > 0,
+        'At least one cinema format is required',
+      ),
     ).optional(),
 
     cast: jsonArray(
@@ -58,12 +61,24 @@ export const updateMovieSchema = z.preprocess(
     ).optional(),
 
     crew: jsonArray(
-      z.array(
-        z.object({
-          personId: z.string().trim().min(1),
-          job: z.string().trim().min(1),
-        }),
-      ),
+      z
+        .array(
+          z.object({
+            personId: z.string().trim().min(1),
+            job: z.string().trim().min(1),
+          }),
+        )
+        .refine(
+          (members) => {
+            const keys = new Set(
+              members.map(
+                (m) => `${m.personId.trim()}:${m.job.trim().toLowerCase()}`,
+              ),
+            );
+            return keys.size === members.length;
+          },
+          'Duplicate crew entries (same person and job) are not allowed',
+        ),
     ).optional(),
 
     trailerUrl: z
@@ -74,8 +89,10 @@ export const updateMovieSchema = z.preprocess(
       .transform((val) => (val === '' ? null : val)),
 
     isActive: z
-      .enum(['true', 'false'])
-      .transform((value) => value === 'true')
+      .union([
+        z.boolean(),
+        z.enum(['true', 'false']).transform((value) => value === 'true'),
+      ])
       .optional(),
   }),
 );

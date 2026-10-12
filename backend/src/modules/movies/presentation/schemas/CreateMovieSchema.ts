@@ -1,22 +1,16 @@
 import { z } from 'zod';
 import { Certification } from '../../domain/enums/Certification';
 import { jsonArray, uniqueIds } from './shared/arrayUtils';
+import { aliasLanguages } from './shared/aliasLanguages';
 
 export const createMovieSchema = z.preprocess(
-  (val: any) => {
-    if (val && typeof val === 'object') {
-      if (val.languages && !val.languageIds) {
-        val.languageIds = val.languages;
-      }
-    }
-    return val;
-  },
+  aliasLanguages,
   z.object({
     title: z.string().trim().min(1, 'Title is required'),
 
     description: z.string().optional(),
 
-    duration: z.coerce.number().positive('Duration must be positive'),
+    duration: z.coerce.number().int().positive('Duration must be positive'),
 
     releaseDate: z.coerce.date(),
 
@@ -49,12 +43,24 @@ export const createMovieSchema = z.preprocess(
     ),
 
     crew: jsonArray(
-      z.array(
-        z.object({
-          personId: z.string().trim().min(1, 'Person ID is required'),
-          job: z.string().trim().min(1, 'Job is required'),
-        }),
-      ),
+      z
+        .array(
+          z.object({
+            personId: z.string().trim().min(1, 'Person ID is required'),
+            job: z.string().trim().min(1, 'Job is required'),
+          }),
+        )
+        .refine(
+          (members) => {
+            const keys = new Set(
+              members.map(
+                (m) => `${m.personId.trim()}:${m.job.trim().toLowerCase()}`,
+              ),
+            );
+            return keys.size === members.length;
+          },
+          'Duplicate crew entries (same person and job) are not allowed',
+        ),
     ),
 
     primaryGenreId: z.string().trim().min(1, 'Primary genre is required'),

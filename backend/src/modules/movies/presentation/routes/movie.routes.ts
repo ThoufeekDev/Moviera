@@ -37,15 +37,23 @@ export function createMovieRoutes(controllers: MovieRouteControllers): Router {
   // Admin routes
   movieRoute.get(
     '/admin',
+    ...admin,
     validate({ query: listMoviesForAdminSchema }),
     adapt(controllers.listMoviesForAdminController.handle),
   );
 
   movieRoute.get(
-    '/admin/:slug',
+    '/admin/slug/:slug',
     ...admin,
     validate({ params: getMovieBySlugParamSchema }),
     adapt(controllers.getMovieBySlugForAdminController.handle),
+  );
+
+  movieRoute.get(
+    '/admin/:id',
+    ...admin,
+    validate({ params: getMovieByIdParamSchema }),
+    adapt(controllers.getMovieByIdForAdminController.handle),
   );
 
   movieRoute.post(

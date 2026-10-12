@@ -60,13 +60,4 @@ export class PrismaPersonRepository implements IPersonRepository {
 
     return PersonMapper.toDomainList(people);
   }
-
-  async update(id: string, data: { name?: string; imageUrl?: string | null; imagePublicId?: string | null }): Promise<Person> {
-    const updatedPerson = await this.prisma.person.update({
-      where: { id },
-      data,
-    });
-
-    return PersonMapper.toDomain(updatedPerson);
-  }
 }

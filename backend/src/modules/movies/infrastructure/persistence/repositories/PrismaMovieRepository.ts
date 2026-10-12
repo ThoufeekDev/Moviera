@@ -1,64 +1,75 @@
 import { Movie } from '../../../domain/entities/Movie';
 import { IMovieRepository } from '../../../domain/repositories/IMovieRepository';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { MovieMapper } from '../mappers/MovieMapper';
 import { UpdateMovieData } from '../../../domain/types/UpdateMovieData';
 import { CreateMovieData } from '../../../domain/types/CreateMovieData';
+import { ConflictError } from '../../../../../shared/errors/ConflictError';
 
 export class PrismaMovieRepository implements IMovieRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(data: CreateMovieData): Promise<void> {
-    const { languageIds, genreIds, cinemaFormatIds, cast, crew, ...movieData } = data;
+    try {
+      const { languageIds, genreIds, cinemaFormatIds, cast, crew, ...movieData } = data;
 
-    await this.prisma.$transaction(
-      async (tx) => {
-        const movie = await tx.movie.create({
-          data: movieData,
-        });
+      await this.prisma.$transaction(
+        async (tx) => {
+          const movie = await tx.movie.create({
+            data: movieData,
+          });
 
-        await tx.movieLanguage.createMany({
-          data: languageIds.map((languageId) => ({
-            movieId: movie.id,
-            languageId,
-          })),
-        });
+          await tx.movieLanguage.createMany({
+            data: languageIds.map((languageId) => ({
+              movieId: movie.id,
+              languageId,
+            })),
+          });
 
-        await tx.movieGenre.createMany({
-          data: genreIds.map((genreId) => ({
-            movieId: movie.id,
-            genreId,
-          })),
-        });
+          await tx.movieGenre.createMany({
+            data: genreIds.map((genreId) => ({
+              movieId: movie.id,
+              genreId,
+            })),
+          });
 
-        await tx.movieCinemaFormat.createMany({
-          data: cinemaFormatIds.map((cinemaFormatId) => ({
-            movieId: movie.id,
-            cinemaFormatId,
-          })),
-        });
+          await tx.movieCinemaFormat.createMany({
+            data: cinemaFormatIds.map((cinemaFormatId) => ({
+              movieId: movie.id,
+              cinemaFormatId,
+            })),
+          });
 
-        await tx.movieCast.createMany({
-          data: cast.map((item) => ({
-            movieId: movie.id,
-            personId: item.personId,
-            character: item.character ?? null,
-          })),
-        });
+          await tx.movieCast.createMany({
+            data: cast.map((item) => ({
+              movieId: movie.id,
+              personId: item.personId,
+              character: item.character ?? null,
+            })),
+          });
 
-        await tx.movieCrew.createMany({
-          data: crew.map((item) => ({
-            movieId: movie.id,
-            personId: item.personId,
-            job: item.job,
-          })),
-        });
-      },
-      {
-        maxWait: 10000,
-        timeout: 15000,
-      },
-    );
+          await tx.movieCrew.createMany({
+            data: crew.map((item) => ({
+              movieId: movie.id,
+              personId: item.personId,
+              job: item.job,
+            })),
+          });
+        },
+        {
+          maxWait: 10000,
+          timeout: 15000,
+        },
+      );
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictError('A movie with this slug already exists');
+      }
+      throw error;
+    }
   }
 
   async findById(id: string): Promise<Movie | null> {
@@ -109,97 +120,107 @@ export class PrismaMovieRepository implements IMovieRepository {
   }
 
   async updateMovie(id: string, movie: UpdateMovieData): Promise<void> {
-    const { languageIds, cinemaFormatIds, genreIds, cast, crew, ...movieData } = movie;
+    try {
+      const { languageIds, cinemaFormatIds, genreIds, cast, crew, ...movieData } = movie;
 
-    await this.prisma.$transaction(
-      async (tx) => {
-        if (Object.keys(movieData).length > 0) {
-          await tx.movie.update({
-            where: { id },
-            data: movieData,
-          });
-        }
-
-        if (genreIds !== undefined) {
-          await tx.movieGenre.deleteMany({
-            where: { movieId: id },
-          });
-
-          if (genreIds.length > 0) {
-            await tx.movieGenre.createMany({
-              data: genreIds.map((genreId) => ({
-                movieId: id,
-                genreId,
-              })),
+      await this.prisma.$transaction(
+        async (tx) => {
+          if (Object.keys(movieData).length > 0) {
+            await tx.movie.update({
+              where: { id },
+              data: movieData,
             });
           }
-        }
 
-        if (languageIds !== undefined) {
-          await tx.movieLanguage.deleteMany({
-            where: { movieId: id },
-          });
-
-          if (languageIds.length > 0) {
-            await tx.movieLanguage.createMany({
-              data: languageIds.map((languageId) => ({
-                movieId: id,
-                languageId,
-              })),
+          if (genreIds !== undefined) {
+            await tx.movieGenre.deleteMany({
+              where: { movieId: id },
             });
+
+            if (genreIds.length > 0) {
+              await tx.movieGenre.createMany({
+                data: genreIds.map((genreId) => ({
+                  movieId: id,
+                  genreId,
+                })),
+              });
+            }
           }
-        }
 
-        if (cinemaFormatIds !== undefined) {
-          await tx.movieCinemaFormat.deleteMany({
-            where: { movieId: id },
-          });
-
-          if (cinemaFormatIds.length > 0) {
-            await tx.movieCinemaFormat.createMany({
-              data: cinemaFormatIds.map((cinemaFormatId) => ({
-                movieId: id,
-                cinemaFormatId,
-              })),
+          if (languageIds !== undefined) {
+            await tx.movieLanguage.deleteMany({
+              where: { movieId: id },
             });
+
+            if (languageIds.length > 0) {
+              await tx.movieLanguage.createMany({
+                data: languageIds.map((languageId) => ({
+                  movieId: id,
+                  languageId,
+                })),
+              });
+            }
           }
-        }
 
-        if (cast !== undefined) {
-          await tx.movieCast.deleteMany({
-            where: { movieId: id },
-          });
-
-          if (cast.length > 0) {
-            await tx.movieCast.createMany({
-              data: cast.map((member) => ({
-                movieId: id,
-                personId: member.personId,
-                character: member.character,
-              })),
+          if (cinemaFormatIds !== undefined) {
+            await tx.movieCinemaFormat.deleteMany({
+              where: { movieId: id },
             });
+
+            if (cinemaFormatIds.length > 0) {
+              await tx.movieCinemaFormat.createMany({
+                data: cinemaFormatIds.map((cinemaFormatId) => ({
+                  movieId: id,
+                  cinemaFormatId,
+                })),
+              });
+            }
           }
-        }
 
-        if (crew !== undefined) {
-          await tx.movieCrew.deleteMany({
-            where: { movieId: id },
-          });
-
-          if (crew.length > 0) {
-            await tx.movieCrew.createMany({
-              data: crew.map((member) => ({
-                movieId: id,
-                personId: member.personId,
-                job: member.job,
-              })),
+          if (cast !== undefined) {
+            await tx.movieCast.deleteMany({
+              where: { movieId: id },
             });
+
+            if (cast.length > 0) {
+              await tx.movieCast.createMany({
+                data: cast.map((member) => ({
+                  movieId: id,
+                  personId: member.personId,
+                  character: member.character,
+                })),
+              });
+            }
           }
-        }
-      },
-      {
-        timeout: 15000,
-      },
-    );
+
+          if (crew !== undefined) {
+            await tx.movieCrew.deleteMany({
+              where: { movieId: id },
+            });
+
+            if (crew.length > 0) {
+              await tx.movieCrew.createMany({
+                data: crew.map((member) => ({
+                  movieId: id,
+                  personId: member.personId,
+                  job: member.job,
+                })),
+              });
+            }
+          }
+        },
+        {
+          timeout: 15000,
+        },
+      );
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictError('A movie with this slug already exists');
+      }
+      throw error;
+    }
   }
 }

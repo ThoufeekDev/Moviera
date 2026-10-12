@@ -1,9 +1,9 @@
 import { Certification } from '../../../domain/enums/Certification';
 import { Prisma } from '@prisma/client';
 import { MovieAdminDetail } from '../../../application/read-models/MovieAdminDetail';
-import { movieDetailSelect } from '../selects/movieDetailSelect';
+import { movieAdminDetailSelect } from '../selects/movieAdminDetailSelect';
 
-type MovieDetailRow = Prisma.MovieGetPayload<{ select: typeof movieDetailSelect }>;
+type MovieDetailRow = Prisma.MovieGetPayload<{ select: typeof movieAdminDetailSelect }>;
 
 export class MovieAdminDetailMapper {
   static toDetail(movie: MovieDetailRow): MovieAdminDetail {
@@ -49,5 +49,3 @@ export class MovieAdminDetailMapper {
     };
   }
 }
-
-export const MovieDetailMapper = MovieAdminDetailMapper;

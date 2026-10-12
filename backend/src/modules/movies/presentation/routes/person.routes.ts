@@ -9,12 +9,12 @@ import { validate } from '../../../../shared/middleware/validate';
 import { createPersonSchema, getPersonByIdParamSchema } from '../schemas/PersonSchema';
 
 import { CreatePersonController } from '../controllers/CreatePersonController';
-import { GetPersonController } from '../controllers/GetPersonController';
+import { ListPersonsController } from '../controllers/ListPersonsController';
 import { GetPersonByIdController } from '../controllers/GetPersonByIdController';
 
 interface PersonRouteControllers {
   createPersonController: CreatePersonController;
-  getPersonController: GetPersonController;
+  listPersonsController: ListPersonsController;
   getPersonByIdController: GetPersonByIdController;
 }
 
@@ -32,7 +32,7 @@ export function createPersonRoutes(controllers: PersonRouteControllers): Router 
     adapt(controllers.createPersonController.handle),
   );
 
-  personRoutes.get('/', adapt(controllers.getPersonController.handle));
+  personRoutes.get('/', adapt(controllers.listPersonsController.handle));
 
   personRoutes.get(
     '/:id',

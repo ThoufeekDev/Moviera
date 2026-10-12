@@ -9,7 +9,7 @@ import { movieAdminListSelect } from '../selects/movieListSelect';
 import { MovieAdminListItemMapper } from '../mappers/MovieAdminListItemMapper';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 import { MovieAdminDetailMapper } from '../mappers/MovieAdminDetailMapper';
-import { movieDetailSelect } from '../selects/movieDetailSelect';
+import { movieAdminDetailSelect } from '../selects/movieAdminDetailSelect';
 
 export class PrismaMovieQueryService implements IMovieQueryService {
   constructor(private readonly prisma: PrismaClient) {}
@@ -128,7 +128,7 @@ export class PrismaMovieQueryService implements IMovieQueryService {
   async findAdminDetailById(id: string): Promise<MovieAdminDetail | null> {
     const movie = await this.prisma.movie.findUnique({
       where: { id },
-      select: movieDetailSelect,
+      select: movieAdminDetailSelect,
     });
 
     return movie ? MovieAdminDetailMapper.toDetail(movie) : null;
@@ -137,7 +137,7 @@ export class PrismaMovieQueryService implements IMovieQueryService {
   async findAdminDetailBySlug(slug: string): Promise<MovieAdminDetail | null> {
     const movie = await this.prisma.movie.findUnique({
       where: { slug },
-      select: movieDetailSelect,
+      select: movieAdminDetailSelect,
     });
 
     return movie ? MovieAdminDetailMapper.toDetail(movie) : null;

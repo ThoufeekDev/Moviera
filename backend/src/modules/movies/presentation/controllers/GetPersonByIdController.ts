@@ -1,6 +1,7 @@
 import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
 import { ok } from "../../../../shared/http/response";
 import { GetPersonByIdUseCase } from "../../application/queries/GetPersonByIdUseCase";
+import { PersonResponseMapper } from "../response-mappers/PersonResponseMapper";
 
 interface GetPersonByIdParams {
   id: string;
@@ -11,6 +12,6 @@ export class GetPersonByIdController {
 
   handle = async (req: HttpRequest<GetPersonByIdParams>): Promise<HttpResponse> => {
     const person = await this.getPersonByIdUseCase.execute(req.params.id);
-    return ok(person, "Person fetched successfully");
+    return ok(PersonResponseMapper.toResponse(person), "Person fetched successfully");
   };
 }

@@ -12,21 +12,21 @@ import { CreatePersonUseCase } from './application/commands/CreatePersonUseCase'
 import { UpdateMovieUseCase } from './application/commands/UpdateMovieUseCase';
 
 import { GetPersonByIdUseCase } from './application/queries/GetPersonByIdUseCase';
-import { GetPersonsUseCase } from './application/queries/GetPersonUseCase';
-import { GetLanguageUseCase } from './application/queries/GetLanguageUseCase';
-import { GetCinemaFormatUseCase } from './application/queries/GetCinemaFormatUseCase';
-import { GetGenresUseCase } from './application/queries/GetGenresUseCase';
+import { ListPersonsUseCase } from './application/queries/ListPersonsUseCase';
+import { ListLanguagesUseCase } from './application/queries/ListLanguagesUseCase';
+import { ListCinemaFormatsUseCase } from './application/queries/ListCinemaFormatsUseCase';
+import { ListGenresUseCase } from './application/queries/ListGenresUseCase';
 import { ListMoviesForAdminUseCase } from './application/queries/ListMoviesForAdminUseCase';
 import { GetMovieByIdForAdminUseCase } from './application/queries/GetMovieByIdForAdminUseCase';
 import { GetMovieBySlugForAdminUseCase } from './application/queries/GetMovieBySlugForAdminUseCase';
 
-import { GetGenreController } from './presentation/controllers/GetGenreController';
+import { ListGenresController } from './presentation/controllers/ListGenresController';
 import { CreateMovieController } from './presentation/controllers/CreateMovieController';
 import { CreatePersonController } from './presentation/controllers/CreatePersonController';
 import { GetPersonByIdController } from './presentation/controllers/GetPersonByIdController';
-import { GetPersonController } from './presentation/controllers/GetPersonController';
-import { GetLanguageController } from './presentation/controllers/GetLanguageController';
-import { GetCinemaFormatController } from './presentation/controllers/GetCinemaFormatController';
+import { ListPersonsController } from './presentation/controllers/ListPersonsController';
+import { ListLanguagesController } from './presentation/controllers/ListLanguagesController';
+import { ListCinemaFormatsController } from './presentation/controllers/ListCinemaFormatsController';
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
 import { ListMoviesForAdminController } from './presentation/controllers/ListMoviesForAdminController';
 import { GetMovieByIdForAdminController } from './presentation/controllers/GetMovieByIdForAdminController';
@@ -36,7 +36,6 @@ import { MovieReferenceValidator } from './application/services/MovieReferenceVa
 import { MovieSlugService } from './application/services/MovieSlugService';
 import { MovieImageService } from './application/services/MovieImageService';
 import { IStorageService } from '../../shared/application/ports/IStorageService';
-import { CloudinaryStorageService } from '../../shared/infrastructure/storage/CloudinaryStorageService';
 
 import { createMovieRoutes } from './presentation/routes/movie.routes';
 import { createPersonRoutes } from './presentation/routes/person.routes';
@@ -46,7 +45,7 @@ import { createGenreRoutes } from './presentation/routes/genre.routes';
 
 export function buildMoviesModule(
   prisma: PrismaClient,
-  storageService: IStorageService = new CloudinaryStorageService(),
+  storageService: IStorageService,
 ) {
   // Repositories
   const movieRepository = new PrismaMovieRepository(prisma);
@@ -96,16 +95,16 @@ export function buildMoviesModule(
     new GetPersonByIdUseCase(personRepository),
   );
 
-  const getPersonController = new GetPersonController(
-    new GetPersonsUseCase(personRepository),
+  const listPersonsController = new ListPersonsController(
+    new ListPersonsUseCase(personRepository),
   );
 
-  const getLanguageController = new GetLanguageController(
-    new GetLanguageUseCase(languageRepository),
+  const listLanguagesController = new ListLanguagesController(
+    new ListLanguagesUseCase(languageRepository),
   );
 
-  const getCinemaFormatController = new GetCinemaFormatController(
-    new GetCinemaFormatUseCase(cinemaFormatRepository),
+  const listCinemaFormatsController = new ListCinemaFormatsController(
+    new ListCinemaFormatsUseCase(cinemaFormatRepository),
   );
 
   const updateMovieController = new UpdateMovieController(
@@ -117,8 +116,8 @@ export function buildMoviesModule(
     ),
   );
 
-  const getGenreController = new GetGenreController(
-    new GetGenresUseCase(genreRepository),
+  const listGenresController = new ListGenresController(
+    new ListGenresUseCase(genreRepository),
   );
 
   const movieRouter = createMovieRoutes({
@@ -131,20 +130,20 @@ export function buildMoviesModule(
 
   const personRouter = createPersonRoutes({
     createPersonController,
-    getPersonController,
+    listPersonsController,
     getPersonByIdController,
   });
 
   const languageRouter = createLanguageRoutes({
-    getLanguageController,
+    listLanguagesController,
   });
 
   const cinemaFormatRouter = createCinemaFormatRoutes({
-    getCinemaFormatController,
+    listCinemaFormatsController,
   });
 
   const genreRouter = createGenreRoutes({
-    getGenreController,
+    listGenresController,
   });
 
   return {

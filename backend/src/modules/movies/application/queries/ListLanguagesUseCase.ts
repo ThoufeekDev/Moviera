@@ -1,7 +1,7 @@
 import { ILanguageRepository } from "../../domain/repositories/ILanguageRepository";
 import { Language } from "../../domain/entities/Language";
 
-export class GetLanguageUseCase {
+export class ListLanguagesUseCase {
   constructor(private readonly repository: ILanguageRepository) {}
 
   async execute(): Promise<Language[]> {

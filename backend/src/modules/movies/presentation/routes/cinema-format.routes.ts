@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { adapt } from '../../../../shared/http/expressAdapter';
-import { GetCinemaFormatController } from '../controllers/GetCinemaFormatController';
+import { ListCinemaFormatsController } from '../controllers/ListCinemaFormatsController';
 
 interface CinemaFormatRouteController {
-  getCinemaFormatController: GetCinemaFormatController;
+  listCinemaFormatsController: ListCinemaFormatsController;
 }
 
 export function createCinemaFormatRoutes(controllers: CinemaFormatRouteController): Router {
   const cinemaFormatRoute = Router();
 
-  cinemaFormatRoute.get('/', adapt(controllers.getCinemaFormatController.handle));
+  cinemaFormatRoute.get('/', adapt(controllers.listCinemaFormatsController.handle));
   return cinemaFormatRoute;
 }

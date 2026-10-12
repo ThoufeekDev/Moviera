@@ -17,7 +17,7 @@ export interface ValidatedRequest extends Request {
 }
 
 export const validate = (schemas: ValidationSchemas) => {
-  return (req: ValidatedRequest, _res: Response, next: NextFunction) => {
+  return (req: ValidatedRequest, res: Response, next: NextFunction) => {
     const errors: Record<string, z.ZodError> = {};
     const validated: ValidatedRequest["validated"] = {};
 
@@ -56,6 +56,7 @@ export const validate = (schemas: ValidationSchemas) => {
     }
 
     req.validated = validated;
+    res.locals.validated = validated;
     next();
   };
 };

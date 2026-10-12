@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { adapt } from "../../../../shared/http/expressAdapter";
-import { GetLanguageController } from "../controllers/GetLanguageController";
+import { ListLanguagesController } from "../controllers/ListLanguagesController";
 
 interface LanguageRouteControllers {
-  getLanguageController: GetLanguageController;
+  listLanguagesController: ListLanguagesController;
 }
 
 export function createLanguageRoutes(controllers: LanguageRouteControllers): Router {
   const languageRoute = Router();
 
-  languageRoute.get('/', adapt(controllers.getLanguageController.handle));
+  languageRoute.get('/', adapt(controllers.listLanguagesController.handle));
 
   return languageRoute;
 }

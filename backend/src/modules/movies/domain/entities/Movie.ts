@@ -1,6 +1,4 @@
 import { Language } from './Language';
-// import { MovieCast } from './MovieCast';
-// import { MovieCrew } from './MovieCrew';
 import { Genre } from './Genre';
 import { CinemaFormat } from './CinemaFormat';
 import { Certification } from '../enums/Certification';
@@ -21,9 +19,7 @@ export class Movie {
     public readonly certification: Certification,
     public readonly cinemaFormats:CinemaFormat[],
     public readonly poster: ImageRef | null,
-    // public readonly posterPublicId: string | null,
     public readonly backdrop: ImageRef | null,
-    // public readonly backdropPublicId: string | null,
     public readonly trailerUrl: string | null,
     public readonly isActive: boolean,
     public readonly cast: CastMember[],

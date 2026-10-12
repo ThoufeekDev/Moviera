@@ -1,9 +1,9 @@
 import { HttpRequest, HttpResponse } from "../../../../shared/http/HttpTypes";
 import { ok } from "../../../../shared/http/response";
-import { GetLanguageUseCase } from "../../application/queries/GetLanguageUseCase";
+import { ListLanguagesUseCase } from "../../application/queries/ListLanguagesUseCase";
 
-export class GetLanguageController {
-  constructor(private readonly useCase: GetLanguageUseCase) {}
+export class ListLanguagesController {
+  constructor(private readonly useCase: ListLanguagesUseCase) {}
 
   handle = async (_req: HttpRequest): Promise<HttpResponse> => {
     const languages = await this.useCase.execute();
