@@ -5,11 +5,11 @@ import type { ZodType } from 'zod';
 import { Link } from 'react-router-dom';
 import { Button } from '@/shared/ui/Button';
 
-import MovieBasicInfo from './BasicInfo';
-import MovieLanguages from './Language';
-import MovieMedia from './Media';
-import MovieCast from './Cast';
-import MovieCrew from './Crew';
+import MovieBasicInfo from './form/BasicInfo';
+import MovieLanguages from './form/Language';
+import MovieMedia from './form/Media';
+import MovieCast from './form/Cast';
+import MovieCrew from './form/Crew';
 
 export const movieFormSteps = [
   {

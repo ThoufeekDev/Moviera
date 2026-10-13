@@ -54,6 +54,12 @@ enum Certification {
   S
 }
 
+enum TheatreAdminAssignmentRole {
+  PRIMARY_MANAGER
+  OPERATIONS_SUPERVISOR
+  BOX_OFFICE_LEAD
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -89,6 +95,8 @@ model TheatreAdminAssignment {
 
   userId    String
   theatreId String
+
+  role TheatreAdminAssignmentRole @default(OPERATIONS_SUPERVISOR)
 
   user    User    @relation(fields: [userId], references: [id])
   theatre Theatre @relation(fields: [theatreId], references: [id])

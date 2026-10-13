@@ -21,7 +21,9 @@ export class CreateScreenUseCase {
 
     if (!theatre.isActive) throw new ForbiddenError("Theatre is inActive");
 
-    await this.theatreAccessPolicy.assertCanManage(screen.actor, screen.theatreId);
+    const allowed = await this.theatreAccessPolicy.canManage(screen.actor, screen.theatreId);
+    
+    if (!allowed) throw new ForbiddenError('You are not assigned to manage this theatre');
 
     const existingScreen = await this.screenRepository.findByName(
       screen.theatreId,

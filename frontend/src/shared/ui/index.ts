@@ -18,3 +18,5 @@ export * from './ComingSoon';
 export * from './MovieraLogo';
 export * from './ImageUpload';
 export * from './EmptyState';
+export * from './ChipSelect';
+export * from './FormSection';

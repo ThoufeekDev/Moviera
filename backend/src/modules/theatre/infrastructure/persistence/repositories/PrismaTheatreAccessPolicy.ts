@@ -7,10 +7,9 @@ import { ITheatreAccessPolicy, TheatreAccessActor } from "../../../application/p
 export class PrismaTheatreAccessPolicy implements ITheatreAccessPolicy {
     constructor(private readonly prisma: PrismaClient) { };
 
-    async  assertCanManage(actor: TheatreAccessActor, theatreId: string): Promise<void> {
-        if (actor.role === Role.SUPER_ADMIN) return;
-
-        if (actor.role !== Role.THEATRE_ADMIN) throw new ForbiddenError("You are not authorized to manage this theatre");
+    async  canManage(actor: TheatreAccessActor, theatreId: string): Promise<boolean> {
+        if (actor.role === Role.SUPER_ADMIN) return true;
+        if (actor.role !== Role.THEATRE_ADMIN) return false;
 
         const assignment = await this.prisma.theatreAdminAssignment.findFirst({
             where: {
@@ -26,6 +25,6 @@ export class PrismaTheatreAccessPolicy implements ITheatreAccessPolicy {
             }
         })
         
-        if(!assignment) throw new ForbiddenError("You are not assigned to manage this theatre")
+        return !assignment;
     }
 }

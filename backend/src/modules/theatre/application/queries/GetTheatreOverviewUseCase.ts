@@ -3,8 +3,9 @@ import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
 import type { ITheatreQueryService } from '../ports/ITheatreQueryService';
 import type { TheatreOverview } from '../read-models/TheatreOverview';
-import type { Role } from '../../../../shared/enums/Role';
-import type { TheatreAccessActor,ITheatreAccessPolicy } from '../ports/ITheatreAccessPolicy';
+import  { Role } from '../../../../shared/enums/Role';
+import type { TheatreAccessActor, ITheatreAccessPolicy } from '../ports/ITheatreAccessPolicy';
+import { ForbiddenError } from '../../../../shared/errors/ForbiddenError';
 export class GetTheatreOverviewUseCase {
   constructor(
     private readonly theatreQueryService: ITheatreQueryService,
@@ -21,7 +22,11 @@ export class GetTheatreOverviewUseCase {
       throw new UnauthorizedError('Authentication required');
     }
 
-    await this.theatreAccessPolicy.assertCanManage(actor,theatreId)
+
+
+    const allowed  = await this.theatreAccessPolicy.canManage(actor, theatreId)
+    
+     if(!allowed) throw new ForbiddenError("You are not assigned to manage this theatre")
 
     const theatre = await this.theatreQueryService.getOverview(theatreId,actor.userId);
     if (!theatre) {

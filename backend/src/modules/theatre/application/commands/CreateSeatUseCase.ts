@@ -5,7 +5,7 @@ import { IScreenRepository } from "../../domain/repositories/IScreenRepository";
 import type { ITheatreAccessPolicy } from "../ports/ITheatreAccessPolicy";
 import { NotFoundError } from "../../../../shared/errors/NotFoundError";
 import { ConflictError } from "../../../../shared/errors/ConflictError";
-
+import { ForbiddenError } from "../../../../shared/errors/ForbiddenError";
 export class CreateSeatUseCase {
   constructor(
     private readonly seatRepository: ISeatRepository,
@@ -20,7 +20,9 @@ export class CreateSeatUseCase {
 
     if (!screen.isActive) throw new ConflictError("Screen is inActive");
 
-    await this.theatreAccessPolicy.assertCanManage(seat.actor,screen.theatreId)
+    const allowed = await this.theatreAccessPolicy.canManage(seat.actor, screen.theatreId)
+    
+    if(!allowed) throw new ForbiddenError("You are not assigned to manage this theatre")
 
     const label = `${seat.rowLabel}$${seat.seatNumber}`;
 

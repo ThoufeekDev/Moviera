@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCinemaFormats, type CinemaFormat } from '../api/getCinemaFormat.api';
+import { getCinemaFormats, type CinemaFormat } from '../api/getCinemaFormats.api';
 
 export const useCinemaFormats = () => {
   return useQuery<CinemaFormat[]>({

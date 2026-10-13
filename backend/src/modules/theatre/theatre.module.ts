@@ -8,26 +8,32 @@ import { PrismaTheatreAccessPolicy } from './infrastructure/persistence/reposito
 import { PrismaTheatreAdminAssignmentRepository } from './infrastructure/persistence/repositories/PrismaTheatreAdminAssignmentRepository';
 import { PrismaTheatreAdminUserReader } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserReader';
 
-
-
-
 import { CreateScreenUseCase } from './application/commands/CreateScreenUseCase';
 import { CreateSeatUseCase } from './application/commands/CreateSeatUseCase';
 import { GetMyTheatresUseCase } from './application/queries/GetMyTheatresUseCase';
 import { GetTheatreOverviewUseCase } from './application/queries/GetTheatreOverviewUseCase';
 import { AssignTheatreAdminUseCase } from './application/commands/AssignTheatreAdminUseCase';
-
-
-
+import { UpdateTheatreAdminAssignmentUseCase } from './application/commands/UpdateTheatreAdminAssignmentUseCase';
+import { RevokeTheatreAdminAssignmentUseCase } from './application/commands/RevokeTheatreAdminAssignmentUseCase';
+import { ListTheatresForAdminUseCase } from './application/queries/ListTheatresForAdminUseCase';
+import { ListTheatreAdminAssignmentsUseCase } from './application/queries/ListTheatreAdminAssignmentsUseCase';
+import { ListEligibleTheatreAdminsUseCase } from './application/queries/ListEligibleTheatreAdminsUseCase';
+import { GetTheatreAdminStatsUseCase } from './application/queries/GetTheatreAdminStatsUseCase';
 
 import { CreateScreenController } from './presentation/controllers/CreateScreenController';
 import { CreateSeatController } from './presentation/controllers/CreateSeatController';
 import { GetMyTheatresController } from './presentation/controllers/GetMyTheatresController';
 import { GetTheatreOverviewController } from './presentation/controllers/GetTheatreOverviewController';
+import { AssignTheatreAdminController } from './presentation/controllers/AssignTheatreAdminController';
+import { UpdateTheatreAdminAssignmentController } from './presentation/controllers/UpdateTheatreAdminAssignmentController';
+import { RevokeTheatreAdminAssignmentController } from './presentation/controllers/RevokeTheatreAdminAssignmentController';
+import { ListTheatresForAdminController } from './presentation/controllers/ListTheatresForAdminController';
+import { ListTheatreAdminAssignmentsController } from './presentation/controllers/ListTheatreAdminAssignmentsController';
+import { ListEligibleTheatreAdminsController } from './presentation/controllers/ListEligibleTheatreAdminsController';
+import { GetTheatreAdminStatsController } from './presentation/controllers/GetTheatreAdminStatsController';
 
 import { createTheatreRoutes } from './presentation/routes/theatre.routes';
 import { createSeatRoutes } from './presentation/routes/seat.routes';
-import { AssignTheatreAdminController } from './presentation/controllers/AssignTheatreAdminController';
 
 export function buildTheatreModule(prisma: PrismaClient) {
   // Repositories & Query Service
@@ -35,23 +41,20 @@ export function buildTheatreModule(prisma: PrismaClient) {
   const screenRepository = new PrismaScreenRepository(prisma);
   const seatRepository = new PrismaSeatRepository(prisma);
   const theatreQueryService = new PrismaTheatreQueryService(prisma);
-  const theatreAccessPolicy = new PrismaTheatreAccessPolicy(prisma)
+  const theatreAccessPolicy = new PrismaTheatreAccessPolicy(prisma);
   const assignmentRepository = new PrismaTheatreAdminAssignmentRepository(prisma);
-
-const theatreAdminUserReader = new PrismaTheatreAdminUserReader(prisma);
-  
-
+  const theatreAdminUserReader = new PrismaTheatreAdminUserReader(prisma);
 
   // Use cases
   const createScreenUseCase = new CreateScreenUseCase(
     screenRepository,
     theatreRepository,
-    theatreAccessPolicy
+    theatreAccessPolicy,
   );
   const createSeatUseCase = new CreateSeatUseCase(
     seatRepository,
     screenRepository,
-    theatreAccessPolicy
+    theatreAccessPolicy,
   );
   const getMyTheatresUseCase = new GetMyTheatresUseCase(theatreQueryService);
   const getTheatreOverviewUseCase = new GetTheatreOverviewUseCase(
@@ -62,22 +65,56 @@ const theatreAdminUserReader = new PrismaTheatreAdminUserReader(prisma);
   const assignTheatreAdminUseCase = new AssignTheatreAdminUseCase(
     theatreRepository,
     assignmentRepository,
-    theatreAdminUserReader
-  )
+    theatreAdminUserReader,
+  );
+  const updateTheatreAdminAssignmentUseCase = new UpdateTheatreAdminAssignmentUseCase(
+    assignmentRepository,
+  );
+  const revokeTheatreAdminAssignmentUseCase = new RevokeTheatreAdminAssignmentUseCase(
+    assignmentRepository,
+  );
+  const listTheatresForAdminUseCase = new ListTheatresForAdminUseCase(
+    theatreQueryService,
+  );
+  const listTheatreAdminAssignmentsUseCase = new ListTheatreAdminAssignmentsUseCase(
+    assignmentRepository,
+  );
+  const listEligibleTheatreAdminsUseCase = new ListEligibleTheatreAdminsUseCase(
+    theatreAdminUserReader,
+  );
+  const getTheatreAdminStatsUseCase = new GetTheatreAdminStatsUseCase(
+    assignmentRepository,
+  );
 
   // Controllers
-  const createScreenController = new CreateScreenController(
-    createScreenUseCase,
-  );
+  const createScreenController = new CreateScreenController(createScreenUseCase);
   const createSeatController = new CreateSeatController(createSeatUseCase);
-  const getMyTheatresController = new GetMyTheatresController(
-    getMyTheatresUseCase,
-  );
+  const getMyTheatresController = new GetMyTheatresController(getMyTheatresUseCase);
   const getTheatreOverviewController = new GetTheatreOverviewController(
     getTheatreOverviewUseCase,
   );
 
-  const assignTheatreAdminController = new AssignTheatreAdminController(assignTheatreAdminUseCase);
+  const assignTheatreAdminController = new AssignTheatreAdminController(
+    assignTheatreAdminUseCase,
+  );
+  const updateTheatreAdminAssignmentController = new UpdateTheatreAdminAssignmentController(
+    updateTheatreAdminAssignmentUseCase,
+  );
+  const revokeTheatreAdminAssignmentController = new RevokeTheatreAdminAssignmentController(
+    revokeTheatreAdminAssignmentUseCase,
+  );
+  const listTheatresForAdminController = new ListTheatresForAdminController(
+    listTheatresForAdminUseCase,
+  );
+  const listTheatreAdminAssignmentsController = new ListTheatreAdminAssignmentsController(
+    listTheatreAdminAssignmentsUseCase,
+  );
+  const listEligibleTheatreAdminsController = new ListEligibleTheatreAdminsController(
+    listEligibleTheatreAdminsUseCase,
+  );
+  const getTheatreAdminStatsController = new GetTheatreAdminStatsController(
+    getTheatreAdminStatsUseCase,
+  );
 
   // Routers
   const theatreRouter = createTheatreRoutes({
@@ -85,6 +122,12 @@ const theatreAdminUserReader = new PrismaTheatreAdminUserReader(prisma);
     createScreenController,
     getTheatreOverviewController,
     assignTheatreAdminController,
+    updateTheatreAdminAssignmentController,
+    revokeTheatreAdminAssignmentController,
+    listTheatresForAdminController,
+    listTheatreAdminAssignmentsController,
+    listEligibleTheatreAdminsController,
+    getTheatreAdminStatsController,
   });
 
   const seatRouter = createSeatRoutes({

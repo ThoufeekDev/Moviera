@@ -8,5 +8,5 @@ export interface TheatreAccessActor {
 
 
 export interface ITheatreAccessPolicy {
-    assertCanManage(actor:TheatreAccessActor,theatreId:string):Promise<void>
+    canManage(actor:TheatreAccessActor,theatreId:string):Promise<boolean>
 }

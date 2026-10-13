@@ -6,7 +6,7 @@ import { ErrorState } from '@/shared/ui/ErrorState';
 import { EmptyState } from '@/shared/ui/EmptyState';
 import { useToggleMovieStatus } from '../hooks/useToggleMovieStatus';
 import { useMovies } from '../hooks/useMovies';
-import { useGenres } from '../hooks/useGenre';
+import { useGenres } from '../hooks/useGenres';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 
 export default function MovieManagementPage() {
@@ -16,7 +16,7 @@ export default function MovieManagementPage() {
   const [status, setStatus] = useState<'' | 'ACTIVE' | 'INACTIVE'>('');
   const [page, setPage] = useState(1);
 
-  const limit = 8;
+  const limit = 6;
   const debouncedSearch = useDebounce(search, 700);
 
   const { data: genresData } = useGenres();

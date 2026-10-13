@@ -5,14 +5,13 @@ import { AssignTheatreAdminUseCase } from '../../application/commands/AssignThea
 import { AssignTheatreAdminDTO } from '../../application/dtos/AssignTheatreAdminDTO';
 
 export class AssignTheatreAdminController {
-    constructor(private readonly assignTheatreAdminUseCase: AssignTheatreAdminUseCase) { };
-    handle = async (req: HttpRequest<unknown,AssignTheatreAdminDTO>): Promise<HttpResponse> => {
-        
-        if (!req.user?.userId) throw new UnauthorizedError('Authentication required');
+  constructor(private readonly assignTheatreAdminUseCase: AssignTheatreAdminUseCase) {}
 
-        await this.assignTheatreAdminUseCase.execute(req.body);
+  handle = async (req: HttpRequest<unknown, AssignTheatreAdminDTO>): Promise<HttpResponse> => {
+    if (!req.user?.userId) throw new UnauthorizedError('Authentication required');
 
-        return created(undefined, 'Theatre admin assigned succesfully..');
+    const result = await this.assignTheatreAdminUseCase.execute(req.body);
 
+    return created(result, 'Theatre admin assigned successfully.');
   };
 }

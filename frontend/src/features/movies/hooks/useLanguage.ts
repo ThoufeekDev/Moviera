@@ -1,1 +1,0 @@
-export { useLanguages } from './useLanguages';

@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { ITheatreQueryService } from '../../../application/ports/ITheatreQueryService';
+import { SuperAdminTheatreListItem } from '../../../application/read-models/SuperAdminTheatreListItem';
 import { TheatreOverview } from '../../../application/read-models/TheatreOverview';
 import { TheatreWithCity } from '../../../application/read-models/TheatreWithCity';
+import { TheatreAdminAssignmentRole } from '../../../domain/enums/TheatreAdminAssignmentRole';
 import { TheatreMapper } from '../mappers/TheatreMapper';
 import { TheatreOverviewFacilityMapper } from '../mappers/TheatreOverviewFacilityMapper';
 
@@ -115,5 +117,111 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         totalReviews,
       },
     };
+  }
+
+  async listForSuperAdmin(filter?: {
+    search?: string;
+    city?: string;
+    status?: 'ALL' | 'ASSIGNED' | 'UNASSIGNED';
+  }): Promise<SuperAdminTheatreListItem[]> {
+    const where: any = {};
+
+    if (filter?.search) {
+      where.OR = [
+        { name: { contains: filter.search, mode: 'insensitive' } },
+        { address: { contains: filter.search, mode: 'insensitive' } },
+        { city: { name: { contains: filter.search, mode: 'insensitive' } } },
+      ];
+    }
+
+    if (filter?.city && filter.city !== 'ALL') {
+      where.city = {
+        name: { equals: filter.city, mode: 'insensitive' },
+      };
+    }
+
+    const theatres = await this.prisma.theatre.findMany({
+      where,
+      include: {
+        city: true,
+        screens: {
+          include: {
+            _count: {
+              select: {
+                seats: true,
+              },
+            },
+          },
+        },
+        adminAssignments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+                avatar: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const mapped: SuperAdminTheatreListItem[] = theatres.map((theatre) => {
+      const screensCount = theatre.screens.length;
+      const totalSeats = theatre.screens.reduce((total, s) => total + s._count.seats, 0);
+
+      const assignedAdmins = theatre.adminAssignments.map((a) => ({
+        id: a.id,
+        userId: a.userId,
+        name: a.user.name,
+        email: a.user.email,
+        phone: a.user.phone,
+        avatar: a.user.avatar,
+        role: ((a as { role?: TheatreAdminAssignmentRole }).role ||
+          TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR) as TheatreAdminAssignmentRole,
+        isActive: a.isActive,
+        assignedAt: a.createdAt,
+      }));
+
+      return {
+        id: theatre.id,
+        name: theatre.name,
+        slug: theatre.slug,
+        address: theatre.address,
+        city: {
+          id: theatre.city.id,
+          name: theatre.city.name,
+        },
+        phone: theatre.phone,
+        email: theatre.email,
+        licenseNumber: theatre.licenseNumber,
+        isActive: theatre.isActive,
+        screensCount,
+        totalSeats,
+        assignedAdminsCount: assignedAdmins.length,
+        assignedAdmins,
+        createdAt: theatre.createdAt,
+        updatedAt: theatre.updatedAt,
+      };
+    });
+
+    if (filter?.status === 'ASSIGNED') {
+      return mapped.filter((t) => t.assignedAdminsCount > 0);
+    }
+
+    if (filter?.status === 'UNASSIGNED') {
+      return mapped.filter((t) => t.assignedAdminsCount === 0);
+    }
+
+    return mapped;
   }
 }
