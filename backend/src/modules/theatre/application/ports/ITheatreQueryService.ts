@@ -8,6 +8,8 @@ export interface ITheatreQueryService {
   listForSuperAdmin(filter?: {
     search?: string;
     city?: string;
-    status?: status
+    status?: status;
+    limit?: number;
+    page?: number;
   }): Promise<SuperAdminTheatreListItem[]>;
 }

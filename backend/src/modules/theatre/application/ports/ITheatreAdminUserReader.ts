@@ -2,9 +2,13 @@ import type { Role } from '../../../../shared/enums/Role';
 
 export interface TheatreAdminUser {
   id: string;
+  name?: string;
+  email?: string;
+  phone?: string | null;
   role: Role;
   isActive: boolean;
 }
+
 
 export interface EligibleAdminUser {
   id: string;

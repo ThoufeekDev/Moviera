@@ -6,6 +6,8 @@ export const useTheatresForAdmin = (query?: {
   search?: string;
   city?: string;
   status?: 'ALL' | 'ASSIGNED' | 'UNASSIGNED';
+  limit?: number;
+  page?: number;
 }) => {
   return useQuery({
     queryKey: theatreKeys.forAdmin(query),

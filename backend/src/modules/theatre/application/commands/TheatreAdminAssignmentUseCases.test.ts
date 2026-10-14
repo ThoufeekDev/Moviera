@@ -157,6 +157,134 @@ describe('Theatre Admin Management Use Cases', () => {
       });
       expect(result.isActive).toBe(true);
     });
+
+    it('should create new theatre admin by email, generate temporary credentials and dispatch email', async () => {
+      mockTheatreRepo.findById.mockResolvedValue({
+        id: 'th-1',
+        name: 'Grand Cineplex',
+        isActive: true,
+      });
+      const mockUserManager = {
+        findByEmail: vi.fn().mockResolvedValue(null),
+        createTheatreAdmin: vi.fn().mockResolvedValue({
+          id: 'usr-new-1',
+          name: 'Sarah Connor',
+          email: 'sarah@cineplex.com',
+          phone: '+1234567890',
+          role: Role.THEATRE_ADMIN,
+          isActive: true,
+        }),
+        promoteToTheatreAdmin: vi.fn(),
+      };
+      const mockEmailService = {
+        sendOtpEmail: vi.fn(),
+        sendTheatreAdminCredentialsEmail: vi.fn().mockResolvedValue(undefined),
+      };
+      mockAssignmentRepo.findByUserAndTheatre.mockResolvedValue(null);
+      mockAssignmentRepo.create.mockResolvedValue({
+        id: 'asg-new',
+        userId: 'usr-new-1',
+        theatreId: 'th-1',
+        role: TheatreAdminAssignmentRole.PRIMARY_MANAGER,
+        isActive: true,
+      });
+      mockAssignmentRepo.findActivePrimaryManagerByTheatre.mockResolvedValue(null);
+
+      const useCase = new AssignTheatreAdminUseCase(
+        mockTheatreRepo,
+        mockAssignmentRepo,
+        mockUserReader,
+        mockUserManager,
+        mockEmailService as any,
+      );
+
+      const result = await useCase.execute({
+        email: 'sarah@cineplex.com',
+        name: 'Sarah Connor',
+        phone: '+1234567890',
+        theatreId: 'th-1',
+        role: TheatreAdminAssignmentRole.PRIMARY_MANAGER,
+      });
+
+      expect(result.id).toBe('asg-new');
+      expect(result.isNewUser).toBe(true);
+      expect(result.temporaryPassword).toBeDefined();
+      expect(result.temporaryPassword?.length).toBeGreaterThanOrEqual(10);
+      expect(result.emailSent).toBe(true);
+      expect(mockUserManager.createTheatreAdmin).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'sarah@cineplex.com',
+          name: 'Sarah Connor',
+          phone: '+1234567890',
+        }),
+      );
+      expect(mockEmailService.sendTheatreAdminCredentialsEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'sarah@cineplex.com',
+          theatreName: 'Grand Cineplex',
+          temporaryPassword: result.temporaryPassword,
+        }),
+      );
+    });
+
+    it('should promote existing customer to theatre admin when assigned by email', async () => {
+      mockTheatreRepo.findById.mockResolvedValue({
+        id: 'th-1',
+        name: 'Grand Cineplex',
+        isActive: true,
+      });
+      const mockUserManager = {
+        findByEmail: vi.fn().mockResolvedValue({
+          id: 'usr-cust-1',
+          name: 'Existing Customer',
+          email: 'customer@moviera.com',
+          role: Role.USER,
+          isActive: true,
+        }),
+        createTheatreAdmin: vi.fn(),
+        promoteToTheatreAdmin: vi.fn().mockResolvedValue({
+          id: 'usr-cust-1',
+          name: 'Existing Customer',
+          email: 'customer@moviera.com',
+          role: Role.THEATRE_ADMIN,
+          isActive: true,
+        }),
+      };
+      const mockEmailService = {
+        sendOtpEmail: vi.fn(),
+        sendTheatreAdminCredentialsEmail: vi.fn().mockResolvedValue(undefined),
+      };
+      mockAssignmentRepo.findByUserAndTheatre.mockResolvedValue(null);
+      mockAssignmentRepo.create.mockResolvedValue({
+        id: 'asg-promoted',
+        userId: 'usr-cust-1',
+        theatreId: 'th-1',
+        role: TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR,
+        isActive: true,
+      });
+
+      const useCase = new AssignTheatreAdminUseCase(
+        mockTheatreRepo,
+        mockAssignmentRepo,
+        mockUserReader,
+        mockUserManager,
+        mockEmailService as any,
+      );
+
+      const result = await useCase.execute({
+        email: 'customer@moviera.com',
+        theatreId: 'th-1',
+        role: TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR,
+      });
+
+      expect(result.id).toBe('asg-promoted');
+      expect(mockUserManager.promoteToTheatreAdmin).toHaveBeenCalledWith(
+        'usr-cust-1',
+        expect.anything(),
+      );
+      expect(result.isNewUser).toBe(false);
+      expect(mockEmailService.sendTheatreAdminCredentialsEmail).toHaveBeenCalled();
+    });
   });
 
   describe('UpdateTheatreAdminAssignmentUseCase', () => {

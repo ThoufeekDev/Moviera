@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useDebounce } from '@/shared/hooks/useDebounce';
 import {
   ShieldCheck,
   RefreshCw,
@@ -33,11 +34,28 @@ import {
   ROLE_CONFIG,
 } from '../components/theatre-management';
 
-
-
-
-
 export default function TheatreAdminManagementPage() {
+  // ── UI & View State ───────────────────────────────────────────────────────
+  const [selectedTheatreId, setSelectedTheatreId] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCity, setSelectedCity] = useState<string>('ALL');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ASSIGNED' | 'UNASSIGNED'>('ALL');
+  const [viewMode, setViewMode] = useState<'WORKSPACE' | 'DIRECTORY'>('WORKSPACE');
+
+  // Debounced Search (400ms delay to prevent querying on every keystroke)
+  const debouncedSearch = useDebounce(searchQuery, 400);
+
+  // Backend query parameters (limited to protect scale against 1M records)
+  const queryParams = useMemo(
+    () => ({
+      search: debouncedSearch.trim() || undefined,
+      city: selectedCity !== 'ALL' ? selectedCity : undefined,
+      status: statusFilter,
+      limit: 50,
+    }),
+    [debouncedSearch, selectedCity, statusFilter],
+  );
+
   // ── TanStack Query Data Fetching ──────────────────────────────────────────
   const {
     data: rawTheatres = [],
@@ -45,18 +63,11 @@ export default function TheatreAdminManagementPage() {
     error: theatresError,
     refetch: refetchTheatres,
     isRefetching,
-  } = useTheatresForAdmin();
+  } = useTheatresForAdmin(queryParams);
 
   const { data: statsData } = useTheatreAdminStats();
   const { data: eligibleAdmins = [] } = useEligibleTheatreAdmins();
   const updateAssignmentMutation = useUpdateTheatreAdminAssignment();
-
-  // ── UI & View State ───────────────────────────────────────────────────────
-  const [selectedTheatreId, setSelectedTheatreId] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCity, setSelectedCity] = useState<string>('ALL');
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ASSIGNED' | 'UNASSIGNED'>('ALL');
-  const [viewMode, setViewMode] = useState<'WORKSPACE' | 'DIRECTORY'>('WORKSPACE');
 
 
 
@@ -129,31 +140,15 @@ export default function TheatreAdminManagementPage() {
 
   // ── Derived Values & Filtering ────────────────────────────────────────────
   const uniqueCities = useMemo(() => {
+    if (statsData?.cities && statsData.cities.length > 0) {
+      return ['ALL', ...statsData.cities];
+    }
     const cities = Array.from(new Set(theatres.map((t) => t.city).filter(Boolean)));
     return ['ALL', ...cities];
-  }, [theatres]);
+  }, [statsData?.cities, theatres]);
 
-  const filteredTheatres = useMemo(() => {
-    return theatres.filter((theatre) => {
-      const matchesSearch =
-        theatre.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        theatre.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        theatre.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        theatre.chain.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesCity = selectedCity === 'ALL' || theatre.city === selectedCity;
-
-      const theatreAdminsCount = admins.filter((a) => a.theatreId === theatre.id).length;
-      let matchesStatus = true;
-      if (statusFilter === 'ASSIGNED') {
-        matchesStatus = theatreAdminsCount > 0;
-      } else if (statusFilter === 'UNASSIGNED') {
-        matchesStatus = theatreAdminsCount === 0;
-      }
-
-      return matchesSearch && matchesCity && matchesStatus;
-    });
-  }, [theatres, admins, searchQuery, selectedCity, statusFilter]);
+  // Theatres are filtered and limited directly on the backend database
+  const filteredTheatres = theatres;
 
   const selectedTheatre = useMemo(() => {
     if (!theatres.length) return null;
@@ -165,14 +160,10 @@ export default function TheatreAdminManagementPage() {
     return admins.filter((a) => a.theatreId === selectedTheatre.id);
   }, [admins, selectedTheatre]);
 
-  // KPIs
+  // Global KPIs from backend stats query
   const totalTheatresCount = statsData ? statsData.totalCinemas : theatres.length;
-  const assignedTheatresCount = statsData
-    ? statsData.assignedCinemas
-    : theatres.filter((t) => admins.some((a) => a.theatreId === t.id)).length;
-  const unassignedTheatresCount = statsData
-    ? statsData.unassignedCinemas
-    : totalTheatresCount - assignedTheatresCount;
+  const assignedTheatresCount = statsData ? statsData.assignedCinemas : 0;
+  const unassignedTheatresCount = statsData ? statsData.unassignedCinemas : 0;
   const totalAdminsCount = statsData ? statsData.totalAdmins : admins.length;
   const activeAdminsCount = statsData
     ? statsData.activeAdmins

@@ -159,8 +159,8 @@ export const TheatreDetailWorkspace = ({
               </Button>
             </div>
           ) : (
-            /* Administrators List */
-            <div className="flex flex-col gap-3">
+            /* Administrators List (Scrollable) */
+            <div className="flex flex-col gap-3 max-h-[480px] sm:max-h-[540px] overflow-y-auto pr-1.5 sm:pr-2.5 overscroll-contain">
               {theatreAdmins.map((admin) => {
                 const roleInfo = ROLE_CONFIG[admin.role];
 

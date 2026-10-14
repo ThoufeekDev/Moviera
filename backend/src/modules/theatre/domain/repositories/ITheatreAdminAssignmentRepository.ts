@@ -53,6 +53,7 @@ export interface TheatreAdminStats {
   totalAdmins: number;
   activeAdmins: number;
   suspendedAdmins: number;
+  cities?: string[];
 }
 
 export interface ITheatreAdminAssignmentRepository {

@@ -68,6 +68,7 @@ export interface TheatreAdminStatsResponse {
   totalAdmins: number;
   activeAdmins: number;
   suspendedAdmins: number;
+  cities?: string[];
 }
 
 export interface EligibleAdminUserResponse {
@@ -90,6 +91,8 @@ export const listTheatresForAdmin = async (query?: {
   search?: string;
   city?: string;
   status?: 'ALL' | 'ASSIGNED' | 'UNASSIGNED';
+  limit?: number;
+  page?: number;
 }): Promise<SuperAdminTheatre[]> => {
   const response = await api.get<ApiResponse<SuperAdminTheatre[]>>('/theatres/for-admin', {
     params: query,
@@ -125,12 +128,40 @@ export const listTheatreAdminAssignments = async (query?: {
   return response.data.data;
 };
 
-export const assignTheatreAdminApi = async (data: {
+export interface AssignTheatreAdminRequest {
   theatreId: string;
-  userId: string;
   role?: AdminRole;
-}): Promise<SuperAdminTheatreAdmin> => {
-  const response = await api.post<ApiResponse<SuperAdminTheatreAdmin>>(
+  userId?: string;
+  email?: string;
+  name?: string;
+  phone?: string;
+}
+
+export interface AssignTheatreAdminResponse {
+  id: string;
+  userId: string;
+  theatreId: string;
+  role: AdminRole;
+  isActive: boolean;
+  temporaryPassword?: string;
+  isNewUser?: boolean;
+  emailSent?: boolean;
+  user?: {
+    id: string;
+    name: string | null;
+    email: string;
+    phone: string | null;
+  };
+  theatre?: {
+    id: string;
+    name: string;
+  };
+}
+
+export const assignTheatreAdminApi = async (
+  data: AssignTheatreAdminRequest,
+): Promise<AssignTheatreAdminResponse> => {
+  const response = await api.post<ApiResponse<AssignTheatreAdminResponse>>(
     '/theatres/admin-assignments',
     data,
   );

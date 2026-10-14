@@ -123,6 +123,8 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
     search?: string;
     city?: string;
     status?: 'ALL' | 'ASSIGNED' | 'UNASSIGNED';
+    limit?: number;
+    page?: number;
   }): Promise<SuperAdminTheatreListItem[]> {
     const where: any = {};
 
@@ -131,6 +133,8 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         { name: { contains: filter.search, mode: 'insensitive' } },
         { address: { contains: filter.search, mode: 'insensitive' } },
         { city: { name: { contains: filter.search, mode: 'insensitive' } } },
+        { email: { contains: filter.search, mode: 'insensitive' } },
+        { phone: { contains: filter.search, mode: 'insensitive' } },
       ];
     }
 
@@ -140,8 +144,24 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       };
     }
 
+    if (filter?.status === 'ASSIGNED') {
+      where.adminAssignments = {
+        some: {},
+      };
+    } else if (filter?.status === 'UNASSIGNED') {
+      where.adminAssignments = {
+        none: {},
+      };
+    }
+
+    const limit = filter?.limit ?? 50;
+    const page = filter?.page ?? 1;
+    const skip = (page - 1) * limit;
+
     const theatres = await this.prisma.theatre.findMany({
       where,
+      take: limit,
+      skip,
       include: {
         city: true,
         screens: {
@@ -175,7 +195,7 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       },
     });
 
-    const mapped: SuperAdminTheatreListItem[] = theatres.map((theatre) => {
+    return theatres.map((theatre) => {
       const screensCount = theatre.screens.length;
       const totalSeats = theatre.screens.reduce((total, s) => total + s._count.seats, 0);
 
@@ -213,15 +233,5 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         updatedAt: theatre.updatedAt,
       };
     });
-
-    if (filter?.status === 'ASSIGNED') {
-      return mapped.filter((t) => t.assignedAdminsCount > 0);
-    }
-
-    if (filter?.status === 'UNASSIGNED') {
-      return mapped.filter((t) => t.assignedAdminsCount === 0);
-    }
-
-    return mapped;
   }
 }

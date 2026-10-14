@@ -6,6 +6,8 @@ export const theatreKeys = {
     search?: string;
     city?: string;
     status?: 'ALL' | 'ASSIGNED' | 'UNASSIGNED';
+    limit?: number;
+    page?: number;
   }) => [...theatreKeys.all, 'for-admin', query] as const,
   adminStats: () => [...theatreKeys.all, 'admin-stats'] as const,
   eligibleAdmins: (search?: string) => [...theatreKeys.all, 'eligible-admins', search] as const,

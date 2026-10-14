@@ -20,7 +20,8 @@ export const TheatreListRail = ({
     <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-3">
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-semibold tracking-wider text-ink-muted uppercase">
-          Cinemas Directory ({theatres.length})
+          Cinemas Directory ({theatres.length}
+          {totalTheatresCount > theatres.length ? ` of ${totalTheatresCount}` : ''})
         </span>
         <span className="text-xs text-brand-600 font-medium">Select to manage</span>
       </div>

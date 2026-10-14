@@ -13,6 +13,9 @@ export class PrismaTheatreAdminUserReader implements ITheatreAdminUserReader {
       where: { id: userId },
       select: {
         id: true,
+        name: true,
+        email: true,
+        phone: true,
         role: true,
         isActive: true,
       },
@@ -24,6 +27,9 @@ export class PrismaTheatreAdminUserReader implements ITheatreAdminUserReader {
 
     return {
       id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
       role: user.role as unknown as TheatreAdminUser['role'],
       isActive: user.isActive,
     };

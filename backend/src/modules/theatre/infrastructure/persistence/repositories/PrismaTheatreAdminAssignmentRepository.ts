@@ -280,6 +280,7 @@ export class PrismaTheatreAdminAssignmentRepository implements ITheatreAdminAssi
       totalAdmins,
       activeAdmins,
       suspendedAdmins,
+      citiesRaw,
     ] = await Promise.all([
       this.prisma.theatre.count(),
       this.prisma.theatreAdminAssignment.findMany({
@@ -289,10 +290,15 @@ export class PrismaTheatreAdminAssignmentRepository implements ITheatreAdminAssi
       this.prisma.theatreAdminAssignment.count(),
       this.prisma.theatreAdminAssignment.count({ where: { isActive: true } }),
       this.prisma.theatreAdminAssignment.count({ where: { isActive: false } }),
+      this.prisma.city.findMany({
+        select: { name: true },
+        orderBy: { name: 'asc' },
+      }),
     ]);
 
     const assignedCinemas = assignedTheatresRaw.length;
     const unassignedCinemas = Math.max(0, totalCinemas - assignedCinemas);
+    const cities = citiesRaw.map((c) => c.name);
 
     return {
       totalCinemas,
@@ -301,6 +307,7 @@ export class PrismaTheatreAdminAssignmentRepository implements ITheatreAdminAssi
       totalAdmins,
       activeAdmins,
       suspendedAdmins,
+      cities,
     };
   }
 }

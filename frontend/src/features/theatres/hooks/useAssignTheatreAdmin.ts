@@ -4,8 +4,11 @@ import { theatreKeys } from '../keys';
 
 export interface AssignTheatreAdminParams {
   theatreId: string;
-  userId: string;
   role?: AdminRole;
+  userId?: string;
+  email?: string;
+  name?: string;
+  phone?: string;
 }
 
 export const useAssignTheatreAdmin = () => {

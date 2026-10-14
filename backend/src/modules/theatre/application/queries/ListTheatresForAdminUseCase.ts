@@ -7,7 +7,9 @@ export interface ListTheatresForAdminRequest {
   query?: {
     search?: string;
     city?: string;
-    status?: status
+    status?: status;
+    limit?: number;
+    page?: number;
   };
 }
 

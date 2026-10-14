@@ -7,6 +7,8 @@ import { PrismaTheatreQueryService } from './infrastructure/persistence/queries/
 import { PrismaTheatreAccessPolicy } from './infrastructure/persistence/repositories/PrismaTheatreAccessPolicy';
 import { PrismaTheatreAdminAssignmentRepository } from './infrastructure/persistence/repositories/PrismaTheatreAdminAssignmentRepository';
 import { PrismaTheatreAdminUserReader } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserReader';
+import { PrismaTheatreAdminUserManager } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserManager';
+import { ResendEmailService } from '../../shared/infrastructure/email/ResendEmailService';
 
 import { CreateScreenUseCase } from './application/commands/CreateScreenUseCase';
 import { CreateSeatUseCase } from './application/commands/CreateSeatUseCase';
@@ -44,6 +46,8 @@ export function buildTheatreModule(prisma: PrismaClient) {
   const theatreAccessPolicy = new PrismaTheatreAccessPolicy(prisma);
   const assignmentRepository = new PrismaTheatreAdminAssignmentRepository(prisma);
   const theatreAdminUserReader = new PrismaTheatreAdminUserReader(prisma);
+  const theatreAdminUserManager = new PrismaTheatreAdminUserManager(prisma);
+  const emailService = new ResendEmailService();
 
   // Use cases
   const createScreenUseCase = new CreateScreenUseCase(
@@ -66,6 +70,8 @@ export function buildTheatreModule(prisma: PrismaClient) {
     theatreRepository,
     assignmentRepository,
     theatreAdminUserReader,
+    theatreAdminUserManager,
+    emailService,
   );
   const updateTheatreAdminAssignmentUseCase = new UpdateTheatreAdminAssignmentUseCase(
     assignmentRepository,
