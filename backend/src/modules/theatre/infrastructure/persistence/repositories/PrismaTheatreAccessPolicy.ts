@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { Role } from "../../../../../shared/enums/Role";
-import { ForbiddenError } from "../../../../../shared/errors/ForbiddenError";
 import { ITheatreAccessPolicy, TheatreAccessActor } from "../../../application/ports/ITheatreAccessPolicy";
 
 
