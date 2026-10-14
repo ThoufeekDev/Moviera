@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth.store';
 import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import { loginSchema, type LoginFormData } from '../schemas/login.schema';
@@ -43,6 +43,7 @@ export default function LoginForm({
 }: LoginFormProps) {
   const { login, isLoading } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [authError, setAuthError] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -78,7 +79,12 @@ export default function LoginForm({
         role,
       });
 
-      navigate(redirectTo, { replace: true });
+      const from = (location.state as { from?: { pathname: string; search?: string; hash?: string } })?.from;
+      const targetUrl = from?.pathname && from.pathname !== location.pathname
+        ? `${from.pathname}${from.search || ''}${from.hash || ''}`
+        : redirectTo;
+
+      navigate(targetUrl, { replace: true });
     } catch (error) {
       setAuthError(getErrorMessage(error));
     }

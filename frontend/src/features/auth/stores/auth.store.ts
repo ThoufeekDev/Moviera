@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import axios from 'axios';
 
 import {
   loginUser,
@@ -42,11 +44,13 @@ interface AuthStore {
   googleLogin: (credential: string) => Promise<void>;
 }
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: false,
-  isCheckingAuth: true,
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isCheckingAuth: true,
 
   clear: () => {
     set({
@@ -142,11 +146,19 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         user: profile,
         isAuthenticated: true,
       });
-    } catch {
-      set({
-        user: null,
-        isAuthenticated: false,
-      });
+    } catch (error) {
+      const isAuthError =
+        axios.isAxiosError(error) &&
+        (error.response?.status === 401 || error.response?.status === 403);
+
+      if (isAuthError) {
+        set({
+          user: null,
+          isAuthenticated: false,
+        });
+      } else {
+        console.warn('[useAuthStore] fetchProfile encountered network/server restart error:', error);
+      }
     } finally {
       set({
         isLoading: false,
@@ -180,4 +192,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       throw error;
     }
   },
-}));
+    }),
+    {
+      name: 'moviera_auth_state',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
+);

@@ -15,6 +15,7 @@ import { Role } from '../../../../shared/enums/Role';
 import { TheatreAdminAssignmentRole } from '@prisma/client';
 import { generateTemporaryPassword } from '../../../../shared/utils/generateTemporaryPassword';
 import { hashPassword } from '../../../../shared/utils/hashPassword';
+import { ConflictError } from '../../../../shared/errors/ConflictError';
 
 export class AssignTheatreAdminUseCase implements IUseCase<
   AssignTheatreAdminDTO,
@@ -158,7 +159,18 @@ export class AssignTheatreAdminUseCase implements IUseCase<
 
     if (existingAssignment) {
       if (existingAssignment.isActive && existingAssignment.role === role) {
-        assignment = existingAssignment;
+        const roleLabel =
+          role === TheatreAdminAssignmentRole.PRIMARY_MANAGER
+            ? 'Primary Manager'
+            : role === TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR
+              ? 'Operations Supervisor'
+              : role === TheatreAdminAssignmentRole.BOX_OFFICE_LEAD
+                ? 'Box Office Lead'
+                : role;
+
+        throw new ConflictError(
+          `This user (${userSummary.email}) already exists with the same role (${roleLabel}) for this cinema`,
+        );
       } else {
         assignment = await this.assignmentRepository.updateAssignment(existingAssignment.id, {
           isActive: true,

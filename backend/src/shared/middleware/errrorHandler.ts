@@ -16,13 +16,14 @@ export const errorHandler = (error: unknown, _req: Request, res: Response, next:
     return next(error)
   }
   if (error instanceof ZodError) {
+    const firstMsg = error.issues[0]?.message || 'Validation failed';
     return errorResponse(
       res,
       HttpStatusCode.BAD_REQUEST,
       false,
-      'Validation failed',
+      firstMsg,
       'VALIDATION_ERROR',
-      error.issues,
+      { issues: error.issues, body: error.issues },
     );
   }
 

@@ -41,7 +41,7 @@ export const superAdminRoutes = (
     />
 
     {/* Super Admin Protected Portal */}
-    <Route element={<RequireRole roles={[Role.SUPER_ADMIN]} />}>
+    <Route element={<RequireRole roles={[Role.SUPER_ADMIN]} loginPath="/super-admin/login" />}>
       <Route
         path="/super-admin"
         element={

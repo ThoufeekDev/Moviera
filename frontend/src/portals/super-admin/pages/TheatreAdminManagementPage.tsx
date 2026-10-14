@@ -17,6 +17,7 @@ import {
   useEligibleTheatreAdmins,
   useUpdateTheatreAdminAssignment,
 } from '@/features/theatres';
+import { extractFormErrors } from '@/shared/lib/extractFormErrors';
 import {
   TheatreAdminKPIs,
   TheatreAdminFilterBar,
@@ -223,10 +224,11 @@ export default function TheatreAdminManagementPage() {
         nextState ? 'success' : 'info',
       );
     } catch (err: unknown) {
-      const errorMsg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Failed to update administrator status';
-      showToast(errorMsg, 'error');
+      const { generalMessage } = extractFormErrors(
+        err,
+        'Failed to update administrator status.',
+      );
+      showToast(generalMessage || 'Failed to update administrator status.', 'error');
     }
   };
 

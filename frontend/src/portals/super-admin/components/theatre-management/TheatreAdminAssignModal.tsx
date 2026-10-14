@@ -127,19 +127,12 @@ export const TheatreAdminAssignModal = ({
     onClose();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage(null);
-    setFieldErrors({});
-
-    const targetTheatre = theatres.find((t) => t.id === selectedTheatreId);
-    const theatreName = targetTheatre?.name || 'Cinema';
-
-    // ── Layer 1: Client-Side Fallback Validation ─────────────────────────────
-    const clientErrors: Record<string, string> = {};
+  // ── Client-side validation rules (used for blur feedback & backend error fallback) ──
+  const validateClient = (): Record<string, string> => {
+    const errors: Record<string, string> = {};
 
     if (!selectedTheatreId) {
-      clientErrors.theatreId = 'Please select a target cinema multiplex.';
+      errors.theatreId = 'Please select a target cinema multiplex.';
     }
 
     if (mode === 'EMAIL') {
@@ -148,36 +141,86 @@ export const TheatreAdminAssignModal = ({
       const trimmedPhone = adminPhone.trim();
 
       if (!trimmedName) {
-        clientErrors.name = 'Full name is required.';
+        errors.name = 'Full name is required.';
       } else if (trimmedName.length < 2) {
-        clientErrors.name = 'Full name must be at least 2 characters.';
+        errors.name = 'Full name must be at least 2 characters.';
       }
 
       if (!trimmedEmail) {
-        clientErrors.email = 'Email address is required.';
+        errors.email = 'Email address is required.';
       } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(trimmedEmail)) {
-          clientErrors.email = 'Please enter a valid email address (e.g. manager@cinema.com).';
+          errors.email = 'Please enter a valid email address (e.g. manager@cinema.com).';
         }
       }
 
       if (trimmedPhone && trimmedPhone.length < 7) {
-        clientErrors.phone = 'Contact phone must be at least 7 digits.';
+        errors.phone = 'Contact phone must be at least 7 digits.';
       }
     } else {
       if (!selectedUserId) {
-        clientErrors.userId = 'Please select an eligible administrator user.';
+        errors.userId = 'Please select an eligible administrator user.';
       }
     }
 
-    if (Object.keys(clientErrors).length > 0) {
-      setFieldErrors(clientErrors);
-      setErrorMessage(Object.values(clientErrors)[0]);
-      return;
-    }
+    return errors;
+  };
 
-    // ── Layer 2: Backend API Call & Backend Error Parsing ─────────────────────
+  const handleBlurField = (field: 'theatreId' | 'name' | 'email' | 'phone' | 'userId') => {
+    // Only run frontend blur check if no error is currently set for this field
+    if (fieldErrors[field]) return;
+
+    if (field === 'name' && mode === 'EMAIL') {
+      const trimmed = adminName.trim();
+      if (!trimmed) {
+        setFieldErrors((prev) => ({ ...prev, name: 'Full name is required.' }));
+        setErrorMessage('Full name is required.');
+      } else if (trimmed.length < 2) {
+        setFieldErrors((prev) => ({ ...prev, name: 'Full name must be at least 2 characters.' }));
+        setErrorMessage('Full name must be at least 2 characters.');
+      }
+    } else if (field === 'email' && mode === 'EMAIL') {
+      const trimmed = adminEmail.trim();
+      if (!trimmed) {
+        setFieldErrors((prev) => ({ ...prev, email: 'Email address is required.' }));
+        setErrorMessage('Email address is required.');
+      } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(trimmed)) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            email: 'Please enter a valid email address (e.g. manager@cinema.com).',
+          }));
+          setErrorMessage('Please enter a valid email address (e.g. manager@cinema.com).');
+        }
+      }
+    } else if (field === 'phone' && mode === 'EMAIL') {
+      const trimmed = adminPhone.trim();
+      if (trimmed && trimmed.length < 7) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          phone: 'Contact phone must be at least 7 digits.',
+        }));
+        setErrorMessage('Contact phone must be at least 7 digits.');
+      }
+    } else if (field === 'userId' && mode === 'EXISTING') {
+      if (!selectedUserId) {
+        setFieldErrors((prev) => ({ ...prev, userId: 'Please select an eligible administrator user.' }));
+        setErrorMessage('Please select an eligible administrator user.');
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+    setFieldErrors({});
+
+    const targetTheatre = theatres.find((t) => t.id === selectedTheatreId);
+    const theatreName = targetTheatre?.name || 'Cinema';
+
+    // ── Primary: Send to Backend & Let Backend Validation Flow Through ────────
     try {
       const result = await assignMutation.mutateAsync({
         theatreId: selectedTheatreId,
@@ -213,14 +256,27 @@ export const TheatreAdminAssignModal = ({
         onClose();
       }
     } catch (err: unknown) {
-      // Extract backend validation issues (Zod paths) and business rule errors
-      const { generalMessage, fieldErrors: backendFieldErrors } = extractFormErrors(
+      // ── Layer 1: Extract authoritative Backend Validation & Business Errors ─
+      const backendResult = extractFormErrors(
         err,
         'Failed to assign theatre administrator. Please verify input.',
       );
 
-      setErrorMessage(generalMessage);
-      setFieldErrors(backendFieldErrors);
+      // ── Layer 2: Frontend Fallback Validation (if backend validation not returned for any field) ─
+      const clientFallback = validateClient();
+
+      // Merge: Backend validation always takes priority over client fallback
+      const mergedErrors: Record<string, string> = {
+        ...clientFallback,
+        ...backendResult.fieldErrors,
+      };
+
+      setFieldErrors(mergedErrors);
+      setErrorMessage(
+        backendResult.generalMessage ||
+          Object.values(mergedErrors)[0] ||
+          'Validation failed. Please verify inputs.',
+      );
     }
   };
 
@@ -389,6 +445,7 @@ export const TheatreAdminAssignModal = ({
                 setSelectedTheatreId(e.target.value);
                 clearFieldError('theatreId');
               }}
+              onBlur={() => handleBlurField('theatreId')}
               className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink transition-colors focus:outline-none focus:ring-1 ${
                 fieldErrors.theatreId
                   ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
@@ -401,12 +458,6 @@ export const TheatreAdminAssignModal = ({
                 </option>
               ))}
             </select>
-            {fieldErrors.theatreId && (
-              <p className="text-xs text-rose-600 flex items-center gap-1 mt-1 font-medium animate-in fade-in duration-150">
-                <AlertCircle size={12} className="shrink-0" />
-                <span>{fieldErrors.theatreId}</span>
-              </p>
-            )}
           </div>
 
           {/* Mode A: Invite by Email */}
@@ -426,18 +477,13 @@ export const TheatreAdminAssignModal = ({
                     setAdminName(e.target.value);
                     clearFieldError('name');
                   }}
+                  onBlur={() => handleBlurField('name')}
                   className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink placeholder:text-ink-muted/50 transition-colors focus:outline-none focus:ring-1 ${
                     fieldErrors.name
                       ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                       : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                   }`}
                 />
-                {fieldErrors.name && (
-                  <p className="text-xs text-rose-600 flex items-center gap-1 mt-1 font-medium animate-in fade-in duration-150">
-                    <AlertCircle size={12} className="shrink-0" />
-                    <span>{fieldErrors.name}</span>
-                  </p>
-                )}
               </div>
 
               {/* Email Address */}
@@ -454,18 +500,13 @@ export const TheatreAdminAssignModal = ({
                     setAdminEmail(e.target.value);
                     clearFieldError('email');
                   }}
+                  onBlur={() => handleBlurField('email')}
                   className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink placeholder:text-ink-muted/50 transition-colors focus:outline-none focus:ring-1 ${
                     fieldErrors.email
                       ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                       : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                   }`}
                 />
-                {fieldErrors.email && (
-                  <p className="text-xs text-rose-600 flex items-center gap-1 mt-1 font-medium animate-in fade-in duration-150">
-                    <AlertCircle size={12} className="shrink-0" />
-                    <span>{fieldErrors.email}</span>
-                  </p>
-                )}
               </div>
 
               {/* Phone Number */}
@@ -482,18 +523,13 @@ export const TheatreAdminAssignModal = ({
                     setAdminPhone(e.target.value);
                     clearFieldError('phone');
                   }}
+                  onBlur={() => handleBlurField('phone')}
                   className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink placeholder:text-ink-muted/50 transition-colors focus:outline-none focus:ring-1 ${
                     fieldErrors.phone
                       ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                       : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                   }`}
                 />
-                {fieldErrors.phone && (
-                  <p className="text-xs text-rose-600 flex items-center gap-1 mt-1 font-medium animate-in fade-in duration-150">
-                    <AlertCircle size={12} className="shrink-0" />
-                    <span>{fieldErrors.phone}</span>
-                  </p>
-                )}
               </div>
 
               <p className="text-[11px] text-ink-muted leading-relaxed">
@@ -514,6 +550,7 @@ export const TheatreAdminAssignModal = ({
                   setSelectedUserId(e.target.value);
                   clearFieldError('userId');
                 }}
+                onBlur={() => handleBlurField('userId')}
                 className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink transition-colors focus:outline-none focus:ring-1 ${
                   fieldErrors.userId
                     ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
@@ -526,12 +563,6 @@ export const TheatreAdminAssignModal = ({
                   </option>
                 ))}
               </select>
-              {fieldErrors.userId && (
-                <p className="text-xs text-rose-600 flex items-center gap-1 mt-1 font-medium animate-in fade-in duration-150">
-                  <AlertCircle size={12} className="shrink-0" />
-                  <span>{fieldErrors.userId}</span>
-                </p>
-              )}
             </div>
           )}
 
@@ -572,12 +603,6 @@ export const TheatreAdminAssignModal = ({
                 );
               })}
             </div>
-            {fieldErrors.role && (
-              <p className="text-xs text-rose-600 flex items-center gap-1 mt-1 font-medium animate-in fade-in duration-150">
-                <AlertCircle size={12} className="shrink-0" />
-                <span>{fieldErrors.role}</span>
-              </p>
-            )}
           </div>
 
           {/* Modal Actions */}

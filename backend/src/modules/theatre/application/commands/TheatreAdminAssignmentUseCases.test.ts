@@ -10,6 +10,7 @@ import { Role } from '../../../../shared/enums/Role';
 import { TheatreAdminAssignmentRole } from '@prisma/client';
 import { BadRequestError } from '../../../../shared/errors/BadRequestError';
 import { NotFoundError } from '../../../../shared/errors/NotFoundError';
+import { ConflictError } from '../../../../shared/errors/ConflictError';
 
 describe('Theatre Admin Management Use Cases', () => {
   let mockTheatreRepo: any;
@@ -156,6 +157,41 @@ describe('Theatre Admin Management Use Cases', () => {
         role: TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR,
       });
       expect(result.isActive).toBe(true);
+    });
+
+    it('should throw ConflictError if user is already actively assigned with the same role', async () => {
+      mockUserReader.findById.mockResolvedValue({
+        id: 'usr-1',
+        name: 'Thoufeek',
+        email: 'thoufeek.dev@gmail.com',
+        role: Role.THEATRE_ADMIN,
+        isActive: true,
+      });
+      mockTheatreRepo.findById.mockResolvedValue({
+        id: 'th-1',
+        isActive: true,
+      });
+      mockAssignmentRepo.findByUserAndTheatre.mockResolvedValue({
+        id: 'asg-1',
+        userId: 'usr-1',
+        theatreId: 'th-1',
+        role: TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR,
+        isActive: true,
+      });
+
+      const useCase = new AssignTheatreAdminUseCase(
+        mockTheatreRepo,
+        mockAssignmentRepo,
+        mockUserReader,
+      );
+
+      await expect(
+        useCase.execute({
+          userId: 'usr-1',
+          theatreId: 'th-1',
+          role: TheatreAdminAssignmentRole.OPERATIONS_SUPERVISOR,
+        }),
+      ).rejects.toThrow(ConflictError);
     });
 
     it('should create new theatre admin by email, generate temporary credentials and dispatch email', async () => {

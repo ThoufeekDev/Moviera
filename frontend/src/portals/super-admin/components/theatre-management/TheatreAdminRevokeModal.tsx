@@ -2,6 +2,7 @@ import { AlertTriangle, Trash2, Building2 } from 'lucide-react';
 import Modal from '@/shared/ui/Modal/Modal';
 import { Button } from '@/shared/ui/Button';
 import { useRevokeTheatreAdminAssignment } from '@/features/theatres';
+import { extractFormErrors } from '@/shared/lib/extractFormErrors';
 import type { AssignedAdmin, TheatreItem } from './types';
 
 export interface TheatreAdminRevokeModalProps {
@@ -31,10 +32,11 @@ export const TheatreAdminRevokeModal = ({
       onRevokeSuccess(adminToRevoke.name, targetTheatre?.name || 'Cinema');
       onClose();
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Failed to revoke administrator assignment.';
-      onError(msg);
+      const { generalMessage } = extractFormErrors(
+        err,
+        'Failed to revoke administrator assignment.',
+      );
+      onError(generalMessage || 'Failed to revoke administrator assignment.');
     }
   };
 

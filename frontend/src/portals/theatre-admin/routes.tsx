@@ -44,7 +44,7 @@ export const theatreAdminRoutes = (
     />
 
     {/* Theatre Admin Protected Portal */}
-    <Route element={<RequireRole roles={[Role.THEATRE_ADMIN]} />}>
+    <Route element={<RequireRole roles={[Role.THEATRE_ADMIN]} loginPath="/theatre-admin/login" />}>
       <Route
         path="/theatre-admin"
         element={

@@ -95,7 +95,11 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        if (authFailureHandler) {
+        const isAuthError =
+          axios.isAxiosError(refreshError) &&
+          (refreshError.response?.status === 401 || refreshError.response?.status === 403);
+
+        if (isAuthError && authFailureHandler) {
           authFailureHandler();
         }
         return Promise.reject(normalizeApiError(refreshError));
