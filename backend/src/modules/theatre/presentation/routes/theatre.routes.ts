@@ -25,6 +25,8 @@ import { listTheatreAdminAssignmentsQuerySchema } from '../schemas/ListTheatreAd
 import { ListEligibleTheatreAdminsController } from '../controllers/ListEligibleTheatreAdminsController';
 import { listEligibleAdminsQuerySchema } from '../schemas/ListEligibleAdminsSchema';
 import { GetTheatreAdminStatsController } from '../controllers/GetTheatreAdminStatsController';
+import { ListAllTheatresController } from '../controllers/ListAllTheatresController';
+import { listAllTheatresQuerySchema } from '../schemas/ListAllTheatresSchema';
 
 interface TheatreRouteControllers {
   getMyTheatresController: GetMyTheatresController;
@@ -37,12 +39,21 @@ interface TheatreRouteControllers {
   listTheatreAdminAssignmentsController: ListTheatreAdminAssignmentsController;
   listEligibleTheatreAdminsController: ListEligibleTheatreAdminsController;
   getTheatreAdminStatsController: GetTheatreAdminStatsController;
+  listAllTheatresController: ListAllTheatresController;
 }
 
 export function createTheatreRoutes(controllers: TheatreRouteControllers): Router {
   const router = Router();
   const theatreAdmin = [authenticateUser, authorizeRoles(Role.THEATRE_ADMIN)];
   const superAdmin = [authenticateUser, authorizeRoles(Role.SUPER_ADMIN)];
+
+  // ── Super Admin Theatre Browsing / Listing Route ──────────────────────────
+  router.get(
+    '/',
+    ...superAdmin,
+    validate({ query: listAllTheatresQuerySchema }),
+    adapt(controllers.listAllTheatresController.handle),
+  );
 
   // ── Theatre Admin Routes ──────────────────────────────────────────────────
   router.get(

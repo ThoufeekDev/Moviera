@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMyTheatres } from '../hooks/useMyTheatres';
 import TheatreCard from '../components/TheatreCard';
 import TheatreCardSkeleton from '../components/TheatreCardSkeleton';
-import { ErrorState } from '@/shared/ui/ErrorState';
-import { EmptyState } from '@/shared/ui/EmptyState';
+import { ErrorState, EmptyState, SearchBar, StatusFilter } from '@/shared/ui';
 
 export function MyTheatrePage() {
   const navigate = useNavigate();
@@ -76,73 +75,29 @@ export function MyTheatrePage() {
         </p>
       </header>
 
-      {/* Controls: Search Bar and Filter Tabs */}
+      {/* Controls: Reusable Search Bar and Status Filter */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3.5 shadow-card">
-        <div className="relative flex-1 min-w-0">
-          <svg
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-muted"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-11 min-h-[44px] w-full rounded-md border border-border bg-surface pl-10 pr-4 text-base text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 transition-colors"
-            placeholder="Search theatre by name, location, address..."
-          />
-        </div>
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          onSearch={setSearch}
+          showButton={false}
+          placeholder="Search theatre by name, location, address..."
+          className="flex-1"
+        />
 
-        {/* Filter chips / tabs with min 44px touch targets */}
-        <div className="flex items-center gap-1.5 self-start sm:self-auto" role="tablist" aria-label="Filter theatres">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={filter === 'ALL'}
-            className={`inline-flex h-11 min-h-[44px] items-center justify-center rounded-md px-4 text-xs md:text-sm font-medium transition-colors cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
-              filter === 'ALL'
-                ? 'bg-brand-600 text-white font-bold shadow-card'
-                : 'border border-border bg-surface text-ink hover:bg-surface-muted'
-            }`}
-            onClick={() => setFilter('ALL')}
-          >
-            All
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={filter === 'ACTIVE'}
-            className={`inline-flex h-11 min-h-[44px] items-center justify-center rounded-md px-4 text-xs md:text-sm font-medium transition-colors cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
-              filter === 'ACTIVE'
-                ? 'bg-brand-600 text-white font-bold shadow-card'
-                : 'border border-border bg-surface text-ink hover:bg-surface-muted'
-            }`}
-            onClick={() => setFilter('ACTIVE')}
-          >
-            Active
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={filter === 'INACTIVE'}
-            className={`inline-flex h-11 min-h-[44px] items-center justify-center rounded-md px-4 text-xs md:text-sm font-medium transition-colors cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
-              filter === 'INACTIVE'
-                ? 'bg-brand-600 text-white font-bold shadow-card'
-                : 'border border-border bg-surface text-ink hover:bg-surface-muted'
-            }`}
-            onClick={() => setFilter('INACTIVE')}
-          >
-            Inactive
-          </button>
-        </div>
+        <StatusFilter<'ALL' | 'ACTIVE' | 'INACTIVE'>
+          variant="segmented"
+          value={filter}
+          onChange={setFilter}
+          ariaLabel="Filter theatres by status"
+          className="self-start sm:self-auto"
+          options={[
+            { value: 'ALL', label: 'All' },
+            { value: 'ACTIVE', label: 'Active' },
+            { value: 'INACTIVE', label: 'Inactive' },
+          ]}
+        />
       </div>
 
       {/* Main Content / Cards Grid */}

@@ -22,18 +22,15 @@ export const superAdminSidebarItems: SidebarItem[] = [
   {
     label: 'Theatres',
     children: [
+
       {
-        label: 'All Theatres',
+        label: 'Manage Theatres',
         path: '/super-admin/alltheatres',
       },
       {
-        label: 'Add Theatre',
-        path: '/super-admin/theatres/create',
-      },
-      {
         label: 'Manage admin',
-        path:'/super-admin/theatres'
-      }
+        path: '/super-admin/theatres',
+      },
     ],
   },
 ];

@@ -20,9 +20,12 @@
   --color-surface-muted: #f0f1f4;
   --color-border:        #e5e7eb;
   --color-ink:           #333333;
-  --color-ink-muted:     #6b7280;
-  --color-nav:           #333545;   /* dark navigation strip and footer */
-  --color-nav-ink:       #ffffff;
+  --color-nav:           #121316;   /* Obsidian charcoal dark sidebar theme */
+  --color-nav-surface:   #18191f;   /* Elevated sidebar element surface */
+  --color-nav-active:    #22242c;   /* Active pill background matching reference */
+  --color-nav-border:    #1e2028;   /* Subtle divider border */
+  --color-nav-ink:       #f3f4f6;
+  --color-nav-muted:     #8f94a3;
 
   /* Status */
   --color-success-500: #1ea83c;     /* fills, borders */

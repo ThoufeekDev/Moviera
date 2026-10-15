@@ -21,6 +21,7 @@ import { ListTheatresForAdminUseCase } from './application/queries/ListTheatresF
 import { ListTheatreAdminAssignmentsUseCase } from './application/queries/ListTheatreAdminAssignmentsUseCase';
 import { ListEligibleTheatreAdminsUseCase } from './application/queries/ListEligibleTheatreAdminsUseCase';
 import { GetTheatreAdminStatsUseCase } from './application/queries/GetTheatreAdminStatsUseCase';
+import { ListAllTheatreForAdminUseCase } from './application/queries/ListAllTheatreForAdminUseCase';
 
 import { CreateScreenController } from './presentation/controllers/CreateScreenController';
 import { CreateSeatController } from './presentation/controllers/CreateSeatController';
@@ -33,6 +34,7 @@ import { ListTheatresForAdminController } from './presentation/controllers/ListT
 import { ListTheatreAdminAssignmentsController } from './presentation/controllers/ListTheatreAdminAssignmentsController';
 import { ListEligibleTheatreAdminsController } from './presentation/controllers/ListEligibleTheatreAdminsController';
 import { GetTheatreAdminStatsController } from './presentation/controllers/GetTheatreAdminStatsController';
+import { ListAllTheatresController } from './presentation/controllers/ListAllTheatresController';
 
 import { createTheatreRoutes } from './presentation/routes/theatre.routes';
 import { createSeatRoutes } from './presentation/routes/seat.routes';
@@ -91,6 +93,9 @@ export function buildTheatreModule(prisma: PrismaClient) {
   const getTheatreAdminStatsUseCase = new GetTheatreAdminStatsUseCase(
     assignmentRepository,
   );
+  const listAllTheatresUseCase = new ListAllTheatreForAdminUseCase(
+    theatreQueryService,
+  );
 
   // Controllers
   const createScreenController = new CreateScreenController(createScreenUseCase);
@@ -121,6 +126,9 @@ export function buildTheatreModule(prisma: PrismaClient) {
   const getTheatreAdminStatsController = new GetTheatreAdminStatsController(
     getTheatreAdminStatsUseCase,
   );
+  const listAllTheatresController = new ListAllTheatresController(
+    listAllTheatresUseCase,
+  );
 
   // Routers
   const theatreRouter = createTheatreRoutes({
@@ -134,6 +142,7 @@ export function buildTheatreModule(prisma: PrismaClient) {
     listTheatreAdminAssignmentsController,
     listEligibleTheatreAdminsController,
     getTheatreAdminStatsController,
+    listAllTheatresController,
   });
 
   const seatRouter = createSeatRoutes({

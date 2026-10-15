@@ -11,6 +11,7 @@ export * from './keys';
 export * from './hooks/useMyTheatres';
 export * from './hooks/useTheatreOverview';
 export * from './hooks/useTheatresForAdmin';
+export * from './hooks/useAllTheatres';
 export * from './hooks/useTheatreAdminStats';
 export * from './hooks/useEligibleTheatreAdmins';
 export * from './hooks/useAssignTheatreAdmin';
@@ -19,3 +20,9 @@ export * from './hooks/useRevokeTheatreAdminAssignment';
 
 // APIs & Types
 export * from './api/superAdminTheatres.api';
+export * from './api/getAllTheatres.api';
+
+// Components
+export { default as SuperAdminTheatreCard } from './components/SuperAdminTheatreCard';
+export { default as SuperAdminTheatreCardSkeleton } from './components/SuperAdminTheatreCardSkeleton';
+

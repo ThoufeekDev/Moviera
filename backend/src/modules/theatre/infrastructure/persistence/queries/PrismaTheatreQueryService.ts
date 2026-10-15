@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { ITheatreQueryService } from '../../../application/ports/ITheatreQueryService';
 import { SuperAdminTheatreListItem } from '../../../application/read-models/SuperAdminTheatreListItem';
 import { TheatreOverview } from '../../../application/read-models/TheatreOverview';
@@ -6,6 +6,9 @@ import { TheatreWithCity } from '../../../application/read-models/TheatreWithCit
 import { TheatreAdminAssignmentRole } from '../../../domain/enums/TheatreAdminAssignmentRole';
 import { TheatreMapper } from '../mappers/TheatreMapper';
 import { TheatreOverviewFacilityMapper } from '../mappers/TheatreOverviewFacilityMapper';
+import { SuperAdminListTheatresItems } from '../../../application/read-models/SuperAdminListTheatresItems';
+import { PaginatedResult } from '../../../../../shared/types/Pagination';
+import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 
 export class PrismaTheatreQueryService implements ITheatreQueryService {
   constructor(private readonly prisma: PrismaClient) {}
@@ -234,4 +237,96 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       };
     });
   }
+
+
+
+  async ListAllTheatres(filter?: {
+    search?: string;
+    status?: 'ALL' | 'ACTIVE' | 'INACTIVE';
+    limit?: number;
+    page?: number;
+  }): Promise<PaginatedResult<SuperAdminListTheatresItems>> {
+    const page = Math.max(1, filter?.page ?? 1);
+    const limit = Math.min(100, Math.max(1, filter?.limit ?? 20));
+    const skip = (page - 1) * limit;
+
+    const andConditions: Prisma.TheatreWhereInput[] = [];
+
+    const trimmedSearch = filter?.search?.trim();
+    if (trimmedSearch) {
+      andConditions.push({
+        OR: [
+          { name: { contains: trimmedSearch, mode: 'insensitive' } },
+          { email: { contains: trimmedSearch, mode: 'insensitive' } },
+          { licenseNumber: { contains: trimmedSearch, mode: 'insensitive' } },
+        ],
+      });
+    }
+
+    if (filter?.status === 'ACTIVE') {
+      andConditions.push({ isActive: true });
+    } else if (filter?.status === 'INACTIVE') {
+      andConditions.push({ isActive: false });
+    }
+
+    const where: Prisma.TheatreWhereInput =
+      andConditions.length > 0 ? { AND: andConditions } : {};
+
+    const [theatres, total] = await Promise.all([
+      this.prisma.theatre.findMany({
+        where,
+        take: limit,
+        skip,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          email: true,
+          phone: true,
+          logoUrl: true,
+          address: true,
+          licenseNumber: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+          city: {
+            select: {
+              id: true,
+              name: true,
+              state: true,
+            },
+          },
+          _count: {
+            select: {
+              screens: true,
+            },
+          },
+        },
+        orderBy: [
+          { createdAt: 'desc' },
+          { id: 'asc' },
+        ],
+      }),
+      this.prisma.theatre.count({ where }),
+    ]);
+
+    const items: SuperAdminListTheatresItems[] = theatres.map((t) => ({
+      id: t.id,
+      name: t.name,
+      slug: t.slug,
+      email: t.email,
+      phone: t.phone,
+      logoUrl: t.logoUrl,
+      address: t.address,
+      licenseNumber: t.licenseNumber,
+      isActive: t.isActive,
+      totalScreens: t._count.screens,
+      city: t.city,
+      createdAt: t.createdAt,
+      updatedAt: t.updatedAt,
+    }));
+
+    return toPaginatedResult(items, total, page, limit);
+  }
 }
+

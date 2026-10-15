@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import MovieCard from '../components/MovieCard';
 import MovieCardSkeleton from '../components/MovieCardSkeleton';
-import { Pagination } from '@/shared/ui/Pagination';
-import { ErrorState } from '@/shared/ui/ErrorState';
-import { EmptyState } from '@/shared/ui/EmptyState';
+import { Pagination, SearchBar, StatusFilter, ErrorState, EmptyState } from '@/shared/ui';
 import { useToggleMovieStatus } from '../hooks/useToggleMovieStatus';
 import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
-import { useDebounce } from '@/shared/hooks/useDebounce';
 
 export default function MovieManagementPage() {
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
@@ -17,7 +14,6 @@ export default function MovieManagementPage() {
   const [page, setPage] = useState(1);
 
   const limit = 6;
-  const debouncedSearch = useDebounce(search, 700);
 
   const { data: genresData } = useGenres();
 
@@ -31,7 +27,7 @@ export default function MovieManagementPage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useMovies({
     page,
     limit,
-    search: debouncedSearch || undefined,
+    search: search.trim() || undefined,
     genreId: genreId || undefined,
     status: status || undefined,
   });
@@ -63,31 +59,14 @@ export default function MovieManagementPage() {
       </header>
 
       <section className="flex flex-wrap items-center gap-3">
-        <div className="relative flex min-w-[240px] flex-1 items-center">
-          <svg
-            className="pointer-events-none absolute left-3.5 h-4 w-4 text-ink-muted"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="search"
-            placeholder="Search movies..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="h-11 w-full rounded-md border border-border bg-surface pl-10 pr-4 text-base md:text-sm text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-          />
-        </div>
+        <SearchBar
+          placeholder="Search movies..."
+          onSearch={(term) => {
+            setSearch(term);
+            setPage(1);
+          }}
+          className="min-w-[240px] flex-1"
+        />
 
         <select
           value={genreId}
@@ -95,7 +74,8 @@ export default function MovieManagementPage() {
             setGenreId(e.target.value);
             setPage(1);
           }}
-          className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+          aria-label="Filter movies by genre"
+          className="h-11 rounded-lg border border-border bg-surface px-3 text-base md:text-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 cursor-pointer transition-colors"
         >
           <option value="">All Genres</option>
           {genresData?.map((g) => (
@@ -105,18 +85,19 @@ export default function MovieManagementPage() {
           ))}
         </select>
 
-        <select
+        <StatusFilter<'' | 'ACTIVE' | 'INACTIVE'>
           value={status}
-          onChange={(e) => {
-            setStatus(e.target.value as '' | 'ACTIVE' | 'INACTIVE');
+          onChange={(val) => {
+            setStatus(val);
             setPage(1);
           }}
-          className="h-11 rounded-md border border-border bg-surface px-3 text-base md:text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-        >
-          <option value="">All Status</option>
-          <option value="ACTIVE">Active</option>
-          <option value="INACTIVE">Inactive</option>
-        </select>
+          options={[
+            { value: '', label: 'All Status' },
+            { value: 'ACTIVE', label: 'Active' },
+            { value: 'INACTIVE', label: 'Inactive' },
+          ]}
+          ariaLabel="Filter movies by status"
+        />
       </section>
 
       {isFetching && !isLoading && (

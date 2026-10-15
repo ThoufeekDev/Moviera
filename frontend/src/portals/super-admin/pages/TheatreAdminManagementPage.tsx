@@ -146,7 +146,7 @@ export default function TheatreAdminManagementPage() {
     }
     const cities = Array.from(new Set(theatres.map((t) => t.city).filter(Boolean)));
     return ['ALL', ...cities];
-  }, [statsData?.cities, theatres]);
+  }, [statsData, theatres]);
 
   // Theatres are filtered and limited directly on the backend database
   const filteredTheatres = theatres;

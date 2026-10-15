@@ -20,3 +20,6 @@ export * from './ImageUpload';
 export * from './EmptyState';
 export * from './ChipSelect';
 export * from './FormSection';
+export * from './SearchBar';
+export * from './StatusFilter';
+
