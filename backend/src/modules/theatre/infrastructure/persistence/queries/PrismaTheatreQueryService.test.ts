@@ -12,6 +12,9 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
         findMany: vi.fn(),
         count: vi.fn(),
       },
+      city: {
+        findMany: vi.fn(),
+      },
     };
     service = new PrismaTheatreQueryService(prismaMock as unknown as PrismaClient);
   });
@@ -217,3 +220,59 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
     });
   });
 });
+
+describe('PrismaTheatreQueryService - listCities', () => {
+  let prismaMock: any;
+  let service: PrismaTheatreQueryService;
+
+  beforeEach(() => {
+    prismaMock = {
+      theatre: {
+        findMany: vi.fn(),
+        count: vi.fn(),
+      },
+      city: {
+        findMany: vi.fn(),
+      },
+    };
+    service = new PrismaTheatreQueryService(prismaMock as unknown as PrismaClient);
+  });
+
+  it('should return only active cities with minimal required fields {id, name, state} sorted alphabetically', async () => {
+    const mockCities = [
+      { id: 'city-1', name: 'Aurangabad', state: 'Bihar' },
+      { id: 'city-2', name: 'Aurangabad', state: 'Maharashtra' },
+      { id: 'city-3', name: 'Kochi', state: 'Kerala' },
+    ];
+    prismaMock.city.findMany.mockResolvedValue(mockCities);
+
+    const result = await service.listCities();
+
+    expect(prismaMock.city.findMany).toHaveBeenCalledWith({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        state: true,
+      },
+      orderBy: [
+        { name: 'asc' },
+        { state: 'asc' },
+        { id: 'asc' },
+      ],
+    });
+
+    expect(result).toEqual(mockCities);
+  });
+
+  it('should return an empty array if no active cities exist', async () => {
+    prismaMock.city.findMany.mockResolvedValue([]);
+
+    const result = await service.listCities();
+
+    expect(result).toEqual([]);
+  });
+});
+

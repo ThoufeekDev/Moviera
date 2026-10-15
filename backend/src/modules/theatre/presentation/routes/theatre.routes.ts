@@ -27,6 +27,10 @@ import { listEligibleAdminsQuerySchema } from '../schemas/ListEligibleAdminsSche
 import { GetTheatreAdminStatsController } from '../controllers/GetTheatreAdminStatsController';
 import { ListAllTheatresController } from '../controllers/ListAllTheatresController';
 import { listAllTheatresQuerySchema } from '../schemas/ListAllTheatresSchema';
+import { CreateTheatreController } from '../controllers/CreateTheatreController';
+import { createTheatreSchema } from '../schemas/CreateTheatreSchema';
+import { ListCitiesController } from '../controllers/ListCitiesController';
+import { upload } from '../../../../shared/middleware/upload.middleware';
 
 interface TheatreRouteControllers {
   getMyTheatresController: GetMyTheatresController;
@@ -40,6 +44,8 @@ interface TheatreRouteControllers {
   listEligibleTheatreAdminsController: ListEligibleTheatreAdminsController;
   getTheatreAdminStatsController: GetTheatreAdminStatsController;
   listAllTheatresController: ListAllTheatresController;
+  createTheatreController: CreateTheatreController;
+  listCitiesController: ListCitiesController;
 }
 
 export function createTheatreRoutes(controllers: TheatreRouteControllers): Router {
@@ -53,6 +59,15 @@ export function createTheatreRoutes(controllers: TheatreRouteControllers): Route
     ...superAdmin,
     validate({ query: listAllTheatresQuerySchema }),
     adapt(controllers.listAllTheatresController.handle),
+  );
+
+  // ── Super Admin Create Theatre Route ──────────────────────────────────────
+  router.post(
+    '/',
+    ...superAdmin,
+    upload.single('logo'),
+    validate({ body: createTheatreSchema }),
+    adapt(controllers.createTheatreController.handle),
   );
 
   // ── Theatre Admin Routes ──────────────────────────────────────────────────
@@ -126,6 +141,13 @@ export function createTheatreRoutes(controllers: TheatreRouteControllers): Route
     ...superAdmin,
     validate({ params: revokeTheatreAdminAssignmentParamSchema }),
     adapt(controllers.revokeTheatreAdminAssignmentController.handle),
+  );
+
+  // ── Cities List for Dropdown (Static Route) ───────────────────────────────
+  router.get(
+    '/cities',
+    ...superAdmin,
+    adapt(controllers.listCitiesController.handle),
   );
 
   // ── Parameterized Route (keep after static routes) ────────────────────────

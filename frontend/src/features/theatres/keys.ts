@@ -13,5 +13,6 @@ export const theatreKeys = {
   eligibleAdmins: (search?: string) => [...theatreKeys.all, 'eligible-admins', search] as const,
   assignments: (query?: unknown) => [...theatreKeys.all, 'assignments', query] as const,
   manageList: (query?: unknown) => [...theatreKeys.all, 'manage-list', query] as const,
+  cities: () => [...theatreKeys.all, 'cities'] as const,
 };
 

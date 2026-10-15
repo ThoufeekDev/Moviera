@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { useAllTheatres } from '@/features/theatres';
+import { useAllTheatres, CreateTheatreModal } from '@/features/theatres';
 import SuperAdminTheatreCard from '@/features/theatres/components/SuperAdminTheatreCard';
 import SuperAdminTheatreCardSkeleton from '@/features/theatres/components/SuperAdminTheatreCardSkeleton';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@/shared/ui';
 
 export default function ManageTheatresPage() {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [appliedSearch, setAppliedSearch] = useState('');
   const [status, setStatus] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
   const [page, setPage] = useState(1);
@@ -92,6 +93,7 @@ export default function ManageTheatresPage() {
             type="button"
             variant="primary"
             size="md"
+            onClick={() => setIsCreateModalOpen(true)}
             className="h-11 shrink-0 flex items-center gap-2 font-medium shadow-sm cursor-pointer"
           >
             <Plus size={18} />
@@ -197,7 +199,13 @@ export default function ManageTheatresPage() {
             title="No theatres registered"
             description="There are currently no theatres in the system. Registered theatres will appear here."
             action={
-              <Button type="button" variant="primary" size="md" className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex items-center gap-2"
+              >
                 <Plus size={16} />
                 <span>Create Theatre</span>
               </Button>
@@ -228,6 +236,12 @@ export default function ManageTheatresPage() {
           />
         </div>
       )}
+
+      {/* Create Theatre Modal */}
+      <CreateTheatreModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
   );
 }

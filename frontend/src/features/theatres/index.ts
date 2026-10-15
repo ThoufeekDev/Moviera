@@ -17,12 +17,17 @@ export * from './hooks/useEligibleTheatreAdmins';
 export * from './hooks/useAssignTheatreAdmin';
 export * from './hooks/useUpdateTheatreAdminAssignment';
 export * from './hooks/useRevokeTheatreAdminAssignment';
+export * from './hooks/useCities';
+export * from './hooks/useCreateTheatre';
 
 // APIs & Types
 export * from './api/superAdminTheatres.api';
 export * from './api/getAllTheatres.api';
+export * from './api/getCities.api';
+export * from './api/createTheatre.api';
 
 // Components
 export { default as SuperAdminTheatreCard } from './components/SuperAdminTheatreCard';
 export { default as SuperAdminTheatreCardSkeleton } from './components/SuperAdminTheatreCardSkeleton';
+export { default as CreateTheatreModal } from './components/CreateTheatreModal';
 

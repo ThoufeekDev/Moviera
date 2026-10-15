@@ -7,6 +7,7 @@ import { TheatreAdminAssignmentRole } from '../../../domain/enums/TheatreAdminAs
 import { TheatreMapper } from '../mappers/TheatreMapper';
 import { TheatreOverviewFacilityMapper } from '../mappers/TheatreOverviewFacilityMapper';
 import { SuperAdminListTheatresItems } from '../../../application/read-models/SuperAdminListTheatresItems';
+import { CityOption } from '../../../application/read-models/CityOption';
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 
@@ -327,6 +328,24 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
     }));
 
     return toPaginatedResult(items, total, page, limit);
+  }
+
+  async listCities(): Promise<CityOption[]> {
+    return this.prisma.city.findMany({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        state: true,
+      },
+      orderBy: [
+        { name: 'asc' },
+        { state: 'asc' },
+        { id: 'asc' },
+      ],
+    });
   }
 }
 

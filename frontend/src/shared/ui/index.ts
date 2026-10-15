@@ -23,4 +23,5 @@ export * from './FormSection';
 export * from './SearchBar';
 export * from './StatusFilter';
 export * from './RefreshButton';
+export * from './Combobox';
 
