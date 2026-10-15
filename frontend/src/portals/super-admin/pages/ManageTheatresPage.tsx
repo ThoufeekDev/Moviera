@@ -3,7 +3,15 @@ import { Plus } from 'lucide-react';
 import { useAllTheatres } from '@/features/theatres';
 import SuperAdminTheatreCard from '@/features/theatres/components/SuperAdminTheatreCard';
 import SuperAdminTheatreCardSkeleton from '@/features/theatres/components/SuperAdminTheatreCardSkeleton';
-import { Pagination, ErrorState, EmptyState, Button, SearchBar, StatusFilter } from '@/shared/ui';
+import {
+  Pagination,
+  ErrorState,
+  EmptyState,
+  Button,
+  SearchBar,
+  StatusFilter,
+  RefreshButton,
+} from '@/shared/ui';
 
 export default function ManageTheatresPage() {
   const [appliedSearch, setAppliedSearch] = useState('');
@@ -71,15 +79,25 @@ export default function ManageTheatresPage() {
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="primary"
-          size="md"
-          className="h-11 shrink-0 flex items-center gap-2 self-start sm:self-auto font-medium shadow-sm cursor-pointer"
-        >
-          <Plus size={18} />
-          <span>Create Theatre</span>
-        </Button>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          {/* Reusable Refresh Button */}
+          <RefreshButton
+            onClick={() => refetch()}
+            isRefreshing={isFetching}
+            title="Refresh theatres list"
+            ariaLabel="Refresh theatres list"
+          />
+
+          <Button
+            type="button"
+            variant="primary"
+            size="md"
+            className="h-11 shrink-0 flex items-center gap-2 font-medium shadow-sm cursor-pointer"
+          >
+            <Plus size={18} />
+            <span>Create Theatre</span>
+          </Button>
+        </div>
       </header>
 
       {/* Search and Filters Bar with Reusable Components */}

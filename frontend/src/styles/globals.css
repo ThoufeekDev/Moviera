@@ -140,6 +140,16 @@
     display: flex;
     flex-direction: column;
   }
+
+  /* Hide native browser clear (x) button on search inputs to prevent duplicate X icons */
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
 }
 
 /* Accessible reduced motion support */

@@ -10,7 +10,7 @@ import {
   Check,
   X,
 } from 'lucide-react';
-import { Button } from '@/shared/ui/Button';
+import { Button, RefreshButton } from '@/shared/ui';
 import {
   useTheatresForAdmin,
   useTheatreAdminStats,
@@ -308,17 +308,13 @@ export default function TheatreAdminManagementPage() {
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
-          {/* Refresh Button */}
-          <button
-            type="button"
+          {/* Reusable Refresh Button */}
+          <RefreshButton
             onClick={handleRefresh}
-            disabled={isRefetching}
-            className="inline-flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-md border border-border bg-surface text-ink-muted hover:text-ink hover:bg-surface-muted transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+            isRefreshing={isRefetching}
             title="Refresh directory"
-            aria-label="Refresh directory"
-          >
-            <RefreshCw size={17} className={isRefetching ? 'animate-spin text-brand-600' : ''} />
-          </button>
+            ariaLabel="Refresh directory"
+          />
 
           {/* View Toggle Tabs */}
           <div

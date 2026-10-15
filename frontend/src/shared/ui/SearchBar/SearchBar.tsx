@@ -9,6 +9,7 @@ export interface SearchBarProps {
   onChange?: (value: string) => void;
   placeholder?: string;
   debounceMs?: number;
+  searchOnSubmitOnly?: boolean;
   showButton?: boolean;
   buttonText?: string;
   showClear?: boolean;
@@ -26,7 +27,8 @@ export default function SearchBar({
   onSearch,
   onChange,
   placeholder = 'Search...',
-  debounceMs = 400,
+  debounceMs = 0,
+  searchOnSubmitOnly = true,
   showButton = true,
   buttonText = 'Search',
   showClear = true,
@@ -37,9 +39,15 @@ export default function SearchBar({
   autoFocus = false,
   ariaLabel = 'Search',
 }: SearchBarProps) {
-  const isControlled = value !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-  const displayValue = isControlled ? value : uncontrolledValue;
+  // Local state for immediate typing responsiveness (0ms lag)
+  const [inputValue, setInputValue] = useState(value ?? defaultValue);
+  const [prevPropValue, setPrevPropValue] = useState(value);
+
+  // Synchronize internal state when value prop changes externally (e.g. parent clears filters)
+  if (value !== undefined && value !== prevPropValue) {
+    setPrevPropValue(value);
+    setInputValue(value);
+  }
 
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastCommittedSearchRef = useRef<string>(value ?? defaultValue);
@@ -53,7 +61,7 @@ export default function SearchBar({
     };
   }, []);
 
-  // Commit search: trims whitespace, prevents duplicates
+  // Commit search: trims whitespace, triggers onSearch
   const commitSearch = useCallback(
     (termToCommit: string) => {
       if (debounceTimerRef.current) {
@@ -61,27 +69,22 @@ export default function SearchBar({
         debounceTimerRef.current = null;
       }
       const trimmed = termToCommit.trim();
-      if (trimmed !== lastCommittedSearchRef.current) {
-        lastCommittedSearchRef.current = trimmed;
-        onSearch(trimmed);
-      }
+      lastCommittedSearchRef.current = trimmed;
+      onSearch(trimmed);
     },
     [onSearch],
   );
 
-  // Handle typing with debounce
+  // Handle typing: immediate visual update, optional debounce only if searchOnSubmitOnly is false
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newVal = e.target.value;
-    if (!isControlled) {
-      setUncontrolledValue(newVal);
-    }
+    setInputValue(newVal);
     onChange?.(newVal);
 
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    if (debounceMs > 0) {
+    if (!searchOnSubmitOnly && debounceMs > 0) {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
       debounceTimerRef.current = setTimeout(() => {
         commitSearch(newVal);
       }, debounceMs);
@@ -91,13 +94,13 @@ export default function SearchBar({
   // Immediate commit on Form Submit (Enter or Button click)
   const handleSubmit = (e?: FormEvent) => {
     if (e) e.preventDefault();
-    commitSearch(displayValue);
+    commitSearch(inputValue);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      commitSearch(displayValue);
+      commitSearch(inputValue);
     }
   };
 
@@ -107,14 +110,10 @@ export default function SearchBar({
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
-    if (!isControlled) {
-      setUncontrolledValue('');
-    }
+    setInputValue('');
     onChange?.('');
-    if (lastCommittedSearchRef.current !== '') {
-      lastCommittedSearchRef.current = '';
-      onSearch('');
-    }
+    lastCommittedSearchRef.current = '';
+    onSearch('');
   };
 
   return (
@@ -141,7 +140,7 @@ export default function SearchBar({
 
         <input
           type="search"
-          value={displayValue}
+          value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
@@ -154,17 +153,21 @@ export default function SearchBar({
             'transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2',
             'disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-muted',
+            // Hide native browser clear button on search inputs to prevent two 'X' buttons
+            '[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-cancel-button]:hidden',
+            '[&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden',
             inputClassName,
           )}
         />
 
-        {/* Clear X button */}
-        {showClear && displayValue && !disabled && (
+        {/* Custom Clear X button */}
+        {showClear && inputValue && !disabled && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full text-ink-muted hover:bg-surface-muted hover:text-ink transition-colors"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full text-ink-muted hover:bg-surface-muted hover:text-ink transition-colors cursor-pointer"
             aria-label="Clear search text"
+            title="Clear search text"
           >
             <svg
               className="h-3.5 w-3.5"
@@ -190,7 +193,7 @@ export default function SearchBar({
           variant="primary"
           size="md"
           disabled={disabled}
-          className={cn('shrink-0 h-11 px-5 flex items-center gap-2 font-medium', buttonClassName)}
+          className={cn('shrink-0 h-11 px-5 flex items-center gap-2 font-medium cursor-pointer', buttonClassName)}
         >
           <svg
             className="h-4 w-4"

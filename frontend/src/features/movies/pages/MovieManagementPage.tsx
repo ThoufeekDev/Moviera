@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import MovieCard from '../components/MovieCard';
 import MovieCardSkeleton from '../components/MovieCardSkeleton';
-import { Pagination, SearchBar, StatusFilter, ErrorState, EmptyState } from '@/shared/ui';
+import {
+  Pagination,
+  SearchBar,
+  StatusFilter,
+  RefreshButton,
+  ErrorState,
+  EmptyState,
+} from '@/shared/ui';
 import { useToggleMovieStatus } from '../hooks/useToggleMovieStatus';
 import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
@@ -51,11 +58,22 @@ export default function MovieManagementPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink">
-          Movies
-        </h1>
-        <p className="text-sm text-ink-muted">Manage all movies in Moviera.</p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink">
+            Movies
+          </h1>
+          <p className="text-sm text-ink-muted">Manage all movies in Moviera.</p>
+        </div>
+
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <RefreshButton
+            onClick={() => refetch()}
+            isRefreshing={isFetching}
+            title="Refresh movies list"
+            ariaLabel="Refresh movies list"
+          />
+        </div>
       </header>
 
       <section className="flex flex-wrap items-center gap-3">
