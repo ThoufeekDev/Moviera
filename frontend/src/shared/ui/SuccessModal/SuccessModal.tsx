@@ -42,15 +42,12 @@ export default function SuccessModal({
   autoCloseSeconds,
   className,
 }: SuccessModalProps) {
-  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(
+  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(() =>
     autoCloseSeconds ?? null,
   );
 
   useEffect(() => {
-    if (!isOpen) {
-      setSecondsRemaining(autoCloseSeconds ?? null);
-      return;
-    }
+    if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -66,20 +63,20 @@ export default function SuccessModal({
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
-  }, [isOpen, onClose, autoCloseSeconds]);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (!isOpen || !autoCloseSeconds) return;
 
-    setSecondsRemaining(autoCloseSeconds);
     const interval = setInterval(() => {
       setSecondsRemaining((prev) => {
-        if (prev === null || prev <= 1) {
+        const current = prev ?? autoCloseSeconds;
+        if (current <= 1) {
           clearInterval(interval);
           onClose();
           return 0;
         }
-        return prev - 1;
+        return current - 1;
       });
     }, 1000);
 
