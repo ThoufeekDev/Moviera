@@ -85,48 +85,32 @@ export class PrismaTheatreRepository implements ITheatreRepository {
     return count > 0;
   }
 
-  async create(theatre: Theatre): Promise<Theatre> {
-    try {
-      const created = await this.prisma.theatre.create({
-        data: {
-          ...(theatre.id ? { id: theatre.id } : {}),
-          cityId: theatre.cityId,
-          name: theatre.name,
-          slug: theatre.slug,
-          address: theatre.address,
-          description: theatre.description,
-          logoUrl: theatre.logoUrl,
-          logoPublicId: theatre.logoPublicId,
-          email: theatre.email,
-          phone: theatre.phone,
-          latitude: theatre.latitude,
-          longitude: theatre.longitude,
-          pincode: theatre.pincode,
-          landmark: theatre.landmark,
-          isActive: theatre.isActive,
-          licenseNumber: theatre.licenseNumber,
-          createdById: theatre.createdById,
-          deletedAt: theatre.deletedAt,
+async create(theatre: Theatre): Promise<Theatre> {
+  const created = await this.prisma.theatre.create({
+    data: {
+      ...(theatre.id ? { id: theatre.id } : {}),
+      cityId: theatre.cityId,
+      areaId: theatre.areaId,
+      googlePlaceId: theatre.googlePlaceId,
+      name: theatre.name,
+      slug: theatre.slug,
+      address: theatre.address,
+      description: theatre.description,
+      logoUrl: theatre.logoUrl,
+      logoPublicId: theatre.logoPublicId,
+      email: theatre.email,
+      phone: theatre.phone,
+      latitude: theatre.latitude,
+      longitude: theatre.longitude,
+      pincode: theatre.pincode,
+      landmark: theatre.landmark,
+      isActive: theatre.isActive,
+      licenseNumber: theatre.licenseNumber,
+      createdById: theatre.createdById,
+      deletedAt: theatre.deletedAt,
+    },
+  });
 
-        },
-      });
-
-      return TheatreMapper.toDomain(created);
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        const target = String(error.meta?.target || '');
-        if (target.includes('licenseNumber')) {
-          throw new ConflictError('A theatre with this licence number already exists.');
-        }
-        if (target.includes('slug') || target.includes('name')) {
-          throw new ConflictError('A theatre with this name already exists in this city.');
-        }
-        throw new ConflictError('A theatre with these unique details already exists.');
-      }
-      throw error;
-    }
-  }
+  return TheatreMapper.toDomain(created);
+}
 }

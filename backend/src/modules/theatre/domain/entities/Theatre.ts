@@ -42,6 +42,16 @@ export class Theatre {
     return this.props.address;
   }
 
+
+get areaId(): string | null {
+  return this.props.areaId;
+}
+
+get googlePlaceId(): string | null {
+  return this.props.googlePlaceId;
+}
+
+
   get licenseNumber(): string | null {
     return this.props.licenseNumber ?? null;
   }

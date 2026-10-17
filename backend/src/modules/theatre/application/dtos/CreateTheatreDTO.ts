@@ -1,5 +1,15 @@
+
 export interface CreateTheatreDTO {
-  cityId: string;
+  cityId?: string | null;
+  areaId?: string | null;
+
+  cityName?: string | null;
+  areaName?: string | null;
+  district?: string | null;
+  state?: string | null;
+  country?: string | null;
+  googlePlaceId?: string | null;
+
   name: string;
   address: string;
   description?: string | null;

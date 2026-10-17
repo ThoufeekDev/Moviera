@@ -8,6 +8,8 @@ import { TheatreMapper } from '../mappers/TheatreMapper';
 import { TheatreOverviewFacilityMapper } from '../mappers/TheatreOverviewFacilityMapper';
 import { SuperAdminListTheatresItems } from '../../../application/read-models/SuperAdminListTheatresItems';
 import { CityOption } from '../../../application/read-models/CityOption';
+import { SuperAdminFacilityListItem } from '../../../application/read-models/SuperAdminFacilityListItem';
+import { ActiveFacilityOption } from '../../../application/read-models/ActiveFacilityOption';
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 
@@ -345,6 +347,92 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         { state: 'asc' },
         { id: 'asc' },
       ],
+    });
+  }
+
+  async listFacilities(filter?: {
+    search?: string;
+    status?: 'ALL' | 'ACTIVE' | 'INACTIVE';
+    limit?: number;
+    page?: number;
+  }): Promise<PaginatedResult<SuperAdminFacilityListItem>> {
+    const page = Math.max(1, filter?.page ?? 1);
+    const limit = Math.min(100, Math.max(1, filter?.limit ?? 10));
+    const skip = (page - 1) * limit;
+
+    const andConditions: Prisma.TheatreFacilityWhereInput[] = [];
+
+    const trimmedSearch = filter?.search?.trim();
+    if (trimmedSearch) {
+      andConditions.push({
+        OR: [
+          { name: { contains: trimmedSearch, mode: 'insensitive' } },
+          { description: { contains: trimmedSearch, mode: 'insensitive' } },
+        ],
+      });
+    }
+
+    if (filter?.status === 'ACTIVE') {
+      andConditions.push({ isActive: true });
+    } else if (filter?.status === 'INACTIVE') {
+      andConditions.push({ isActive: false });
+    }
+
+    const where: Prisma.TheatreFacilityWhereInput =
+      andConditions.length > 0 ? { AND: andConditions } : {};
+
+    const [facilities, total] = await Promise.all([
+      this.prisma.theatreFacility.findMany({
+        where,
+        take: limit,
+        skip,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          iconKey: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+          _count: {
+            select: {
+              assignments: true,
+            },
+          },
+        },
+        orderBy: [{ name: 'asc' }, { id: 'asc' }],
+      }),
+      this.prisma.theatreFacility.count({ where }),
+    ]);
+
+    const items: SuperAdminFacilityListItem[] = facilities.map((f) => ({
+      id: f.id,
+      name: f.name,
+      slug: f.slug,
+      description: f.description,
+      iconKey: f.iconKey,
+      isActive: f.isActive,
+      assignedTheatreCount: f._count.assignments,
+      createdAt: f.createdAt,
+      updatedAt: f.updatedAt,
+    }));
+
+    return toPaginatedResult(items, total, page, limit);
+  }
+
+  async listActiveFacilities(): Promise<ActiveFacilityOption[]> {
+    return this.prisma.theatreFacility.findMany({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        iconKey: true,
+      },
+      orderBy: [{ name: 'asc' }, { id: 'asc' }],
     });
   }
 }

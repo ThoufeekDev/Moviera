@@ -6,6 +6,8 @@ import type { TheatreWithCity } from '../read-models/TheatreWithCity';
 import type { status } from '../../domain/enums/status';
 
 import type { CityOption } from '../read-models/CityOption';
+import type { SuperAdminFacilityListItem } from '../read-models/SuperAdminFacilityListItem';
+import type { ActiveFacilityOption } from '../read-models/ActiveFacilityOption';
 
 export interface ITheatreQueryService {
   findByAdminId(adminId: string): Promise<TheatreWithCity[]>;
@@ -26,5 +28,14 @@ export interface ITheatreQueryService {
   }): Promise<PaginatedResult<SuperAdminListTheatresItems>>;
 
   listCities(): Promise<CityOption[]>;
+
+  listFacilities(filter?: {
+    search?: string;
+    status?: 'ALL' | 'ACTIVE' | 'INACTIVE';
+    limit?: number;
+    page?: number;
+  }): Promise<PaginatedResult<SuperAdminFacilityListItem>>;
+
+  listActiveFacilities(): Promise<ActiveFacilityOption[]>;
 }
 

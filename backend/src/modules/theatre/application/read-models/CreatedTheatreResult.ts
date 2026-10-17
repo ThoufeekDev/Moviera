@@ -1,6 +1,8 @@
 export interface CreatedTheatreResult {
   id: string;
-  cityId: string;
+  cityId?: string | null;
+  areaId?: string | null;
+  googlePlaceId?: string | null;
   name: string;
   slug: string;
   address: string;

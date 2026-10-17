@@ -266,10 +266,32 @@ model Movie {
 model City {
   id String @id @default(cuid())
 
-  name    String
-  state   String
-  country String
-  slug    String @unique
+  name     String
+  district String?
+  state    String
+  country  String
+  slug     String  @unique
+
+  isActive Boolean @default(true)
+
+  theatres Theatre[]
+  areas    Area[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, state, country])
+  @@index([isActive])
+}
+
+model Area {
+  id String @id @default(cuid())
+
+  cityId String
+  city   City   @relation(fields: [cityId], references: [id])
+
+  name String
+  slug String
 
   isActive Boolean @default(true)
 
@@ -278,7 +300,9 @@ model City {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([name, state, country])
+  @@unique([cityId, name])
+  @@unique([cityId, slug])
+  @@index([cityId])
   @@index([isActive])
 }
 
@@ -289,6 +313,8 @@ model TheatreFacility {
   slug        String  @unique
   description String?
   icon        String?
+
+  iconKey String?
 
   isActive Boolean @default(true)
 
@@ -380,6 +406,9 @@ model Theatre {
   cityId String
   city   City   @relation(fields: [cityId], references: [id])
 
+  areaId String?
+  area   Area?   @relation(fields: [areaId], references: [id], onDelete: Restrict)
+
   name    String
   slug    String
   address String
@@ -397,6 +426,8 @@ model Theatre {
 
   pincode  String?
   landmark String?
+
+  googlePlaceId String? @unique
 
   isActive Boolean @default(true)
 

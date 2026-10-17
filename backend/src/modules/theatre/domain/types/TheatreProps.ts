@@ -1,6 +1,7 @@
 export interface TheatreProps {
   id: string;
   cityId: string;
+  areaId: string | null;
   name: string;
   slug: string;
   address: string;
@@ -11,6 +12,7 @@ export interface TheatreProps {
   phone?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  googlePlaceId: string | null;
   pincode?: string | null;
   landmark?: string | null;
   isActive: boolean;

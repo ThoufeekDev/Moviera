@@ -7,6 +7,8 @@ export class TheatreMapper {
     return Theatre.create({
       id: data.id,
       cityId: data.cityId,
+      areaId: data.areaId,
+      googlePlaceId:data.googlePlaceId,
       name: data.name,
       slug: data.slug,
       address: data.address,

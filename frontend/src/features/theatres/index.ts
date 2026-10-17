@@ -19,15 +19,31 @@ export * from './hooks/useUpdateTheatreAdminAssignment';
 export * from './hooks/useRevokeTheatreAdminAssignment';
 export * from './hooks/useCities';
 export * from './hooks/useCreateTheatre';
+export * from './hooks/useFacilities';
+export * from './hooks/useActiveFacilities';
+export * from './hooks/useCreateFacility';
+export * from './hooks/useEditFacility';
+export * from './hooks/useToggleFacilityStatus';
 
 // APIs & Types
 export * from './api/superAdminTheatres.api';
 export * from './api/getAllTheatres.api';
 export * from './api/getCities.api';
 export * from './api/createTheatre.api';
+export * from './api/facilities.api';
+
+// Icons & Registries
+export * from './icons/facilityIcons';
+
+// Pages
+export { default as FacilitiesPage } from './pages/FacilitiesPage';
 
 // Components
 export { default as SuperAdminTheatreCard } from './components/SuperAdminTheatreCard';
 export { default as SuperAdminTheatreCardSkeleton } from './components/SuperAdminTheatreCardSkeleton';
 export { default as CreateTheatreModal } from './components/CreateTheatreModal';
+export { default as FacilityCard } from './components/FacilityCard';
+export { default as FacilityCardSkeleton } from './components/FacilityCardSkeleton';
+export { default as FacilityModal } from './components/FacilityModal';
+export { default as FacilityStatusConfirmModal } from './components/FacilityStatusConfirmModal';
 

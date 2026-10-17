@@ -30,6 +30,9 @@ const TheatreAdminManagementPage = lazy(
 const ManageTheatresPage = lazy(
   () => import("./pages/ManageTheatresPage"),
 );
+const FacilitiesPage = lazy(
+  () => import("./pages/FacilitiesPage"),
+);
 
 export const superAdminRoutes = (
   <>
@@ -62,6 +65,8 @@ export const superAdminRoutes = (
         <Route path="theatres" element={<TheatreAdminManagementPage />} />
         <Route path="alltheatres" element={<ManageTheatresPage />} />
         <Route path="theatres/manage" element={<ManageTheatresPage />} />
+        <Route path="theatres/facilities" element={<FacilitiesPage />} />
+        <Route path="facilities" element={<FacilitiesPage />} />
         <Route
           path="theatres/create"
           element={

@@ -22,10 +22,13 @@ export const superAdminSidebarItems: SidebarItem[] = [
   {
     label: 'Theatres',
     children: [
-
       {
         label: 'Manage Theatres',
         path: '/super-admin/alltheatres',
+      },
+      {
+        label: 'Facilities',
+        path: '/super-admin/theatres/facilities',
       },
       {
         label: 'Manage admin',

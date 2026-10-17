@@ -14,5 +14,7 @@ export const theatreKeys = {
   assignments: (query?: unknown) => [...theatreKeys.all, 'assignments', query] as const,
   manageList: (query?: unknown) => [...theatreKeys.all, 'manage-list', query] as const,
   cities: () => [...theatreKeys.all, 'cities'] as const,
+  facilities: (query?: unknown) => [...theatreKeys.all, 'facilities', query] as const,
+  activeFacilities: () => [...theatreKeys.all, 'facilities', 'active'] as const,
 };
 

@@ -5,22 +5,32 @@ import { CreatedTheatreResult } from '../read-models/CreatedTheatreResult';
 import { TheatreSlugService } from '../services/TheatreSlugService';
 import { CreateTheatreDTO } from '../dtos/CreateTheatreDTO';
 import { Theatre } from '../../domain/entities/Theatre';
-import { NotFoundError } from '../../../../shared/errors/NotFoundError';
+
 import { ConflictError } from '../../../../shared/errors/ConflictError';
+
+import { ResolveTheatreLocationService } from '../services/ResolveTheatreLocationService';
 
 export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedTheatreResult> {
   constructor(
     private readonly theatreRepository: ITheatreRepository,
     private readonly theatreSlugService: TheatreSlugService,
+    private readonly locationService: ResolveTheatreLocationService,
     private readonly storageService?: IStorageService,
   ) {}
 
   async execute(request: CreateTheatreDTO): Promise<CreatedTheatreResult> {
-    // 1. Verify city exists and is active
-    const cityExists = await this.theatreRepository.cityExists(request.cityId);
-    if (!cityExists) {
-      throw new NotFoundError('Selected city does not exist or is inactive.');
-    }
+    const location = await this.locationService.execute({
+  cityId: request.cityId,
+  areaId: request.areaId,
+      cityName: request.cityName,
+      areaName: request.areaName,
+      district: request.district,
+      state: request.state,
+      country: request.country,
+    });
+
+    const resolvedCityId = location.cityId;
+    const resolvedAreaId = location.areaId;
 
     // 2. Normalize inputs
     const normalizedName = request.name.trim();
@@ -39,7 +49,7 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
     // Check theatre name uniqueness within the same city (case-insensitive)
     const existingByName = await this.theatreRepository.findByNameAndCity(
       normalizedName,
-      request.cityId,
+      resolvedCityId,
     );
 
     if (existingByName) {
@@ -54,9 +64,7 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
 
     // Check licenseNumber uniqueness if provided
     if (normalizedLicense) {
-      const existingLicense = await this.theatreRepository.findByLicenseNumber(
-        normalizedLicense,
-      );
+      const existingLicense = await this.theatreRepository.findByLicenseNumber(normalizedLicense);
 
       if (existingLicense) {
         if (existingLicense.deletedAt) {
@@ -70,10 +78,7 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
     }
 
     // 4. Generate unique slug per city
-    const slug = await this.theatreSlugService.generateUniqueSlug(
-      normalizedName,
-      request.cityId,
-    );
+    const slug = await this.theatreSlugService.generateUniqueSlug(normalizedName, resolvedCityId);
 
     // 5. Upload optional logo image
     let logoUrl: string | null = null;
@@ -91,7 +96,8 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
     // 6. Build domain entity
     const theatre = Theatre.create({
       id: '',
-      cityId: request.cityId,
+      cityId: resolvedCityId,
+      areaId: resolvedAreaId,
       name: normalizedName,
       slug,
       address: normalizedAddress,
@@ -102,6 +108,7 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
       phone: normalizedPhone,
       latitude,
       longitude,
+      googlePlaceId: request.googlePlaceId ?? null,
       pincode: normalizedPincode,
       landmark: normalizedLandmark,
       isActive,
@@ -119,6 +126,8 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
       return {
         id: created.id,
         cityId: created.cityId,
+        areaId: created.areaId,
+        googlePlaceId:created.googlePlaceId,
         name: created.name,
         slug: created.slug,
         address: created.address,

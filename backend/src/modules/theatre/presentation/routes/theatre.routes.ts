@@ -30,6 +30,21 @@ import { listAllTheatresQuerySchema } from '../schemas/ListAllTheatresSchema';
 import { CreateTheatreController } from '../controllers/CreateTheatreController';
 import { createTheatreSchema } from '../schemas/CreateTheatreSchema';
 import { ListCitiesController } from '../controllers/ListCitiesController';
+import { ListFacilitiesController } from '../controllers/ListFacilitiesController';
+import { ListActiveFacilitiesController } from '../controllers/ListActiveFacilitiesController';
+import { CreateFacilityController } from '../controllers/CreateFacilityController';
+import { EditFacilityController } from '../controllers/EditFacilityController';
+import { ToggleFacilityStatusController } from '../controllers/ToggleFacilityStatusController';
+import { listFacilitiesQuerySchema } from '../schemas/ListFacilitiesSchema';
+import { createFacilitySchema } from '../schemas/CreateFacilitySchema';
+import {
+  editFacilityBodySchema,
+  editFacilityParamSchema,
+} from '../schemas/EditFacilitySchema';
+import {
+  toggleFacilityStatusBodySchema,
+  toggleFacilityStatusParamSchema,
+} from '../schemas/ToggleFacilityStatusSchema';
 import { upload } from '../../../../shared/middleware/upload.middleware';
 
 interface TheatreRouteControllers {
@@ -46,6 +61,11 @@ interface TheatreRouteControllers {
   listAllTheatresController: ListAllTheatresController;
   createTheatreController: CreateTheatreController;
   listCitiesController: ListCitiesController;
+  listFacilitiesController: ListFacilitiesController;
+  listActiveFacilitiesController: ListActiveFacilitiesController;
+  createFacilityController: CreateFacilityController;
+  editFacilityController: EditFacilityController;
+  toggleFacilityStatusController: ToggleFacilityStatusController;
 }
 
 export function createTheatreRoutes(controllers: TheatreRouteControllers): Router {
@@ -148,6 +168,52 @@ export function createTheatreRoutes(controllers: TheatreRouteControllers): Route
     '/cities',
     ...superAdmin,
     adapt(controllers.listCitiesController.handle),
+  );
+
+  // ── Super Admin Facilities Management Routes (Static Routes) ──────────────
+  // 1. List facilities with pagination, search, status, and assigned theatre count
+  router.get(
+    '/facilities',
+    ...superAdmin,
+    validate({ query: listFacilitiesQuerySchema }),
+    adapt(controllers.listFacilitiesController.handle),
+  );
+
+  // 2. Active-only lightweight list for dropdowns
+  router.get(
+    '/facilities/active',
+    ...superAdmin,
+    adapt(controllers.listActiveFacilitiesController.handle),
+  );
+
+  // 3. Create facility
+  router.post(
+    '/facilities',
+    ...superAdmin,
+    validate({ body: createFacilitySchema }),
+    adapt(controllers.createFacilityController.handle),
+  );
+
+  // 4. Edit facility
+  router.put(
+    '/facilities/:facilityId',
+    ...superAdmin,
+    validate({
+      params: editFacilityParamSchema,
+      body: editFacilityBodySchema,
+    }),
+    adapt(controllers.editFacilityController.handle),
+  );
+
+  // 5. Activate or deactivate facility
+  router.patch(
+    '/facilities/:facilityId/status',
+    ...superAdmin,
+    validate({
+      params: toggleFacilityStatusParamSchema,
+      body: toggleFacilityStatusBodySchema,
+    }),
+    adapt(controllers.toggleFacilityStatusController.handle),
   );
 
   // ── Parameterized Route (keep after static routes) ────────────────────────
