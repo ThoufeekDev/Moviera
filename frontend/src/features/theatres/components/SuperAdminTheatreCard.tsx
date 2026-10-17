@@ -251,7 +251,7 @@ export default function SuperAdminTheatreCard({
             }}
             className="group/btn flex items-center justify-center gap-2 font-semibold text-ink group-hover:border-brand-500/40 group-hover:bg-brand-50 group-hover:text-brand-700 transition-all duration-200"
           >
-            <span>View Cinema Details</span>
+            <span>View Theatre Details</span>
             <ArrowRight
               size={14}
               className="transition-transform duration-200 group-hover/btn:translate-x-1 group-hover:text-brand-600"

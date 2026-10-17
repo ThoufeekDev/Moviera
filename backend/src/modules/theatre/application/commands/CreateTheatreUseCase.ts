@@ -119,6 +119,10 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
       updatedAt: new Date(),
     });
 
+
+    console.log('this is the created theatre',theatre);
+    
+
     // 7. Persist to repository with rollback cleanup on error
     try {
       const created = await this.theatreRepository.create(theatre);

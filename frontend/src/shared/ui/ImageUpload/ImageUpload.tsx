@@ -5,6 +5,7 @@ import { cn } from '@/shared/lib/cn';
 interface ImageUploadProps {
   label: string;
   onImageSelect: (file: File) => void;
+  onImageRemove?: () => void;
   aspect?: number;
   aspectLabel?: string;
   initialUrl?: string | null;
@@ -16,6 +17,7 @@ interface ImageUploadProps {
 export default function ImageUpload({
   label,
   onImageSelect,
+  onImageRemove,
   aspect = 16 / 9,
   aspectLabel,
   initialUrl,
@@ -78,6 +80,7 @@ export default function ImageUpload({
     setPreview('');
     setImageSrc('');
     if (fileInputRef.current) fileInputRef.current.value = '';
+    onImageRemove?.();
   };
 
   return (

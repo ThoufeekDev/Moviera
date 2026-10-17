@@ -9,6 +9,8 @@ describe('GetMyTheatresController', () => {
     const mockTheatre = Theatre.create({
       id: 'th-1',
       cityId: 'c-1',
+      areaId: 'a-2',
+      googlePlaceId:'g-2',
       name: 'PVR Cinemas',
       slug: 'pvr-cinemas',
       address: 'Downtown Street',

@@ -12,6 +12,6 @@ export const container = {
   prisma,
   storageService,
   movies: buildMoviesModule(prisma, storageService),
-  theatre: buildTheatreModule(prisma),
+  theatre: buildTheatreModule(prisma, storageService),
   auth: buildAuthModule(prisma),
 };
