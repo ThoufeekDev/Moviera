@@ -9,14 +9,9 @@ export const superAdminSidebarItems: SidebarItem[] = [
     label: 'Movies',
     children: [
       {
-        label: 'All Movies',
+        label: 'Manage Movies',
         path: '/super-admin/movies',
       },
-      {
-        label: 'Add Movie',
-        path: '/super-admin/movies/create',
-        },
-
     ],
   },
   {

@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/shared/lib/cn';
 
 export interface ModalProps {
@@ -51,7 +52,7 @@ export default function Modal({
 
   if (!isOpen) return null;
 
-  return (
+  const modalNode = (
     <div
       role="dialog"
       aria-modal="true"
@@ -105,4 +106,8 @@ export default function Modal({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalNode, document.body)
+    : modalNode;
 }

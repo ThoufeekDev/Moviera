@@ -10,9 +10,10 @@ import { MediaStatusSection } from './sections/MediaStatusSection';
 export interface CreateTheatreModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (theatreName: string) => void;
 }
 
-export function CreateTheatreModal({ isOpen, onClose }: CreateTheatreModalProps) {
+export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatreModalProps) {
   const {
     form,
     locationMode,
@@ -32,7 +33,7 @@ export function CreateTheatreModal({ isOpen, onClose }: CreateTheatreModalProps)
     handleSwitchLocationMode,
     handleCityChange,
     handleSubmit,
-  } = useCreateTheatreForm({ onClose });
+  } = useCreateTheatreForm({ onClose, onSuccess });
 
   return (
     <Modal

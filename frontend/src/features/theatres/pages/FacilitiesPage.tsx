@@ -14,12 +14,14 @@ import {
   SearchBar,
   StatusFilter,
   RefreshButton,
+  SuccessModal,
 } from '@/shared/ui';
 
 export default function FacilitiesPage() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFacility, setEditingFacility] = useState<SuperAdminFacilityItem | null>(null);
+  const [successInfo, setSuccessInfo] = useState<{ name: string; isEditing: boolean } | null>(null);
 
   // Status confirmation modal state
   const [statusConfirmFacility, setStatusConfirmFacility] = useState<SuperAdminFacilityItem | null>(null);
@@ -267,6 +269,43 @@ export default function FacilitiesPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         facility={editingFacility}
+        onSuccess={(name, isEditing) => {
+          setIsModalOpen(false);
+          setSuccessInfo({ name, isEditing });
+        }}
+      />
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={Boolean(successInfo)}
+        onClose={() => setSuccessInfo(null)}
+        title={
+          successInfo?.isEditing
+            ? 'Facility Updated Successfully!'
+            : 'Facility Created Successfully!'
+        }
+        description={
+          successInfo?.isEditing
+            ? 'The facility configuration has been updated and applied across all theatre profiles.'
+            : 'The new theatre facility has been created and is now available for cinema theatres to feature.'
+        }
+        entityName={successInfo?.name}
+        entityType="Facility"
+        primaryAction={{
+          label: 'Done',
+          onClick: () => setSuccessInfo(null),
+        }}
+        secondaryAction={
+          !successInfo?.isEditing
+            ? {
+                label: 'Create Another Facility',
+                onClick: () => {
+                  setSuccessInfo(null);
+                  handleOpenCreateModal();
+                },
+              }
+            : undefined
+        }
       />
 
       {/* Status Toggle Confirmation Modal */}

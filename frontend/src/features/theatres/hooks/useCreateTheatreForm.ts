@@ -16,9 +16,10 @@ import { mapServerErrorToField } from '../utils/mapServerErrorToField';
 
 export interface UseCreateTheatreFormOptions {
   onClose: () => void;
+  onSuccess?: (theatreName: string) => void;
 }
 
-export function useCreateTheatreForm({ onClose }: UseCreateTheatreFormOptions) {
+export function useCreateTheatreForm({ onClose, onSuccess }: UseCreateTheatreFormOptions) {
   const hasGoogleApiKey = Boolean(env.googleMapsApiKey && env.googleMapsApiKey.trim() !== '');
   const [locationMode, setLocationMode] = useState<'google' | 'manual'>(
     hasGoogleApiKey ? 'google' : 'manual',
@@ -209,8 +210,12 @@ export function useCreateTheatreForm({ onClose }: UseCreateTheatreFormOptions) {
 
     try {
       await createTheatreMutation.mutateAsync(payload);
-      toast.success('Theatre created successfully!');
       handleClose();
+      if (onSuccess) {
+        onSuccess(values.name);
+      } else {
+        toast.success('Theatre created successfully!');
+      }
     } catch (err: unknown) {
       const mapped = mapServerErrorToField(err, values);
       if (mapped.field) {

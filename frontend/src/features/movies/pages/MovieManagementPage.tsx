@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import MovieCard from '../components/MovieCard';
 import MovieCardSkeleton from '../components/MovieCardSkeleton';
 import {
+  Button,
   Pagination,
   SearchBar,
   StatusFilter,
@@ -14,6 +17,7 @@ import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
 
 export default function MovieManagementPage() {
+  const navigate = useNavigate();
   const { mutate: toggleMovieStatus } = useToggleMovieStatus();
   const [search, setSearch] = useState('');
   const [genreId, setGenreId] = useState('');
@@ -61,9 +65,9 @@ export default function MovieManagementPage() {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink">
-            Movies
+            Manage Movies
           </h1>
-          <p className="text-sm text-ink-muted">Manage all movies in Moviera.</p>
+          <p className="text-sm text-ink-muted">Configure and manage all movies in Moviera.</p>
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
@@ -73,6 +77,16 @@ export default function MovieManagementPage() {
             title="Refresh movies list"
             ariaLabel="Refresh movies list"
           />
+          <Button
+            type="button"
+            variant="primary"
+            size="md"
+            onClick={() => navigate('/super-admin/movies/create')}
+            className="flex items-center gap-2 font-semibold shadow-card"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Create Movie</span>
+          </Button>
         </div>
       </header>
 
@@ -134,7 +148,19 @@ export default function MovieManagementPage() {
       ) : movies.length === 0 ? (
         <EmptyState
           title="No movies found"
-          description="Movies created by the Super Admin will appear here."
+          description="Get started by creating your first movie in the Moviera catalog."
+          action={
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onClick={() => navigate('/super-admin/movies/create')}
+              className="flex items-center gap-2 font-semibold"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Create Movie</span>
+            </Button>
+          }
         />
       ) : (
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">

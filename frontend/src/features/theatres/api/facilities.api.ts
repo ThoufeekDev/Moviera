@@ -1,4 +1,5 @@
 import api from '@/shared/lib/axios';
+import type { ApiResponse, Paginated } from '@/shared/types/apiResponse';
 
 export interface SuperAdminFacilityItem {
   id: string;
@@ -26,22 +27,8 @@ export interface GetFacilitiesParams {
   limit?: number;
 }
 
-export interface GetFacilitiesResponseData {
-  items: SuperAdminFacilityItem[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
-export interface FacilityApiResponse<T> {
-  statusCode?: number;
-  success: boolean;
-  message: string;
-  data: T;
-}
+export type GetFacilitiesResponseData = Paginated<SuperAdminFacilityItem>;
+export type FacilityApiResponse<T> = ApiResponse<T>;
 
 export interface CreateFacilityPayload {
   name: string;

@@ -94,6 +94,18 @@ export default function PersonSelector({
               setIsOpen(true);
             }
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              event.stopPropagation();
+              if (filteredPersons.length > 0) {
+                handleSelectPerson(filteredPersons[0]);
+              } else if (search.trim()) {
+                setIsOpen(false);
+                setIsCreateModalOpen(true);
+              }
+            }
+          }}
           onChange={(event) => {
             const value = event.target.value;
             setSearch(value);

@@ -23,12 +23,14 @@ export interface FacilityModalProps {
   isOpen: boolean;
   onClose: () => void;
   facility?: SuperAdminFacilityItem | null;
+  onSuccess?: (facilityName: string, isEditing: boolean) => void;
 }
 
 export default function FacilityModal({
   isOpen,
   onClose,
   facility,
+  onSuccess,
 }: FacilityModalProps) {
   const isEditing = Boolean(facility);
 
@@ -107,6 +109,9 @@ export default function FacilityModal({
         await createMutation.mutateAsync(payload);
       }
       onClose();
+      if (onSuccess) {
+        onSuccess(payload.name, isEditing);
+      }
     } catch (error) {
       const parsed = extractFormErrors(error);
       setFieldErrors(parsed.fieldErrors);

@@ -4,7 +4,7 @@ import type { TheatreAdminAssignmentRecord } from '../../domain/repositories/ITh
 import { UpdateTheatreAdminAssignmentDTO } from '../dtos/UpdateTheatreAdminAssignmentDTO';
 import { BadRequestError } from '../../../../shared/errors/BadRequestError';
 import { NotFoundError } from '../../../../shared/errors/NotFoundError';
-import { TheatreAdminAssignmentRole } from '@prisma/client';
+import { TheatreAdminAssignmentRole } from '../../domain/enums/TheatreAdminAssignmentRole';
 
 export class UpdateTheatreAdminAssignmentUseCase implements IUseCase<
   UpdateTheatreAdminAssignmentDTO,

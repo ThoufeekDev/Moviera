@@ -65,9 +65,9 @@ export default function FacilityCard({
           <h2 className="text-base font-bold text-ink tracking-tight truncate group-hover:text-brand-600 transition-colors">
             {facility.name}
           </h2>
-          <span className="font-mono text-[11px] text-ink-muted/80 truncate">
+          {/* <span className="font-mono text-[11px] text-ink-muted/80 truncate">
             slug: {facility.slug}
-          </span>
+          </span> */}
         </div>
 
         {/* Description */}

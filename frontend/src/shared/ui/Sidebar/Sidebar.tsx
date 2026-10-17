@@ -18,7 +18,7 @@ function ChevronIcon({ isExpanded }: { isExpanded: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(
-        'transition-transform duration-200 text-[#686d7c]',
+        'transition-transform duration-200 text-nav-muted',
         isExpanded && 'rotate-180 text-white',
       )}
       aria-hidden="true"
@@ -164,7 +164,7 @@ function DefaultItemIcon({ label, active }: { label: string; active?: boolean })
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn(active ? 'text-white' : 'text-[#8f94a3]')}
+      className={cn(active ? 'text-white' : 'text-nav-muted')}
       aria-hidden="true"
     >
       <circle cx="12" cy="12" r="3" />
@@ -177,19 +177,19 @@ function DefaultItemIcon({ label, active }: { label: string; active?: boolean })
 const navItemBase = [
   'group flex w-full min-h-[42px] items-center gap-3 rounded-xl',
   'border border-transparent bg-transparent px-3 py-2',
-  'text-left text-[13.5px] font-medium text-[#8f94a3]',
+  'text-left text-[13.5px] font-medium text-nav-muted',
   'cursor-pointer select-none transition-all duration-150',
-  'hover:bg-[#1a1c24] hover:text-[#f3f4f6]',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[#121316]',
+  'hover:bg-nav-surface hover:text-nav-ink',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-nav',
 ].join(' ');
 
 const navItemActive = [
-  '!text-white !bg-[#22242c] !border-white/[0.05]',
+  '!text-white !bg-nav-active !border-white/[0.05]',
   'font-semibold shadow-xs',
 ].join(' ');
 
 const navItemParentActive = [
-  '!text-[#f3f4f6] !bg-[#18191f]',
+  '!text-nav-ink !bg-nav-surface',
 ].join(' ');
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -257,7 +257,7 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
           </button>
 
           {isExpanded && (
-            <div className="relative mt-0.5 flex flex-col gap-1 border-l border-[#242732] pl-3 ml-4.5">
+            <div className="relative mt-0.5 flex flex-col gap-1 border-l border-nav-border pl-3 ml-4.5">
               {item.children?.map((child) => {
                 const isChildCurrent =
                   child.path &&
@@ -272,12 +272,12 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
                     className={({ isActive }) =>
                       cn(
                         'group/sub flex min-h-[38px] items-center justify-between rounded-lg px-2.5 py-1.5',
-                        'text-xs md:text-[13px] font-medium text-[#888e9e]',
+                        'text-xs md:text-[13px] font-medium text-nav-muted',
                         'transition-all duration-150',
-                        'hover:text-[#f3f4f6] hover:bg-[#1a1c24]',
+                        'hover:text-nav-ink hover:bg-nav-surface',
                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600',
                         (isActive || isChildCurrent) &&
-                          '!text-white !bg-[#22242c] font-semibold border border-white/[0.04] shadow-xs',
+                          '!text-white !bg-nav-active font-semibold border border-white/[0.04] shadow-xs',
                       )
                     }
                   >
@@ -324,10 +324,10 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
   return (
     <>
       {/* Mobile Top Navigation Header */}
-      <header className="fixed inset-x-0 top-0 z-40 hidden h-14 md:h-16 items-center justify-between bg-[#121316] px-4 text-[#f3f4f6] border-b border-[#1e2028] max-md:flex">
+      <header className="fixed inset-x-0 top-0 z-40 hidden h-14 md:h-16 items-center justify-between bg-nav px-4 text-nav-ink border-b border-nav-border max-md:flex">
         <button
           type="button"
-          className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#8f94a3] hover:text-white hover:bg-[#1a1c24] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+          className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-nav-muted hover:text-white hover:bg-nav-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           onClick={() => setIsOpen(true)}
           aria-label="Open navigation"
         >
@@ -365,7 +365,7 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
       <aside
         className={cn(
           'fixed left-0 top-0 z-50 flex h-dvh w-[260px] flex-col',
-          'bg-[#121316] text-[#8f94a3] border-r border-[#1e2028]',
+          'bg-nav text-nav-muted border-r border-nav-border',
           'overflow-y-auto px-3.5 py-4',
           'transition-transform duration-200 ease-out select-none',
           'max-md:-translate-x-full max-md:w-[280px] max-md:shadow-2xl max-md:pb-[calc(1.5rem+env(safe-area-inset-bottom))]',
@@ -373,13 +373,13 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
         )}
       >
         {/* Top Window Dots (macOS style like reference image) */}
-        <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-[#1e2028]">
+        <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-nav-border">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#343846] transition-colors" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#343846] transition-colors" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#343846] transition-colors" />
+            <span className="h-2.5 w-2.5 rounded-full bg-nav-active transition-colors" />
+            <span className="h-2.5 w-2.5 rounded-full bg-nav-active transition-colors" />
+            <span className="h-2.5 w-2.5 rounded-full bg-nav-active transition-colors" />
           </div>
-          <div className="flex items-center gap-2 text-[#4b5162]">
+          <div className="flex items-center gap-2 text-nav-muted">
             <svg
               width="14"
               height="14"
@@ -412,7 +412,7 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
         </div>
 
         {/* Logo Section */}
-        <div className="mb-4 flex items-center justify-between border-b border-[#1e2028] pb-4 px-1">
+        <div className="mb-4 flex items-center justify-between border-b border-nav-border pb-4 px-1">
           <div className="flex items-center">
             {logo ?? (
               <MovieraLogo
@@ -425,7 +425,7 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
           </div>
           <button
             type="button"
-            className="hidden h-9 w-9 min-h-[36px] min-w-[36px] items-center justify-center rounded-lg text-[#8f94a3] hover:text-white hover:bg-[#1a1c24] max-md:flex"
+            className="hidden h-9 w-9 min-h-[36px] min-w-[36px] items-center justify-center rounded-lg text-nav-muted hover:text-white hover:bg-nav-surface max-md:flex"
             onClick={() => setIsOpen(false)}
             aria-label="Close navigation"
           >
@@ -455,17 +455,17 @@ export default function Sidebar({ items, logo, onLogout }: SidebarProps) {
         </nav>
 
         {/* Footer / Logout Button */}
-        <div className="mt-auto border-t border-[#1e2028] pt-3.5">
+        <div className="mt-auto border-t border-nav-border pt-3.5">
           <button
             type="button"
             onClick={onLogout}
             className={cn(
               'group flex w-full min-h-[42px] items-center justify-center gap-2.5 rounded-xl',
-              'border border-[#22242c] bg-[#18191f] shadow-xs',
-              'px-4 py-2 text-xs md:text-sm font-medium text-[#8f94a3]',
+              'border border-nav-border bg-nav-surface shadow-xs',
+              'px-4 py-2 text-xs md:text-sm font-medium text-nav-muted',
               'transition-all duration-150',
               'hover:bg-brand-600 hover:text-white hover:border-brand-600',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[#121316]',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-nav',
             )}
           >
             <svg

@@ -7,7 +7,7 @@ import { ListTheatreAdminAssignmentsUseCase } from '../queries/ListTheatreAdminA
 import { ListEligibleTheatreAdminsUseCase } from '../queries/ListEligibleTheatreAdminsUseCase';
 import { GetTheatreAdminStatsUseCase } from '../queries/GetTheatreAdminStatsUseCase';
 import { Role } from '../../../../shared/enums/Role';
-import { TheatreAdminAssignmentRole } from '@prisma/client';
+import { TheatreAdminAssignmentRole } from '../../domain/enums/TheatreAdminAssignmentRole';
 import { BadRequestError } from '../../../../shared/errors/BadRequestError';
 import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { ConflictError } from '../../../../shared/errors/ConflictError';

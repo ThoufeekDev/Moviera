@@ -1,40 +1,33 @@
 import { z } from 'zod';
 
+const optionalText = (maxChars?: number, maxMessage?: string) => {
+  let schema = z.string().trim();
+  if (maxChars && maxMessage) {
+    schema = schema.max(maxChars, maxMessage);
+  } else if (maxChars) {
+    schema = schema.max(maxChars);
+  }
+  return schema.optional().or(z.literal(''));
+};
+
+const optionalPattern = (regex: RegExp, message: string) =>
+  z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(''))
+    .refine((val) => !val || regex.test(val), message);
+
 export const clientCreateTheatreSchema = z
   .object({
     // Location identifier and resolution fields
-    cityId: z.string().trim().optional().or(z.literal('')),
-    cityName: z
-      .string()
-      .trim()
-      .max(100, 'City name must not exceed 100 characters')
-      .optional()
-      .or(z.literal('')),
-    areaName: z
-      .string()
-      .trim()
-      .max(100, 'Area name must not exceed 100 characters')
-      .optional()
-      .or(z.literal('')),
-    district: z
-      .string()
-      .trim()
-      .max(100, 'District must not exceed 100 characters')
-      .optional()
-      .or(z.literal('')),
-    state: z
-      .string()
-      .trim()
-      .max(100, 'State must not exceed 100 characters')
-      .optional()
-      .or(z.literal('')),
-    country: z
-      .string()
-      .trim()
-      .max(100, 'Country must not exceed 100 characters')
-      .optional()
-      .or(z.literal('')),
-    googlePlaceId: z.string().trim().max(255).optional().or(z.literal('')),
+    cityId: optionalText(),
+    cityName: optionalText(100, 'City name must not exceed 100 characters'),
+    areaName: optionalText(100, 'Area name must not exceed 100 characters'),
+    district: optionalText(100, 'District must not exceed 100 characters'),
+    state: optionalText(100, 'State must not exceed 100 characters'),
+    country: optionalText(100, 'Country must not exceed 100 characters'),
+    googlePlaceId: optionalText(255),
 
     // Core Theatre fields
     name: z
@@ -52,45 +45,20 @@ export const clientCreateTheatreSchema = z
       .max(1000, 'Description must not exceed 1000 characters')
       .optional()
       .or(z.literal('')),
-    email: z
-      .string()
-      .trim()
-      .optional()
-      .or(z.literal(''))
-      .refine(
-        (val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
-        'Please enter a valid email address (e.g. contact@cinema.com)',
-      ),
-    phone: z
-      .string()
-      .trim()
-      .optional()
-      .or(z.literal(''))
-      .refine(
-        (val) => !val || /^(?:\+91)?[6-9]\d{9}$/.test(val),
-        'Phone must be a valid 10-digit Indian number (e.g. 9876543210 or +919876543210)',
-      ),
-    pincode: z
-      .string()
-      .trim()
-      .optional()
-      .or(z.literal(''))
-      .refine(
-        (val) => !val || /^[1-9][0-9]{5}$/.test(val),
-        'Pincode must be exactly 6 digits (e.g. 560001)',
-      ),
-    landmark: z
-      .string()
-      .trim()
-      .max(200, 'Landmark must not exceed 200 characters')
-      .optional()
-      .or(z.literal('')),
-    licenseNumber: z
-      .string()
-      .trim()
-      .max(100, 'Licence number must not exceed 100 characters')
-      .optional()
-      .or(z.literal('')),
+    email: optionalPattern(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      'Please enter a valid email address (e.g. contact@cinema.com)',
+    ),
+    phone: optionalPattern(
+      /^(?:\+91)?[6-9]\d{9}$/,
+      'Phone must be a valid 10-digit Indian number (e.g. 9876543210 or +919876543210)',
+    ),
+    pincode: optionalPattern(
+      /^[1-9][0-9]{5}$/,
+      'Pincode must be exactly 6 digits (e.g. 560001)',
+    ),
+    landmark: optionalText(200, 'Landmark must not exceed 200 characters'),
+    licenseNumber: optionalText(100, 'Licence number must not exceed 100 characters'),
     latitude: z
       .string()
       .trim()

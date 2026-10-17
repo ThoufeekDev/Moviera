@@ -64,9 +64,7 @@ export const superAdminRoutes = (
         <Route path="movies/:movieId/edit" element={<EditMoviePage />} />
         <Route path="theatres" element={<TheatreAdminManagementPage />} />
         <Route path="alltheatres" element={<ManageTheatresPage />} />
-        <Route path="theatres/manage" element={<ManageTheatresPage />} />
         <Route path="theatres/facilities" element={<FacilitiesPage />} />
-        <Route path="facilities" element={<FacilitiesPage />} />
         <Route
           path="theatres/create"
           element={

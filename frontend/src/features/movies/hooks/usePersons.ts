@@ -28,7 +28,8 @@ export const useCreatePerson = () => {
                     ...currentPersons,
                     person,
                 ]
-            )
+            );
+            queryClient.invalidateQueries({ queryKey: ['persons'] });
         }
         
     })

@@ -30,12 +30,14 @@ export default function CreatePersonModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleCreate = async (event?: React.SyntheticEvent) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
     const trimmedName = name.trim();
-    if (!trimmedName) return;
+    if (!trimmedName || createPerson.isPending) return;
 
     try {
       const person = await createPerson.mutateAsync({
@@ -48,9 +50,17 @@ export default function CreatePersonModal({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      handleCreate();
+    }
+  };
+
   return (
     <Modal isOpen={true} onClose={onClose} title="Create New Profile">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
+      <div onKeyDown={handleKeyDown} className="flex flex-col gap-5 pt-2">
         <Input
           id="person-name"
           label="Full Name"
@@ -98,16 +108,17 @@ export default function CreatePersonModal({
           </Button>
 
           <Button
-            type="submit"
+            type="button"
             variant="primary"
             size="md"
             loading={createPerson.isPending}
             disabled={createPerson.isPending || !name.trim()}
+            onClick={() => handleCreate()}
           >
             Create Profile
           </Button>
         </div>
-      </form>
+      </div>
     </Modal>
   );
 }

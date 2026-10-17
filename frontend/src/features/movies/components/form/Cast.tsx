@@ -101,6 +101,9 @@ export default function MovieCast(props: MovieCastProps = {}) {
                       type="text"
                       className="mt-1 h-10 w-full rounded-md border border-border bg-surface px-2.5 text-base md:text-xs text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
                       placeholder="Character Name (e.g. Ranga)"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') e.preventDefault();
+                      }}
                       {...register(`cast.${index}.character`)}
                     />
                   )}
