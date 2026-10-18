@@ -53,7 +53,7 @@ describe('extractPlaceDetailsFromGeocoderResults', () => {
     const mockResults: GoogleGeocoderResult[] = [
       {
         place_id: 'premise-id-1',
-        formatted_address: 'Screen 1, Cinema Complex, Indiranagar',
+        formatted_address: 'Screen 1, Theatre Complex, Indiranagar',
         geometry: {
           location: {
             lat: () => 12.9716,

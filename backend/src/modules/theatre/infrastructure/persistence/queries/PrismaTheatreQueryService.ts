@@ -22,6 +22,7 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         userId: adminId,
         isActive: true,
         theatre: {
+          deletedAt:null,
           isActive: true,
         },
       },
@@ -48,6 +49,7 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         isActive: true,
         theatre: {
           isActive: true,
+          deletedAt:null,
         },
       },
       include: {
@@ -132,7 +134,9 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
     limit?: number;
     page?: number;
   }): Promise<SuperAdminTheatreListItem[]> {
-    const where: any = {};
+    const where: Prisma.TheatreWhereInput = {
+      deletedAt: null,
+    };
 
     if (filter?.search) {
       where.OR = [
@@ -272,8 +276,10 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       andConditions.push({ isActive: false });
     }
 
-    const where: Prisma.TheatreWhereInput =
-      andConditions.length > 0 ? { AND: andConditions } : {};
+    const where: Prisma.TheatreWhereInput = {
+      deletedAt: null,
+      ...(andConditions.length > 0 ?{AND:andConditions}:{})
+    }
 
     const [theatres, total] = await Promise.all([
       this.prisma.theatre.findMany({

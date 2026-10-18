@@ -11,11 +11,11 @@ describe('GetMyTheatresController', () => {
       cityId: 'c-1',
       areaId: 'a-2',
       googlePlaceId:'g-2',
-      name: 'PVR Cinemas',
-      slug: 'pvr-cinemas',
+      name: 'PVR Theatres',
+      slug: 'pvr-theatres',
       address: 'Downtown Street',
       licenseNumber: 'LIC-123',
-      description: 'Cinema hall',
+      description: 'Theatre hall',
       logoUrl: 'https://example.com/logo.jpg',
       logoPublicId: 'logo-1',
       email: 'pvr@example.com',
@@ -60,7 +60,7 @@ describe('GetMyTheatresController', () => {
     expect(response.body.message).toBe('Theatres retrieved successfully');
     const data = response.body.data as Record<string, unknown>[];
     expect(data).toHaveLength(1);
-    expect(data[0].name).toBe('PVR Cinemas');
+    expect(data[0].name).toBe('PVR Theatres');
     expect(mockUseCase.execute).toHaveBeenCalledWith('admin-123');
   });
 

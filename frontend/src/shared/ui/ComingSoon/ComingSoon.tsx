@@ -27,7 +27,7 @@ export default function ComingSoon({
       )}
     >
       <div className="flex w-full flex-col items-center justify-center rounded-lg border border-border bg-surface p-8 sm:p-10 shadow-card">
-        {/* Cinema Reel Icon */}
+        {/* Theatre Reel Icon */}
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 border border-brand-100 text-brand-600">
           <svg
             viewBox="0 0 24 24"

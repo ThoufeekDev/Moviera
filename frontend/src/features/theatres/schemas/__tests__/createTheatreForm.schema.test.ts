@@ -8,7 +8,7 @@ describe('clientCreateTheatreSchema', () => {
   const validMinimalExistingCity = {
     ...defaultCreateTheatreFormValues,
     cityId: 'c123',
-    name: 'PVR Cinema',
+    name: 'PVR Theatre',
     address: '123 Main St',
   };
 
@@ -18,7 +18,7 @@ describe('clientCreateTheatreSchema', () => {
     cityName: 'Bengaluru',
     state: 'Karnataka',
     country: 'India',
-    name: 'PVR Cinema',
+    name: 'PVR Theatre',
     address: '123 Main St',
   };
 
@@ -67,7 +67,7 @@ describe('clientCreateTheatreSchema', () => {
     if (!result.success) {
       const messages = result.error.issues.map((i) => i.message);
       expect(messages).toContain(
-        'Please enter a valid email address (e.g. contact@cinema.com)',
+        'Please enter a valid email address (e.g. contact@theatre.com)',
       );
     }
   });
@@ -142,4 +142,18 @@ describe('clientCreateTheatreSchema', () => {
       expect(messages).toContain('Longitude must be a number between -180 and 180');
     }
   });
+
+  it('validates with facilityIds and defaults facilityIds to empty array in default values', () => {
+    expect(defaultCreateTheatreFormValues.facilityIds).toEqual([]);
+
+    const resultWithFacilities = clientCreateTheatreSchema.safeParse({
+      ...validMinimalExistingCity,
+      facilityIds: ['fac-1', 'fac-2'],
+    });
+    expect(resultWithFacilities.success).toBe(true);
+    if (resultWithFacilities.success) {
+      expect(resultWithFacilities.data.facilityIds).toEqual(['fac-1', 'fac-2']);
+    }
+  });
 });
+

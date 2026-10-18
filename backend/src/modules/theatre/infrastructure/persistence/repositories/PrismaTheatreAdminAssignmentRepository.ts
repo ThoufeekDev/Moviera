@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma,PrismaClient} from '@prisma/client';
 import { TheatreAdminAssignmentRole } from '../../../domain/enums/TheatreAdminAssignmentRole';
 import {
   ITheatreAdminAssignmentRepository,
@@ -173,7 +173,11 @@ export class PrismaTheatreAdminAssignmentRepository implements ITheatreAdminAssi
     isActive?: boolean;
     search?: string;
   }): Promise<TheatreAdminAssignmentDetails[]> {
-    const where: any = {};
+    const where: Prisma.TheatreAdminAssignmentWhereInput = {
+      theatre: {
+         deletedAt:null,
+      }
+    };
 
     if (filter?.theatreId) {
       where.theatreId = filter.theatreId;
@@ -275,15 +279,24 @@ export class PrismaTheatreAdminAssignmentRepository implements ITheatreAdminAssi
 
   async getStatistics(): Promise<TheatreAdminStats> {
     const [
-      totalCinemas,
+      totalTheatres,
       assignedTheatresRaw,
       totalAdmins,
       activeAdmins,
       suspendedAdmins,
       citiesRaw,
     ] = await Promise.all([
-      this.prisma.theatre.count(),
+      this.prisma.theatre.count({
+        where: {
+          deletedAt:null
+        }
+      }),
       this.prisma.theatreAdminAssignment.findMany({
+        where: {
+          theatre: {
+            deletedAt:null,
+          }
+        },
         select: { theatreId: true },
         distinct: ['theatreId'],
       }),
@@ -296,14 +309,14 @@ export class PrismaTheatreAdminAssignmentRepository implements ITheatreAdminAssi
       }),
     ]);
 
-    const assignedCinemas = assignedTheatresRaw.length;
-    const unassignedCinemas = Math.max(0, totalCinemas - assignedCinemas);
+    const assignedTheatres = assignedTheatresRaw.length;
+    const unassignedTheatres = Math.max(0, totalTheatres - assignedTheatres);
     const cities = citiesRaw.map((c) => c.name);
 
     return {
-      totalCinemas,
-      assignedCinemas,
-      unassignedCinemas,
+      totalTheatres,
+      assignedTheatres,
+      unassignedTheatres,
       totalAdmins,
       activeAdmins,
       suspendedAdmins,

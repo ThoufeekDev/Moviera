@@ -96,7 +96,7 @@ function DefaultItemIcon({ label, active }: { label: string; active?: boolean })
       </svg>
     );
   }
-  if (lower.includes('theatre') || lower.includes('screen') || lower.includes('cinema')) {
+  if (lower.includes('theatre') || lower.includes('screen') || lower.includes('theatre')) {
     return (
       <svg
         width="18"

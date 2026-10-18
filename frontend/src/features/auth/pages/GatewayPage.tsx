@@ -12,7 +12,7 @@ export default function GatewayPage() {
             Choose Your Gateway
           </h1>
           <p className="max-w-md text-sm md:text-base text-ink-muted leading-relaxed">
-            Join Moviera to book tickets for the latest movies or partner with us to manage your cinema listings.
+            Join Moviera to book tickets for the latest movies or partner with us to manage your theatre listings.
           </p>
         </header>
 
@@ -83,7 +83,7 @@ export default function GatewayPage() {
               </div>
 
               <h2 className="mb-1 text-base font-medium text-ink group-hover:text-brand-600 transition-colors">
-                Cinema Partner
+                Theatre Partner
               </h2>
               <p className="text-xs md:text-sm text-ink-muted leading-relaxed">
                 List your theater, manage showtimes, screen layouts, and ticket reservations.

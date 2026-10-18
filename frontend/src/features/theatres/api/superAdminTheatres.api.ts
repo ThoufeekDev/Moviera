@@ -62,9 +62,9 @@ export interface SuperAdminAssignmentDetails {
 }
 
 export interface TheatreAdminStatsResponse {
-  totalCinemas: number;
-  assignedCinemas: number;
-  unassignedCinemas: number;
+  totalTheatres: number;
+  assignedTheatres: number;
+  unassignedTheatres: number;
   totalAdmins: number;
   activeAdmins: number;
   suspendedAdmins: number;

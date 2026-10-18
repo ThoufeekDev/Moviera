@@ -89,6 +89,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
     theatreRepository,
     theatreSlugService,
     resolveTheatreLocationService,
+    facilityRepository,
     storageService,
   );
   const createScreenUseCase = new CreateScreenUseCase(

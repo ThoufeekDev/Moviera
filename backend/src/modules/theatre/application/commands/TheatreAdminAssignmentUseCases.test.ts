@@ -417,9 +417,9 @@ describe('Theatre Admin Management Use Cases', () => {
 
     it('should query theatre admin stats', async () => {
       mockAssignmentRepo.getStatistics.mockResolvedValue({
-        totalCinemas: 10,
-        assignedCinemas: 8,
-        unassignedCinemas: 2,
+        totalTheatres: 10,
+        assignedTheatres: 8,
+        unassignedTheatres: 2,
         totalAdmins: 12,
         activeAdmins: 11,
         suspendedAdmins: 1,
@@ -428,9 +428,9 @@ describe('Theatre Admin Management Use Cases', () => {
       const useCase = new GetTheatreAdminStatsUseCase(mockAssignmentRepo);
       const stats = await useCase.execute();
 
-      expect(stats.totalCinemas).toBe(10);
-      expect(stats.assignedCinemas).toBe(8);
-      expect(stats.unassignedCinemas).toBe(2);
+      expect(stats.totalTheatres).toBe(10);
+      expect(stats.assignedTheatres).toBe(8);
+      expect(stats.unassignedTheatres).toBe(2);
     });
   });
 });

@@ -73,7 +73,7 @@ export default function ManageTheatresPage() {
               : 'An unexpected error occurred while fetching theatres from the server.'
           }
           onRetry={() => refetch()}
-          icon="cinema"
+          icon="theatre"
         />
       </div>
     );
@@ -264,7 +264,7 @@ export default function ManageTheatresPage() {
         isOpen={Boolean(createdTheatreName)}
         onClose={() => setCreatedTheatreName(null)}
         title="Theatre Registered Successfully!"
-        description="The cinema theatre has been registered and is now part of the Moviera network."
+        description="The theatre has been registered and is now part of the Moviera network."
         entityName={createdTheatreName ?? undefined}
         entityType="Theatre"
         primaryAction={{

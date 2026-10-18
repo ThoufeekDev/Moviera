@@ -12,7 +12,7 @@ export default function HomePage() {
             Welcome to Moviera
           </h1>
           <p className="text-sm md:text-base text-ink-muted">
-            Book tickets for movies, premier cinema screens, and entertainment.
+            Book tickets for movies, premier theatre screens, and entertainment.
           </p>
         </div>
 
@@ -41,12 +41,12 @@ export default function HomePage() {
 
         <EmptyState
           title="Browse Movies & Showtimes"
-          description="Movies scheduled by theatre administrators will appear here. Cinema partners can list their shows in the partner portal."
+          description="Movies scheduled by theatre administrators will appear here. Theatre partners can list their shows in the partner portal."
           action={
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link to="/theatre-admin/login">
                 <Button variant="secondary" size="md">
-                  Cinema Partner Portal
+                  Theatre Partner Portal
                 </Button>
               </Link>
               <Link to="/register">

@@ -73,8 +73,8 @@ describe('placeToExtractedDetails', () => {
   it('falls back to administrative_area_level_3 when level 2 district is missing', () => {
     const mockPlace: PlaceInstance = {
       id: 'place_no_level2',
-      displayName: 'Town Cinema',
-      formattedAddress: 'Town Cinema, Taluk Region, State, India',
+      displayName: 'Town Theatre',
+      formattedAddress: 'Town Theatre, Taluk Region, State, India',
       addressComponents: [
         { longText: 'Taluk Region', shortText: 'Taluk Region', types: ['administrative_area_level_3'] },
         { longText: 'State Name', shortText: 'SN', types: ['administrative_area_level_1'] },

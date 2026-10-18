@@ -18,7 +18,7 @@ const initialValues: any = {
   genreIds: [],
   certificate: undefined,
   languages: [],
-  cinemaFormatIds: [],
+  theatreFormatIds: [],
   cast: [],
   crew: [],
   trailerUrl: '',
@@ -51,7 +51,7 @@ export default function CreateMoviePage() {
         onSubmit={handleSubmit}
         submitLabel="Publish Movie"
         headerTitle="Create New Movie"
-        headerDescription="Configure cinematic release information, projection formats, media art, and production credits."
+        headerDescription="Configure theatrical release information, projection formats, media art, and production credits."
         backLink={{
           to: '/super-admin/movies',
           label: 'Back to Manage Movies',

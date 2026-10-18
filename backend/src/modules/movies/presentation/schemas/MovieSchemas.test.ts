@@ -13,7 +13,7 @@ describe('Movie Schemas Validation', () => {
       languages: ['lang-1', 'lang-1'],
       primaryGenreId: 'genre-1',
       genreIds: ['genre-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       certification: Certification.UA,
       cast: [],
       crew: [],
@@ -34,7 +34,7 @@ describe('Movie Schemas Validation', () => {
       languages: ['lang-1'],
       primaryGenreId: 'genre-1',
       genreIds: ['genre-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       certification: Certification.UA,
       cast: [
         { personId: 'person-1', character: 'Cobb' },
@@ -60,7 +60,7 @@ describe('Movie Schemas Validation', () => {
       languages: ['lang-1'],
       primaryGenreId: 'genre-1',
       genreIds: ['genre-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       certification: Certification.UA,
       cast: [],
       crew: [],
@@ -92,7 +92,7 @@ describe('Movie Schemas Validation', () => {
       languages: ['lang-1'],
       primaryGenreId: 'genre-1',
       genreIds: ['genre-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       certification: Certification.UA,
       cast: [],
       crew: [],
@@ -126,8 +126,8 @@ describe('Movie Schemas Validation', () => {
     expect(updateValidResult.success).toBe(true);
   });
 
-  // C2: In update schema, genreIds, languageIds, or cinemaFormatIds need at least 1 item when provided
-  it('should require at least 1 item when genreIds, languageIds or cinemaFormatIds are provided in update schema', () => {
+  // C2: In update schema, genreIds, languageIds, or theatreFormatIds need at least 1 item when provided
+  it('should require at least 1 item when genreIds, languageIds or theatreFormatIds are provided in update schema', () => {
     const genreResult = updateMovieSchema.safeParse({ genreIds: [] });
     expect(genreResult.success).toBe(false);
     if (!genreResult.success) {
@@ -142,11 +142,11 @@ describe('Movie Schemas Validation', () => {
       expect(messages).toContain('At least one language is required');
     }
 
-    const formatResult = updateMovieSchema.safeParse({ cinemaFormatIds: [] });
+    const formatResult = updateMovieSchema.safeParse({ theatreFormatIds: [] });
     expect(formatResult.success).toBe(false);
     if (!formatResult.success) {
       const messages = formatResult.error.issues.map((i) => i.message);
-      expect(messages).toContain('At least one cinema format is required');
+      expect(messages).toContain('At least one theatre format is required');
     }
   });
 
@@ -159,7 +159,7 @@ describe('Movie Schemas Validation', () => {
       languages: ['lang-1'],
       primaryGenreId: 'genre-1',
       genreIds: ['genre-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       certification: Certification.UA,
       cast: [],
       crew: [
@@ -199,7 +199,7 @@ describe('Movie Schemas Validation', () => {
       languages: ['lang-1'],
       primaryGenreId: 'genre-1',
       genreIds: ['genre-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       certification: Certification.UA,
       cast: [],
       crew: [],

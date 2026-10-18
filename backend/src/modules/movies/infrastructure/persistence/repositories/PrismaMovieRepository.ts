@@ -11,7 +11,7 @@ export class PrismaMovieRepository implements IMovieRepository {
 
   async create(data: CreateMovieData): Promise<void> {
     try {
-      const { languageIds, genreIds, cinemaFormatIds, cast, crew, ...movieData } = data;
+      const { languageIds, genreIds, theatreFormatIds: cinemaFormatIds, cast, crew, ...movieData } = data;
 
       await this.prisma.$transaction(
         async (tx) => {
@@ -121,7 +121,7 @@ export class PrismaMovieRepository implements IMovieRepository {
 
   async updateMovie(id: string, movie: UpdateMovieData): Promise<void> {
     try {
-      const { languageIds, cinemaFormatIds, genreIds, cast, crew, ...movieData } = movie;
+      const { languageIds, theatreFormatIds: cinemaFormatIds, genreIds, cast, crew, ...movieData } = movie;
 
       await this.prisma.$transaction(
         async (tx) => {

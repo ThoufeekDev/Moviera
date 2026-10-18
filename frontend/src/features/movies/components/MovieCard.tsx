@@ -99,9 +99,9 @@ export default function MovieCard({ movie, onToggleStatus }: MovieCardProps) {
               {durationText}
             </span>
 
-            {movie.cinemaFormats && movie.cinemaFormats.length > 0 && (
+            {movie.theatreFormats && movie.theatreFormats.length > 0 && (
               <div className="flex flex-wrap gap-1">
-                {movie.cinemaFormats.map((fmt) => (
+                {movie.theatreFormats.map((fmt) => (
                   <span key={fmt.id} className="rounded-full border border-border bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-ink-muted">
                     {fmt.name}
                   </span>

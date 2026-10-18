@@ -126,6 +126,17 @@ export const createTheatreSchema = z
         .optional(),
     ),
 
+    facilityIds: z.preprocess(
+      (value) => {
+        if (value === undefined || value === null || value === "") {
+          return[]
+        }
+
+        return Array.isArray(value) ? value : [value];
+      },
+      z.array(z.string().trim().min(1,'Facility ID cannot be empty')).default([]),
+    ),
+
     pincode: z.preprocess(
       emptyToNull,
       z

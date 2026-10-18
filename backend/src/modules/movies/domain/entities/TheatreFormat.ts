@@ -1,4 +1,4 @@
-export class CinemaFormat {
+export class TheatreFormat {
   constructor(
     public readonly id: string,
     public readonly name: string,

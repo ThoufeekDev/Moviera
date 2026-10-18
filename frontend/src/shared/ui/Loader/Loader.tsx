@@ -10,7 +10,7 @@ interface LoaderProps {
 
 export default function Loader({
   text = 'Moviera',
-  subtext = 'Loading cinema experience...',
+  subtext = 'Loading theatre experience...',
   fullScreen = true,
   className,
 }: LoaderProps) {

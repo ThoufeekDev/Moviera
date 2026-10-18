@@ -53,7 +53,7 @@ describe('CreateMovieUseCase', () => {
       genreIds: ['genre-1'],
       certification: Certification.UA,
       languageIds: ['lang-1'],
-      cinemaFormatIds: ['format-1'],
+      theatreFormatIds: ['format-1'],
       cast: [],
       crew: [],
     };

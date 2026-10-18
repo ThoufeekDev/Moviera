@@ -41,7 +41,7 @@ export function GooglePlacesSearch({
   selectedPlaceId,
   selectedAddress,
   disabled = false,
-  label = 'Search Place, Cinema, or Address *',
+  label = 'Search Place, Theatre, or Address *',
 }: GooglePlacesSearchProps) {
   const apiKey = env.googleMapsApiKey;
   const containerRef = useRef<HTMLDivElement>(null);

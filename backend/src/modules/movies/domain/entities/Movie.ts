@@ -1,6 +1,6 @@
 import { Language } from './Language';
 import { Genre } from './Genre';
-import { CinemaFormat } from './CinemaFormat';
+import { TheatreFormat } from './TheatreFormat';
 import { Certification } from '../enums/Certification';
 import { CastMember } from '../value-objects/CastMember';
 import { CrewMember } from '../value-objects/CrewMember';
@@ -17,7 +17,7 @@ export class Movie {
     public readonly primaryGenre: Genre,
     public readonly genres:Genre[],
     public readonly certification: Certification,
-    public readonly cinemaFormats:CinemaFormat[],
+    public readonly theatreFormats:TheatreFormat[],
     public readonly poster: ImageRef | null,
     public readonly backdrop: ImageRef | null,
     public readonly trailerUrl: string | null,

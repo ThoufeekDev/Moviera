@@ -17,7 +17,7 @@ export interface CreateMovieDTO {
   primaryGenreId: string;
   genreIds: string[];
   certification: Certification;
-  cinemaFormatIds: string[];
+  theatreFormatIds: string[];
   trailerUrl?: string;
   posterFile?: {
     buffer: Buffer;

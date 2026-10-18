@@ -129,7 +129,7 @@ export default function FacilityModal({
       description={
         isEditing
           ? 'Update the master configuration, icon, or description for this facility.'
-          : 'Define a new theatre facility that multiplexes and cinema halls can feature.'
+          : 'Define a new theatre facility that multiplexes and theatre halls can feature.'
       }
       size="lg"
     >
@@ -198,7 +198,7 @@ export default function FacilityModal({
                 });
               }
             }}
-            placeholder="Brief explanation of what this facility provides to cinema visitors..."
+            placeholder="Brief explanation of what this facility provides to theatre visitors..."
             disabled={isSubmitting}
             maxLength={300}
             error={fieldErrors.description}

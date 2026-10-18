@@ -20,7 +20,7 @@ export interface UpdateMovieData {
 
   languageIds?: string[];
 
-  cinemaFormatIds?: string[];
+  theatreFormatIds?: string[];
 
   cast?: {
     personId: string;

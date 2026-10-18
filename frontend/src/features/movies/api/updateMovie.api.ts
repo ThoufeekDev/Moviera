@@ -14,7 +14,7 @@ export const updateMovie = async (id: string, data: UpdateMovieFormData) => {
 }
   if (data.certificate) formData.append('certification', data.certificate);
   if (data.languages) formData.append('languages', JSON.stringify(data.languages));
-  if (data.cinemaFormatIds) formData.append('cinemaFormatIds', JSON.stringify(data.cinemaFormatIds));
+  if (data.theatreFormatIds) formData.append('theatreFormatIds', JSON.stringify(data.theatreFormatIds));
   if (data.cast) formData.append('cast', JSON.stringify(data.cast));
   if (data.crew) formData.append('crew', JSON.stringify(data.crew));
   if (data.poster) formData.append('poster', data.poster);

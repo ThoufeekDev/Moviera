@@ -1,6 +1,6 @@
 import { Controller, useFormContext, type FieldErrors, type Control } from 'react-hook-form';
 import { useLanguages } from '../../hooks/useLanguages';
-import { useCinemaFormats } from '../../hooks/useCinemaFormats';
+import { useTheatreFormats } from '../../hooks/useTheatreFormats';
 import { FormSection } from '@/shared/ui/FormSection';
 import { ChipSelect } from '@/shared/ui/ChipSelect';
 
@@ -15,7 +15,7 @@ export default function MovieLanguages(props: MovieLanguagesProps = {}) {
   const errors = props.errors ?? context?.formState?.errors ?? {};
 
   const { data: languages = [] } = useLanguages();
-  const { data: cinemaFormats = [] } = useCinemaFormats();
+  const { data: theatreFormats = [] } = useTheatreFormats();
 
   const getErrorString = (err?: any): string | null => {
     if (!err) return null;
@@ -24,9 +24,9 @@ export default function MovieLanguages(props: MovieLanguagesProps = {}) {
   };
 
   const langErr = getErrorString(errors?.languages);
-  const formatErr = getErrorString(errors?.cinemaFormatIds);
+  const formatErr = getErrorString(errors?.theatreFormatIds);
 
-  const cinemaFormatOptions = cinemaFormats.map((f) => ({
+  const theatreFormatOptions = theatreFormats.map((f) => ({
     value: f.id,
     label: f.name,
   }));
@@ -93,16 +93,16 @@ export default function MovieLanguages(props: MovieLanguagesProps = {}) {
       {/* Screen Formats */}
       <div className="mt-8 border-t border-border pt-6">
         <div className="mb-3 text-sm font-semibold text-ink">
-          🎬 Cinema Formats
+          🎬 Theatre Formats
         </div>
 
         {control && (
           <Controller
-            name="cinemaFormatIds"
+            name="theatreFormatIds"
             control={control}
             render={({ field }) => (
               <ChipSelect
-                options={cinemaFormatOptions}
+                options={theatreFormatOptions}
                 value={field.value ?? []}
                 multiple
                 activeVariant="solid"

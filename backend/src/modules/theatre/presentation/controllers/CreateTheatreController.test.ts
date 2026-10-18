@@ -28,6 +28,7 @@ describe('CreateTheatreController', () => {
         name: 'INOX Garuda',
         address: 'Magrath Road',
         isActive: true,
+        facilityIds: [],
       },
       user: {
         userId: 'admin-super-1',
@@ -43,6 +44,7 @@ describe('CreateTheatreController', () => {
       name: 'INOX Garuda',
       address: 'Magrath Road',
       isActive: true,
+      facilityIds: [],
       createdById: 'admin-super-1',
       logoFile: { buffer: fakeLogoBuffer },
     });
@@ -66,6 +68,7 @@ describe('CreateTheatreController', () => {
           name: 'INOX',
           address: 'Road',
           isActive: true,
+          facilityIds: [],
         },
       }),
     ).rejects.toThrow(UnauthorizedError);

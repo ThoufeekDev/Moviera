@@ -115,7 +115,7 @@ export default function SuperAdminTheatreCard({
 
       {/* ── Overlapping Avatar & Header Metadata ──────────────────────────── */}
       <div className="-mt-9 px-5 flex items-end justify-between relative z-10">
-        {/* Cinema Logo / Monogram Frame */}
+        {/* Theatre Logo / Monogram Frame */}
         <div className="h-16 w-16 sm:h-18 sm:w-18 rounded-2xl border-2 border-surface bg-surface shadow-md overflow-hidden flex items-center justify-center shrink-0 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
           {theatre.logoUrl && !imgError ? (
             <img
@@ -144,7 +144,7 @@ export default function SuperAdminTheatreCard({
       {/* ── Card Content Body ─────────────────────────────────────────────── */}
       <div className="flex flex-1 flex-col justify-between p-5 pt-3">
         <div className="space-y-3.5">
-          {/* Cinema Name & Location */}
+          {/* Theatre Name & Location */}
           <div>
             <h3
               className="text-base font-bold text-ink transition-colors group-hover:text-brand-600 line-clamp-1"

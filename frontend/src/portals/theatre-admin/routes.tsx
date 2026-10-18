@@ -62,7 +62,7 @@ export const theatreAdminRoutes = (
           element={
             <ComingSoon
               title="Settings"
-              description="Cinema settings features are coming soon."
+              description="Theatre settings features are coming soon."
               backTo="/theatre-admin"
               backLabel="Back to Dashboard"
             />

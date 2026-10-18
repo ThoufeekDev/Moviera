@@ -21,6 +21,7 @@ export interface CreateTheatrePayload {
   latitude?: number | null;
   longitude?: number | null;
   isActive?: boolean;
+  facilityIds?: string[];
   logo?: File | null;
 }
 
@@ -118,6 +119,11 @@ export const createTheatreApi = async (
 
   if (payload.isActive !== undefined) {
     formData.append('isActive', String(payload.isActive));
+  }
+  if (payload.facilityIds && payload.facilityIds.length > 0) {
+    for (const facilityId of payload.facilityIds) {
+      formData.append('facilityIds', facilityId);
+    }
   }
   if (payload.logo) {
     formData.append('logo', payload.logo);

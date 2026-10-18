@@ -21,10 +21,10 @@ export const TheatreAdminKPIs = ({
       aria-label="Overview statistics"
       className="grid grid-cols-2 gap-4 lg:grid-cols-4"
     >
-      {/* Total Cinemas */}
+      {/* Total Theatres */}
       <div className="rounded-lg border border-border bg-surface p-5 shadow-card flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-ink-muted">Total Cinemas</span>
+          <span className="text-xs font-medium text-ink-muted">Total Theatres</span>
           <span className="rounded-md bg-brand-50 border border-brand-100 p-2 text-brand-600">
             <Building2 size={16} />
           </span>
@@ -36,7 +36,7 @@ export const TheatreAdminKPIs = ({
           <p className="mt-1 text-xs text-ink-muted">
             {totalTheatresCount > 0
               ? `Across ${Math.max(1, citiesCount)} major cities`
-              : 'No cinemas listed'}
+              : 'No theatres listed'}
           </p>
         </div>
       </div>
@@ -56,7 +56,7 @@ export const TheatreAdminKPIs = ({
               {activeAdminsCount} active
             </span>
           </div>
-          <p className="mt-1 text-xs text-ink-muted">Authorized cinema operators</p>
+          <p className="mt-1 text-xs text-ink-muted">Authorized theatre operators</p>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export const TheatreAdminKPIs = ({
               </span>
             )}
           </div>
-          <p className="mt-1 text-xs text-ink-muted">Cinemas without a manager</p>
+          <p className="mt-1 text-xs text-ink-muted">Theatres without a manager</p>
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { Movie } from '../../../domain/entities/Movie';
 import { LanguageMapper } from './LanguageMapper';
 import { GenreMapper } from './GenreMapper';
-import { CinemaFormatMapper } from './CinemaFormatMapper';
+import { TheatreFormatMapper } from './TheatreFormatMapper';
 import { CastMember } from '../../../domain/value-objects/CastMember';
 import { CrewMember } from '../../../domain/value-objects/CrewMember';
 import { Certification } from '../../../domain/enums/Certification';
@@ -52,7 +52,7 @@ export class MovieMapper {
     );
 
     const cinemaFormats = movie.cinemaFormats.map((movieCinemaFormat) =>
-      CinemaFormatMapper.toDomain(movieCinemaFormat.cinemaFormat),
+      TheatreFormatMapper.toDomain(movieCinemaFormat.cinemaFormat),
     );
 
     const cast = movie.cast.map((movieCast) =>

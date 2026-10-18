@@ -1,8 +1,8 @@
-import type { Genre, Language, CinemaFormat } from './referenceData.types';
+import type { Genre, Language, TheatreFormat } from './referenceData.types';
 
 export type MovieLanguage = Language;
 export type MovieGenre = Genre;
-export type MovieCinemaFormat = CinemaFormat;
+export type MovieTheatreFormat = TheatreFormat;
 
 export interface MovieCastMember {
   id: string;
@@ -31,7 +31,7 @@ export interface Movie {
   primaryGenre: MovieGenre;
   genres:MovieGenre[],
   certification: string;
-  cinemaFormats: MovieCinemaFormat[];
+  theatreFormats: MovieTheatreFormat[];
   posterUrl: string | null;
   backdropUrl: string | null;
   trailerUrl: string | null;

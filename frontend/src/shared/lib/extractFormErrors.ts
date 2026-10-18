@@ -138,7 +138,7 @@ export const extractFormErrors = (
       ) {
         result.fieldErrors.email = result.generalMessage;
         result.fieldErrors.userId = result.generalMessage;
-      } else if (lower.includes('theatre') || lower.includes('cinema')) {
+      } else if (lower.includes('theatre') || lower.includes('theatre')) {
         result.fieldErrors.theatreId = result.generalMessage;
       } else if (lower.includes('phone')) {
         result.fieldErrors.phone = result.generalMessage;

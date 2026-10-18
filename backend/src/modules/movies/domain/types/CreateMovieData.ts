@@ -16,7 +16,7 @@ export interface CreateMovieData {
   isActive: boolean;
 
   languageIds: string[];
-  cinemaFormatIds: string[];
+  theatreFormatIds: string[];
   certification: Certification;
 
   cast: {

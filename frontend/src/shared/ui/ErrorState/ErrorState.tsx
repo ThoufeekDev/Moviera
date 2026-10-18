@@ -6,11 +6,11 @@ export interface ErrorStateProps {
   message?: string;
   onRetry?: () => void;
   retryText?: string;
-  icon?: 'cinema' | 'network' | 'server' | 'notfound';
+  icon?: 'theatre' | 'network' | 'server' | 'notfound';
   className?: string;
 }
 
-function ErrorIcon({ type }: { type: 'cinema' | 'network' | 'server' | 'notfound' }) {
+function ErrorIcon({ type }: { type: 'theatre' | 'network' | 'server' | 'notfound' }) {
   if (type === 'network') {
     return (
       <svg className="h-8 w-8 text-danger-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -58,7 +58,7 @@ export default function ErrorState({
   message = "We couldn't load the requested data. Please try again.",
   onRetry,
   retryText = 'Try Again',
-  icon = 'cinema',
+  icon = 'theatre',
   className,
 }: ErrorStateProps) {
   return (

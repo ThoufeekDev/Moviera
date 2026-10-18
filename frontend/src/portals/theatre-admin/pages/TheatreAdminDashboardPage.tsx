@@ -9,7 +9,7 @@ function TheatreAdminDashboardPage() {
           Theatre Admin Dashboard
         </h1>
         <p className="text-xs md:text-sm text-ink-muted">
-          Manage your theatre screens, facilities, and cinema operations.
+          Manage your theatre screens, facilities, and theatre operations.
         </p>
       </header>
 

@@ -86,7 +86,7 @@ export default function TheatreAdminManagementPage() {
     return rawTheatres.map((t) => ({
       id: t.id,
       name: t.name,
-      chain: t.name.split(' ')[0] || 'Cinema',
+      chain: t.name.split(' ')[0] || 'Theatre',
       city: t.city?.name || 'Unknown',
       location: t.address,
       screensCount: t.screensCount ?? 0,
@@ -160,9 +160,9 @@ export default function TheatreAdminManagementPage() {
   }, [admins, selectedTheatre]);
 
   // Global KPIs from backend stats query
-  const totalTheatresCount = statsData ? statsData.totalCinemas : theatres.length;
-  const assignedTheatresCount = statsData ? statsData.assignedCinemas : 0;
-  const unassignedTheatresCount = statsData ? statsData.unassignedCinemas : 0;
+  const totalTheatresCount = statsData ? statsData.totalTheatres : theatres.length;
+  const assignedTheatresCount = statsData ? statsData.assignedTheatres : 0;
+  const unassignedTheatresCount = statsData ? statsData.unassignedTheatres : 0;
   const totalAdminsCount = statsData ? statsData.totalAdmins : admins.length;
   const activeAdminsCount = statsData
     ? statsData.activeAdmins
@@ -210,7 +210,7 @@ export default function TheatreAdminManagementPage() {
       const newAct: ActivityItem = {
         id: `act-${Date.now()}`,
         adminName: currentAdmin.name,
-        theatreName: theatre?.name ?? 'Cinema',
+        theatreName: theatre?.name ?? 'Theatre',
         action: `Status toggled to ${nextState ? 'Active' : 'Suspended'}`,
         type: 'STATUS_CHANGE',
         timestamp: 'Just now',
@@ -299,7 +299,7 @@ export default function TheatreAdminManagementPage() {
             Theatre Admin Management
           </h1>
           <p className="text-xs sm:text-sm text-ink-muted leading-relaxed max-w-2xl">
-            Manage theatre access, assign administrators, and control who operates each cinema on
+            Manage theatre access, assign administrators, and control who operates each theatre on
             the Moviera platform.
           </p>
         </div>
@@ -331,7 +331,7 @@ export default function TheatreAdminManagementPage() {
               }`}
             >
               <Building2 size={13} />
-              <span>By Cinema</span>
+              <span>By Theatre</span>
             </button>
             <button
               type="button"
@@ -392,7 +392,7 @@ export default function TheatreAdminManagementPage() {
           <RefreshCw size={32} className="animate-spin text-brand-600 mb-3" />
           <h3 className="text-base font-bold text-ink">Loading Theatre Management</h3>
           <p className="text-xs text-ink-muted mt-1">
-            Fetching cinemas and assigned administrators from backend...
+            Fetching theatres and assigned administrators from backend...
           </p>
         </div>
       ) : theatresError ? (
@@ -420,7 +420,7 @@ export default function TheatreAdminManagementPage() {
             totalTheatresCount={theatres.length}
           />
 
-          {/* Right Column: Selected Cinema Command Workspace */}
+          {/* Right Column: Selected Theatre Command Workspace */}
           <TheatreDetailWorkspace
             selectedTheatre={selectedTheatre}
             theatreAdmins={currentTheatreAdmins}

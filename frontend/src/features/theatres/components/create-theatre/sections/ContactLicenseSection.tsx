@@ -23,7 +23,7 @@ export const ContactLicenseSection = memo(function ContactLicenseSection({ disab
           id="theatre-email"
           type="email"
           label="Contact Email"
-          placeholder="e.g. help@pvrcinemas.com"
+          placeholder="e.g. help@pvrtheatres.com"
           disabled={disabled}
           error={errors.email}
           {...register('email')}

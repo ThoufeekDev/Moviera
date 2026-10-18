@@ -29,7 +29,7 @@ export const TheatreAdminRevokeModal = ({
   const handleConfirmRevoke = async () => {
     try {
       await revokeMutation.mutateAsync(adminToRevoke.id);
-      onRevokeSuccess(adminToRevoke.name, targetTheatre?.name || 'Cinema');
+      onRevokeSuccess(adminToRevoke.name, targetTheatre?.name || 'Theatre');
       onClose();
     } catch (err: unknown) {
       const { generalMessage } = extractFormErrors(
@@ -63,11 +63,11 @@ export const TheatreAdminRevokeModal = ({
             <p className="text-ink-muted text-[11px]">{adminToRevoke.email}</p>
             <p className="text-[11px] text-brand-600 flex items-center gap-1 mt-1">
               <Building2 size={12} />
-              {targetTheatre?.name || 'Assigned Cinema'}
+              {targetTheatre?.name || 'Assigned Theatre'}
             </p>
           </div>
           <p className="text-rose-700 text-[11px] leading-relaxed">
-            This operator will immediately lose access to manage screens, schedules, seat layouts, and box office controls for this cinema.
+            This operator will immediately lose access to manage screens, schedules, seat layouts, and box office controls for this theatre.
           </p>
         </div>
 

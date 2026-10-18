@@ -44,11 +44,11 @@ export const TheatreDetailWorkspace = ({
       <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
         <div className="flex min-h-[380px] flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface p-8 text-center shadow-card">
           <Building2 size={36} className="text-ink-muted mb-3" />
-          <h3 className="text-base font-bold text-ink">No Cinema Selected</h3>
+          <h3 className="text-base font-bold text-ink">No Theatre Selected</h3>
           <p className="text-xs text-ink-muted mt-1 max-w-sm">
             {totalTheatresCount === 0
-              ? 'No cinemas exist in the system yet. Once theatres are added, you can assign administrators to manage them here.'
-              : 'Select a cinema from the directory on the left to view and manage its assigned administrators.'}
+              ? 'No theatres exist in the system yet. Once theatres are added, you can assign administrators to manage them here.'
+              : 'Select a theatre from the directory on the left to view and manage its assigned administrators.'}
           </p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export const TheatreDetailWorkspace = ({
 
   return (
     <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
-      {/* Active Cinema Detail Banner */}
+      {/* Active Theatre Detail Banner */}
       <div className="rounded-lg border border-border bg-surface p-5 sm:p-6 shadow-card">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1.5">
@@ -120,7 +120,7 @@ export const TheatreDetailWorkspace = ({
               Assigned Administrators ({theatreAdmins.length})
             </h3>
             <p className="text-xs text-ink-muted mt-0.5">
-              Authorized staff members who manage screens, showtimes, and cinema operations.
+              Authorized staff members who manage screens, showtimes, and theatre operations.
             </p>
           </div>
 
@@ -144,7 +144,7 @@ export const TheatreDetailWorkspace = ({
 
               <p className="mt-2 max-w-md text-xs sm:text-sm leading-relaxed text-ink-muted">
                 <strong className="text-ink">{selectedTheatre.name}</strong> currently operates
-                without an assigned manager. Assign an administrator to grant access to cinema
+                without an assigned manager. Assign an administrator to grant access to theatre
                 operations.
               </p>
 

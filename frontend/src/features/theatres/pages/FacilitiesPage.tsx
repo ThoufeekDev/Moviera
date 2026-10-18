@@ -287,7 +287,7 @@ export default function FacilitiesPage() {
         description={
           successInfo?.isEditing
             ? 'The facility configuration has been updated and applied across all theatre profiles.'
-            : 'The new theatre facility has been created and is now available for cinema theatres to feature.'
+            : 'The new theatre facility has been created and is now available for theatres to feature.'
         }
         entityName={successInfo?.name}
         entityType="Facility"

@@ -36,7 +36,7 @@ export const TheatreAdminFilterBar = ({
           onChange={onSearchChange}
           onSearch={onSearchChange}
           showButton={false}
-          placeholder="Search by cinema name, location, or chain..."
+          placeholder="Search by theatre name, location, or chain..."
           className="flex-1"
           inputClassName="h-10 bg-surface-muted/50 text-xs sm:text-sm py-2 pl-9"
         />
@@ -70,7 +70,7 @@ export const TheatreAdminFilterBar = ({
         variant="segmented"
         value={statusFilter}
         onChange={onStatusFilterChange}
-        ariaLabel="Filter cinemas by assignment status"
+        ariaLabel="Filter theatres by assignment status"
         className="self-start sm:self-auto"
         options={[
           {

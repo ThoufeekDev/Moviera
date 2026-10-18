@@ -160,7 +160,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <div className="md:col-span-2 flex flex-col gap-3">
               <MovieraLogo size="md" variant="light" />
               <p className="max-w-sm text-xs md:text-sm text-nav-ink/70 leading-relaxed">
-                Moviera is your premier movie ticket booking and cinema management platform. Discover the latest releases, showtimes, and theatre venues.
+                Moviera is your premier movie ticket booking and theatre management platform. Discover the latest releases, showtimes, and theatre venues.
               </p>
             </div>
 
@@ -191,7 +191,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             {/* Col 3: Partners & Admins */}
             <div className="flex flex-col gap-2.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-nav-ink">
-                Cinema Partners
+                Theatre Partners
               </h4>
               <ul className="flex flex-col gap-2 text-xs md:text-sm text-nav-ink/75">
                 <li>

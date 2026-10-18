@@ -49,7 +49,7 @@ export class CreateMovieUseCase
       isActive: true,
 
       languageIds: data.languageIds,
-      cinemaFormatIds: data.cinemaFormatIds,
+      theatreFormatIds: data.theatreFormatIds,
 
       cast: data.cast,
       crew: data.crew,

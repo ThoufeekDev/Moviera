@@ -136,7 +136,7 @@ export default function MovieDetailsPage() {
                 aria-hidden="true"
               />
               <span className={movie.isActive ? 'text-emerald-300' : 'text-rose-300'}>
-                {movie.isActive ? 'In Cinemas / Active' : 'Inactive'}
+                {movie.isActive ? 'In Theatres / Active' : 'Inactive'}
               </span>
             </div>
           </div>
@@ -167,10 +167,10 @@ export default function MovieDetailsPage() {
 
             {/* Languages & Formats Chips */}
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs">
-              {movie.cinemaFormats && movie.cinemaFormats.length > 0 && (
+              {movie.theatreFormats && movie.theatreFormats.length > 0 && (
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="font-semibold text-white/70">Formats:</span>
-                  {movie.cinemaFormats.map((fmt) => (
+                  {movie.theatreFormats.map((fmt) => (
                     <span key={fmt.id} className="rounded-full bg-white/10 border border-white/10 px-2.5 py-0.5 text-white/90">
                       {fmt.name}
                     </span>

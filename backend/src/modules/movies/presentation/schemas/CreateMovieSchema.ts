@@ -74,10 +74,10 @@ export const createMovieSchema = z.preprocess(
 
     certification: z.enum(Certification),
 
-    cinemaFormatIds: jsonArray(
-      uniqueIds('Duplicate cinema format IDs are not allowed').refine(
+    theatreFormatIds: jsonArray(
+      uniqueIds('Duplicate theatre format IDs are not allowed').refine(
         (ids) => ids.length > 0,
-        'At least one cinema format is required',
+        'At least one theatre format is required',
       ),
     ),
 

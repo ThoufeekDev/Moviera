@@ -91,7 +91,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           <div className="relative z-10 flex w-full max-w-2xl flex-col items-center">
             {/* Moviera Brand Header */}
             <div className="mb-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between w-full px-2">
-              <MovieraLogo size="md" showText={true} subtitle="Cinema Engine" />
+              <MovieraLogo size="md" showText={true} subtitle="Theatre Engine" />
               <div className="inline-flex items-center gap-2 rounded-full border border-danger-600/30 bg-danger-600/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-danger-600">
                 <span className="h-2 w-2 rounded-full bg-danger-600 animate-pulse" aria-hidden="true" />
                 <span>SCENE INTERRUPTED • 500</span>
@@ -100,7 +100,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
             {/* Main Error Card */}
             <div className="w-full rounded-lg border border-border bg-surface p-6 shadow-float sm:p-10">
-              {/* Cinematic Animated Film Reel Emblem */}
+              {/* Theatretic Animated Film Reel Emblem */}
               <div className="relative mx-auto mb-6 flex h-24 w-24 items-center justify-center">
                 <div className="absolute inset-0 rounded-full bg-brand-500/20 blur-xl animate-pulse" />
                 <svg
@@ -130,7 +130,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                   Cut! We Hit an Unexpected Snag
                 </h1>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  The reel encountered a sudden technical glitch while executing this scene. Don&apos;t worry, your session data and cinema preferences are safe.
+                  The reel encountered a sudden technical glitch while executing this scene. Don&apos;t worry, your session data and theatre preferences are safe.
                 </p>
               </div>
 
@@ -234,7 +234,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
             {/* Footer Brand Note */}
             <div className="mt-6 text-xs text-ink-muted">
-              <span>Powered by Moviera Cinema Engine</span>
+              <span>Powered by Moviera Theatre Engine</span>
             </div>
           </div>
         </div>

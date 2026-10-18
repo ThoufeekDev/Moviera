@@ -3,7 +3,7 @@ import { UpdateMovieDTO } from "../dtos/UpdateMovieDTO";
 import { Movie } from "../../domain/entities/Movie";
 import { IGenreRepository } from "../../domain/repositories/IGenreRepository";
 import { ILanguageRepository } from "../../domain/repositories/ILanguageRepository";
-import { ICinemaFormatRepository } from "../../domain/repositories/ICinemaFormatRepository";
+import { ITheatreFormatRepository } from "../../domain/repositories/ITheatreFormatRepository";
 import { IPersonRepository } from "../../domain/repositories/IPersonRepository";
 import { BadRequestError } from "../../../../shared/errors/BadRequestError";
 
@@ -11,7 +11,7 @@ export class MovieReferenceValidator {
   constructor(
     private readonly genreRepository: IGenreRepository,
     private readonly languageRepository: ILanguageRepository,
-    private readonly cinemaFormatRepository: ICinemaFormatRepository,
+    private readonly theatreFormatRepository: ITheatreFormatRepository,
     private readonly personRepository: IPersonRepository,
   ) {}
 
@@ -23,10 +23,10 @@ export class MovieReferenceValidator {
 
     const uniquePersonIds = [...new Set(personIds)];
 
-    const [genres, languages, cinemaFormats, persons] = await Promise.all([
+    const [genres, languages, theatreFormats, persons] = await Promise.all([
       this.genreRepository.findByIds(movie.genreIds),
       this.languageRepository.findByIds(movie.languageIds),
-      this.cinemaFormatRepository.findByIds(movie.cinemaFormatIds),
+      this.theatreFormatRepository.findByIds(movie.theatreFormatIds),
       uniquePersonIds.length > 0
         ? this.personRepository.findByIds(uniquePersonIds)
         : Promise.resolve([]),
@@ -44,8 +44,8 @@ export class MovieReferenceValidator {
       throw new BadRequestError('One or more languages are invalid');
     }
 
-    if (cinemaFormats.length !== movie.cinemaFormatIds.length) {
-      throw new BadRequestError('One or more cinema formats are invalid or inactive');
+    if (theatreFormats.length !== movie.theatreFormatIds.length) {
+      throw new BadRequestError('One or more theatre formats are invalid or inactive');
     }
 
     if (persons.length !== uniquePersonIds.length) {
@@ -81,13 +81,13 @@ export class MovieReferenceValidator {
 
     const uniquePersonIds = [...new Set(personIds)];
 
-    const [languages, cinemaFormats, persons] = await Promise.all([
+    const [languages, theatreFormats, persons] = await Promise.all([
       movie.languageIds
         ? this.languageRepository.findByIds(movie.languageIds)
         : Promise.resolve([]),
 
-      movie.cinemaFormatIds
-        ? this.cinemaFormatRepository.findByIds(movie.cinemaFormatIds)
+      movie.theatreFormatIds
+        ? this.theatreFormatRepository.findByIds(movie.theatreFormatIds)
         : Promise.resolve([]),
 
       uniquePersonIds.length > 0
@@ -99,8 +99,8 @@ export class MovieReferenceValidator {
       throw new BadRequestError('One or more languages are invalid');
     }
 
-    if (movie.cinemaFormatIds && cinemaFormats.length !== movie.cinemaFormatIds.length) {
-      throw new BadRequestError('One or more cinema formats are invalid or inactive');
+    if (movie.theatreFormatIds && theatreFormats.length !== movie.theatreFormatIds.length) {
+      throw new BadRequestError('One or more theatre formats are invalid or inactive');
     }
 
     if (uniquePersonIds.length > 0 && persons.length !== uniquePersonIds.length) {

@@ -5,6 +5,7 @@ import { useCreateTheatreForm } from '../../hooks/useCreateTheatreForm';
 import { BasicInfoSection } from './sections/BasicInfoSection';
 import { LocationSection } from './sections/LocationSection';
 import { ContactLicenseSection } from './sections/ContactLicenseSection';
+import { FacilitiesSection } from './sections/FacilitiesSection';
 import { MediaStatusSection } from './sections/MediaStatusSection';
 
 export interface CreateTheatreModalProps {
@@ -41,7 +42,7 @@ export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatre
       isOpen={isOpen}
       onClose={isPending ? () => {} : handleClose}
       title="Create New Theatre"
-      description="Register a new cinema multiplex or single screen theatre."
+      description="Register a new theatre multiplex or single screen theatre."
       size="xl"
     >
       <FormProvider {...form}>
@@ -81,7 +82,10 @@ export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatre
           {/* Section 3: Contact & Legal Details */}
           <ContactLicenseSection disabled={isPending} />
 
-          {/* Section 4: Branding & Operational Status */}
+          {/* Section 4: Facilities & Amenities */}
+          <FacilitiesSection disabled={isPending} />
+
+          {/* Section 5: Branding & Operational Status */}
           <MediaStatusSection
             disabled={isPending}
             logoError={logoError}

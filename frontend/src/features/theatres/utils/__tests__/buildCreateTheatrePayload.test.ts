@@ -120,12 +120,12 @@ describe('buildCreateTheatrePayload', () => {
       {
         ...baseValues,
         cityId: 'city-123',
-        email: '  Help@PVRcinemas.COM  ',
+        email: '  Help@PVRtheatres.COM  ',
       },
       { logoFile: null, locationMode: 'manual' },
     );
 
-    expect(payload.email).toBe('help@pvrcinemas.com');
+    expect(payload.email).toBe('help@pvrtheatres.com');
   });
 
   it('includes googlePlaceId only when locationMode is google', () => {
@@ -162,4 +162,31 @@ describe('buildCreateTheatrePayload', () => {
 
     expect(payload.logo).toBe(mockFile);
   });
+
+  it('includes facilityIds in payload when selected', () => {
+    const payload = buildCreateTheatrePayload(
+      {
+        ...baseValues,
+        cityId: 'city-123',
+        facilityIds: ['fac-1', 'fac-2', 'fac-3'],
+      },
+      { logoFile: null, locationMode: 'manual' },
+    );
+
+    expect(payload.facilityIds).toEqual(['fac-1', 'fac-2', 'fac-3']);
+  });
+
+  it('defaults facilityIds to empty array when none selected', () => {
+    const payload = buildCreateTheatrePayload(
+      {
+        ...baseValues,
+        cityId: 'city-123',
+        facilityIds: [],
+      },
+      { logoFile: null, locationMode: 'manual' },
+    );
+
+    expect(payload.facilityIds).toEqual([]);
+  });
 });
+

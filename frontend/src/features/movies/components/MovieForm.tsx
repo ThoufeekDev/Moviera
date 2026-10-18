@@ -28,7 +28,7 @@ export const movieFormSteps = [
   {
     id: 1,
     title: 'Languages & Formats',
-    fields: ['languages', 'cinemaFormatIds'] as const,
+    fields: ['languages', 'theatreFormatIds'] as const,
   },
   {
     id: 2,

@@ -11,6 +11,7 @@ export class PrismaTheatreRepository implements ITheatreRepository {
     const theatre = await this.prisma.theatre.findUnique({
       where: {
         id,
+        deletedAt:null,
       },
     });
 
@@ -25,6 +26,7 @@ export class PrismaTheatreRepository implements ITheatreRepository {
         isActive: true,
         theatre: {
           isActive: true,
+          deletedAt:null,
         },
       },
       include: {
@@ -85,8 +87,10 @@ export class PrismaTheatreRepository implements ITheatreRepository {
     return count > 0;
   }
 
-async create(theatre: Theatre): Promise<Theatre> {
-  const created = await this.prisma.theatre.create({
+  async create(theatre: Theatre, facilityIds: string[] = []): Promise<Theatre> {
+  
+    return this.prisma.$transaction(async (tx) => {
+       const created = await tx.theatre.create({
     data: {
       ...(theatre.id ? { id: theatre.id } : {}),
       cityId: theatre.cityId,
@@ -111,6 +115,18 @@ async create(theatre: Theatre): Promise<Theatre> {
     },
   });
 
-  return TheatreMapper.toDomain(created);
+  if (facilityIds.length > 0) {
+    await tx.theatreFacilityAssignment.createMany({
+      data: facilityIds.map((facilityId) => ({
+        theatreId: created.id,
+        facilityId
+      }))
+    });
+  }
+      return TheatreMapper.toDomain(created);
+    })
+ 
+
+  
 }
 }

@@ -61,7 +61,7 @@ export default function MovieBasicInfo(props: MovieBasicInfoProps = {}) {
     <FormSection
       id="basic-info-section"
       title="Basic Information"
-      description="Enter the core cinematic details of the movie."
+      description="Enter the core theatrical details of the movie."
       icon={
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />

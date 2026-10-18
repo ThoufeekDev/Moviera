@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaMovieRepository } from './infrastructure/persistence/repositories/PrismaMovieRepository';
 import { PrismaGenreRepository } from './infrastructure/persistence/repositories/PrismaGenreRepository';
 import { PrismaLanguageRepository } from './infrastructure/persistence/repositories/PrismaLanguageRepository';
-import { PrismaCinemaFormatRepository } from './infrastructure/persistence/repositories/PrismaCinemaFormatRepository';
+import { PrismaTheatreFormatRepository } from './infrastructure/persistence/repositories/PrismaTheatreFormatRepository';
 import { PrismaPersonRepository } from './infrastructure/persistence/repositories/PrismaPersonRepository';
 import { PrismaMovieQueryService } from './infrastructure/persistence/queries/PrismaMovieQueryService';
 
@@ -14,7 +14,7 @@ import { UpdateMovieUseCase } from './application/commands/UpdateMovieUseCase';
 import { GetPersonByIdUseCase } from './application/queries/GetPersonByIdUseCase';
 import { ListPersonsUseCase } from './application/queries/ListPersonsUseCase';
 import { ListLanguagesUseCase } from './application/queries/ListLanguagesUseCase';
-import { ListCinemaFormatsUseCase } from './application/queries/ListCinemaFormatsUseCase';
+import { ListTheatreFormatsUseCase } from './application/queries/ListTheatreFormatsUseCase';
 import { ListGenresUseCase } from './application/queries/ListGenresUseCase';
 import { ListMoviesForAdminUseCase } from './application/queries/ListMoviesForAdminUseCase';
 import { GetMovieByIdForAdminUseCase } from './application/queries/GetMovieByIdForAdminUseCase';
@@ -26,7 +26,7 @@ import { CreatePersonController } from './presentation/controllers/CreatePersonC
 import { GetPersonByIdController } from './presentation/controllers/GetPersonByIdController';
 import { ListPersonsController } from './presentation/controllers/ListPersonsController';
 import { ListLanguagesController } from './presentation/controllers/ListLanguagesController';
-import { ListCinemaFormatsController } from './presentation/controllers/ListCinemaFormatsController';
+import { ListTheatreFormatsController } from './presentation/controllers/ListTheatreFormatsController';
 import { UpdateMovieController } from './presentation/controllers/UpdateMovieController';
 import { ListMoviesForAdminController } from './presentation/controllers/ListMoviesForAdminController';
 import { GetMovieByIdForAdminController } from './presentation/controllers/GetMovieByIdForAdminController';
@@ -40,7 +40,7 @@ import { IStorageService } from '../../shared/application/ports/IStorageService'
 import { createMovieRoutes } from './presentation/routes/movie.routes';
 import { createPersonRoutes } from './presentation/routes/person.routes';
 import { createLanguageRoutes } from './presentation/routes/language.routes';
-import { createCinemaFormatRoutes } from './presentation/routes/cinema-format.routes';
+import { createTheatreFormatRoutes } from './presentation/routes/theatre-format.routes';
 import { createGenreRoutes } from './presentation/routes/genre.routes';
 
 export function buildMoviesModule(
@@ -51,7 +51,7 @@ export function buildMoviesModule(
   const movieRepository = new PrismaMovieRepository(prisma);
   const genreRepository = new PrismaGenreRepository(prisma);
   const languageRepository = new PrismaLanguageRepository(prisma);
-  const cinemaFormatRepository = new PrismaCinemaFormatRepository(prisma);
+  const theatreFormatRepository = new PrismaTheatreFormatRepository(prisma);
   const personRepository = new PrismaPersonRepository(prisma);
   const movieQueryService = new PrismaMovieQueryService(prisma);
 
@@ -59,7 +59,7 @@ export function buildMoviesModule(
   const movieReferenceValidator = new MovieReferenceValidator(
     genreRepository,
     languageRepository,
-    cinemaFormatRepository,
+    theatreFormatRepository,
     personRepository,
   );
   const movieSlugService = new MovieSlugService(movieRepository);
@@ -103,8 +103,8 @@ export function buildMoviesModule(
     new ListLanguagesUseCase(languageRepository),
   );
 
-  const listCinemaFormatsController = new ListCinemaFormatsController(
-    new ListCinemaFormatsUseCase(cinemaFormatRepository),
+  const listTheatreFormatsController = new ListTheatreFormatsController(
+    new ListTheatreFormatsUseCase(theatreFormatRepository),
   );
 
   const updateMovieController = new UpdateMovieController(
@@ -138,8 +138,8 @@ export function buildMoviesModule(
     listLanguagesController,
   });
 
-  const cinemaFormatRouter = createCinemaFormatRoutes({
-    listCinemaFormatsController,
+  const theatreFormatRouter = createTheatreFormatRoutes({
+    listTheatreFormatsController,
   });
 
   const genreRouter = createGenreRoutes({
@@ -150,7 +150,7 @@ export function buildMoviesModule(
     movieRouter,
     personRouter,
     languageRouter,
-    cinemaFormatRouter,
+    theatreFormatRouter,
     genreRouter,
   };
 }

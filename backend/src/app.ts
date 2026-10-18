@@ -25,8 +25,8 @@ app.use('/movies', container.movies.movieRouter);
 app.use('/persons', container.movies.personRouter);
 app.use('/language', container.movies.languageRouter);
 app.use('/languages', container.movies.languageRouter);
-app.use('/cinema-format', container.movies.cinemaFormatRouter);
-app.use('/cinema-formats', container.movies.cinemaFormatRouter);
+app.use('/theatre-format', container.movies.theatreFormatRouter);
+app.use('/theatre-formats', container.movies.theatreFormatRouter);
 app.use('/genre', container.movies.genreRouter);
 app.use('/genres', container.movies.genreRouter);
 

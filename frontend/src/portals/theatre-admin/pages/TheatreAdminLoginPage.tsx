@@ -8,10 +8,10 @@ export default function TheatreAdminLoginPage() {
       title="Theatre Partner Login"
       description="Manage your screens, schedules, and ticket operations"
       redirectTo="/theatre-admin"
-      placeholderEmail="admin@cinema.com"
+      placeholderEmail="admin@theatre.com"
       showRememberMe
       registerLink={{
-        prompt: "Need a cinema partner account?",
+        prompt: "Need a theatre partner account?",
         label: "Register Here",
         to: "/theatre-admin/register",
       }}

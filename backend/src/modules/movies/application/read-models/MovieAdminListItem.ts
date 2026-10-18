@@ -19,7 +19,7 @@ export interface MovieAdminListItem {
         slug: string;
 
     };
-    cinemaFormats: {
+    theatreFormats: {
         id: string;
         name: string;
         slug: string;

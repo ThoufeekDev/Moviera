@@ -29,8 +29,8 @@ export const createMovie = async (
     );
 
     formData.append(
-  'cinemaFormatIds',
-  JSON.stringify(data.cinemaFormatIds)
+  'theatreFormatIds',
+  JSON.stringify(data.theatreFormatIds)
 );
 
     formData.append(

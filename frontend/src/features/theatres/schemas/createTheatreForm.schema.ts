@@ -47,7 +47,7 @@ export const clientCreateTheatreSchema = z
       .or(z.literal('')),
     email: optionalPattern(
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      'Please enter a valid email address (e.g. contact@cinema.com)',
+      'Please enter a valid email address (e.g. contact@theatre.com)',
     ),
     phone: optionalPattern(
       /^(?:\+91)?[6-9]\d{9}$/,
@@ -86,6 +86,7 @@ export const clientCreateTheatreSchema = z
         'Longitude must be a number between -180 and 180',
       ),
     isActive: z.boolean(),
+    facilityIds: z.array(z.string()),
   })
   .refine(
     (data) => {
@@ -141,4 +142,5 @@ export const defaultCreateTheatreFormValues: FormValues = {
   latitude: '',
   longitude: '',
   isActive: true,
+  facilityIds: [],
 };

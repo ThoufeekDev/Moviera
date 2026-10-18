@@ -169,7 +169,7 @@ export class AssignTheatreAdminUseCase implements IUseCase<
                 : role;
 
         throw new ConflictError(
-          `This user (${userSummary.email}) already exists with the same role (${roleLabel}) for this cinema`,
+          `This user (${userSummary.email}) already exists with the same role (${roleLabel}) for this theatre`,
         );
       } else {
         assignment = await this.assignmentRepository.updateAssignment(existingAssignment.id, {

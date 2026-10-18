@@ -60,9 +60,9 @@ export const createMovieSchema = z.object({
 
   languages: z.array(z.string().min(1)).min(1, 'Select at least one language'),
 
-  cinemaFormatIds: z
+  theatreFormatIds: z
   .array(z.string().min(1))
-  .min(1, 'Select at least one cinema format'),
+  .min(1, 'Select at least one theatre format'),
 
   poster: imageFileSchema,
 

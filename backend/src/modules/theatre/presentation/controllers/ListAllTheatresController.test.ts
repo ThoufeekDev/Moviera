@@ -10,8 +10,8 @@ describe('ListAllTheatresController', () => {
         items: [
           {
             id: 'th-1',
-            name: 'PVR Cinemas',
-            slug: 'pvr-cinemas',
+            name: 'PVR Theatres',
+            slug: 'pvr-theatres',
             email: 'pvr@example.com',
             phone: '1234567890',
             logoUrl: 'https://example.com/logo.jpg',

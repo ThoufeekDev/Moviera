@@ -29,7 +29,7 @@ export class MovieAdminDetailMapper {
 
       languages: movie.languages.map(({ language }) => language),
 
-      cinemaFormats: movie.cinemaFormats.map(({ cinemaFormat }) => cinemaFormat),
+      theatreFormats: movie.cinemaFormats.map(({ cinemaFormat }) => cinemaFormat),
 
       cast: movie.cast.map((cast) => ({
         id: cast.id,

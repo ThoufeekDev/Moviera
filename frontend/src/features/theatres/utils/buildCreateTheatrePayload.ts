@@ -31,6 +31,7 @@ export function buildCreateTheatrePayload(
     latitude: hasLat && hasLng ? latNumber : null,
     longitude: hasLat && hasLng ? lngNumber : null,
     isActive: values.isActive,
+    facilityIds: values.facilityIds ?? [],
     logo: logoFile,
     cityId: values.cityId && values.cityId.trim() !== '' ? values.cityId.trim() : undefined,
     cityName:

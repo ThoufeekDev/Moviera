@@ -110,7 +110,7 @@ export const TheatreAdminAssignModal = ({
 
   const handleCopyCredentials = () => {
     if (!createdCredentials) return;
-    const text = `Moviera Cinema Partner Access\nCinema: ${createdCredentials.theatreName}\nRole: ${ROLE_CONFIG[createdCredentials.role].label}\nLogin URL: ${window.location.origin}/theatre-admin/login\nEmail: ${createdCredentials.email}\nTemporary Password: ${createdCredentials.temporaryPassword || 'N/A'}`;
+    const text = `Moviera Theatre Partner Access\nTheatre: ${createdCredentials.theatreName}\nRole: ${ROLE_CONFIG[createdCredentials.role].label}\nLogin URL: ${window.location.origin}/theatre-admin/login\nEmail: ${createdCredentials.email}\nTemporary Password: ${createdCredentials.temporaryPassword || 'N/A'}`;
     navigator.clipboard.writeText(text);
     setHasCopied(true);
     setTimeout(() => setHasCopied(false), 2200);
@@ -132,7 +132,7 @@ export const TheatreAdminAssignModal = ({
     const errors: Record<string, string> = {};
 
     if (!selectedTheatreId) {
-      errors.theatreId = 'Please select a target cinema multiplex.';
+      errors.theatreId = 'Please select a target theatre multiplex.';
     }
 
     if (mode === 'EMAIL') {
@@ -151,7 +151,7 @@ export const TheatreAdminAssignModal = ({
       } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(trimmedEmail)) {
-          errors.email = 'Please enter a valid email address (e.g. manager@cinema.com).';
+          errors.email = 'Please enter a valid email address (e.g. manager@theatre.com).';
         }
       }
 
@@ -190,9 +190,9 @@ export const TheatreAdminAssignModal = ({
         if (!emailRegex.test(trimmed)) {
           setFieldErrors((prev) => ({
             ...prev,
-            email: 'Please enter a valid email address (e.g. manager@cinema.com).',
+            email: 'Please enter a valid email address (e.g. manager@theatre.com).',
           }));
-          setErrorMessage('Please enter a valid email address (e.g. manager@cinema.com).');
+          setErrorMessage('Please enter a valid email address (e.g. manager@theatre.com).');
         }
       }
     } else if (field === 'phone' && mode === 'EMAIL') {
@@ -218,7 +218,7 @@ export const TheatreAdminAssignModal = ({
     setFieldErrors({});
 
     const targetTheatre = theatres.find((t) => t.id === selectedTheatreId);
-    const theatreName = targetTheatre?.name || 'Cinema';
+    const theatreName = targetTheatre?.name || 'Theatre';
 
     // ── Primary: Send to Backend & Let Backend Validation Flow Through ────────
     try {
@@ -290,7 +290,7 @@ export const TheatreAdminAssignModal = ({
           <span>Assign Theatre Administrator</span>
         </div>
       }
-      description="Authorize a cinema operator or invite a new manager with direct login credentials."
+      description="Authorize a theatre operator or invite a new manager with direct login credentials."
       size="md"
     >
       {/* ── Success State: Credentials Ready ───────────────────────────────────── */}
@@ -334,7 +334,7 @@ export const TheatreAdminAssignModal = ({
 
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between rounded border border-border bg-surface p-2.5">
-                <span className="text-ink-muted">Assigned Cinema:</span>
+                <span className="text-ink-muted">Assigned Theatre:</span>
                 <span className="font-semibold text-ink">{createdCredentials.theatreName}</span>
               </div>
               <div className="flex items-center justify-between rounded border border-border bg-surface p-2.5">
@@ -433,11 +433,11 @@ export const TheatreAdminAssignModal = ({
             </button>
           </div>
 
-          {/* Cinema Selection */}
+          {/* Theatre Selection */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
               <Building2 size={13} className="text-brand-600" />
-              Target Cinema
+              Target Theatre
             </label>
             <select
               value={selectedTheatreId}
@@ -494,7 +494,7 @@ export const TheatreAdminAssignModal = ({
                 </label>
                 <input
                   type="email"
-                  placeholder="e.g. manager@cinemapartner.com"
+                  placeholder="e.g. manager@theatrepartner.com"
                   value={adminEmail}
                   onChange={(e) => {
                     setAdminEmail(e.target.value);

@@ -11,7 +11,7 @@ export interface Language {
   code: string;
 }
 
-export interface CinemaFormat {
+export interface TheatreFormat {
   id: string;
   name: string;
   slug: string;

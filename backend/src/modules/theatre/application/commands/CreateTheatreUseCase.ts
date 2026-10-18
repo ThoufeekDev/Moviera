@@ -5,7 +5,7 @@ import { CreatedTheatreResult } from '../read-models/CreatedTheatreResult';
 import { TheatreSlugService } from '../services/TheatreSlugService';
 import { CreateTheatreDTO } from '../dtos/CreateTheatreDTO';
 import { Theatre } from '../../domain/entities/Theatre';
-
+import { IFacilityRepository } from '../../domain/repositories/IFacilityRepository';
 import { ConflictError } from '../../../../shared/errors/ConflictError';
 
 import { ResolveTheatreLocationService } from '../services/ResolveTheatreLocationService';
@@ -15,10 +15,13 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
     private readonly theatreRepository: ITheatreRepository,
     private readonly theatreSlugService: TheatreSlugService,
     private readonly locationService: ResolveTheatreLocationService,
+    private readonly facilityRepository:IFacilityRepository,
     private readonly storageService?: IStorageService,
   ) {}
 
   async execute(request: CreateTheatreDTO): Promise<CreatedTheatreResult> {
+
+
     const location = await this.locationService.execute({
   cityId: request.cityId,
   areaId: request.areaId,
@@ -44,6 +47,18 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
     const latitude = typeof request.latitude === 'number' ? request.latitude : null;
     const longitude = typeof request.longitude === 'number' ? request.longitude : null;
     const isActive = request.isActive !== undefined ? request.isActive : true;
+
+
+    const facilityIds = [...new Set(request.facilityIds ?? [])];
+
+    if (facilityIds.length > 0) {
+      const facilities = await this.facilityRepository.findActiveByIds(facilityIds);
+
+      if (facilities.length !== facilityIds.length) {
+        throw new ConflictError('One or more selected facilities do not exist or are inactive.');
+      }
+    }
+
 
     // 3. Duplicate checks:
     // Check theatre name uniqueness within the same city (case-insensitive)
@@ -120,7 +135,6 @@ export class CreateTheatreUseCase implements IUseCase<CreateTheatreDTO, CreatedT
     });
 
 
-    console.log('this is the created theatre',theatre);
     
 
     // 7. Persist to repository with rollback cleanup on error

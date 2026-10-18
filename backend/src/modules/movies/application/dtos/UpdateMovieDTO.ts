@@ -9,7 +9,7 @@ export interface UpdateMovieDTO {
   genreIds?: string[];
   certification?: Certification;
   languageIds?: string[];
-  cinemaFormatIds?: string[];
+  theatreFormatIds?: string[];
   cast?: {
     personId: string;
     character?: string | null;

@@ -36,7 +36,7 @@ export default function EditMoviePage() {
         genreIds: [],
         certificate: undefined as any,
         languages: [],
-        cinemaFormatIds: [],
+        theatreFormatIds: [],
         cast: [],
         crew: [],
         trailerUrl: '',
@@ -54,7 +54,7 @@ export default function EditMoviePage() {
       genreIds: movie.genres.map((genre) => genre.id),
       certificate: movie.certification as UpdateMovieFormInput['certificate'],
       languages: movie.languages.map((language) => language.id),
-      cinemaFormatIds: movie.cinemaFormats.map((format) => format.id),
+      theatreFormatIds: movie.theatreFormats.map((format) => format.id),
       trailerUrl: movie.trailerUrl ?? '',
       cast: (movie.cast ?? []).map((member) => ({
         personId: member.personId,

@@ -76,7 +76,7 @@ export const TheatreAdminAuditTrail = ({ activities }: TheatreAdminAuditTrailPro
                       <span>{item.action}</span>
                     </p>
                     <p className="text-[11px] text-ink-muted mt-0.5">
-                      Target Cinema: <span className="font-medium text-ink">{item.theatreName}</span>
+                      Target Theatre: <span className="font-medium text-ink">{item.theatreName}</span>
                     </p>
                   </div>
                 </div>

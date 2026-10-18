@@ -28,7 +28,7 @@ export interface MovieAdminDetail {
     name: string;
   }[];
 
-  cinemaFormats: {
+  theatreFormats: {
     id: string;
     name: string;
   }[];

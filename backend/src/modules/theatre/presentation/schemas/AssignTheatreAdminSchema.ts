@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const assignTheatreAdminSchema = z
   .object({
-    theatreId: z.string().trim().min(1, 'Please select a target cinema multiplex'),
+    theatreId: z.string().trim().min(1, 'Please select a target theatre multiplex'),
     role: z
       .enum(['PRIMARY_MANAGER', 'OPERATIONS_SUPERVISOR', 'BOX_OFFICE_LEAD'], {
         message: 'Please select a valid operational role',
@@ -12,7 +12,7 @@ export const assignTheatreAdminSchema = z
     email: z
       .string()
       .trim()
-      .email('Please enter a valid email address (e.g. manager@cinema.com)')
+      .email('Please enter a valid email address (e.g. manager@theatre.com)')
       .optional()
       .or(z.literal('')),
     name: z

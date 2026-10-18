@@ -17,6 +17,7 @@ export interface CreateTheatreDTO {
   phone?: string | null;
   pincode?: string | null;
   landmark?: string | null;
+  facilityIds?: string[];
   licenseNumber?: string | null;
   latitude?: number | null;
   longitude?: number | null;

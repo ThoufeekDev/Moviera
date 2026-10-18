@@ -21,7 +21,7 @@ export const MediaStatusSection = memo(function MediaStatusSection({
   return (
     <div className="rounded-lg border border-border bg-surface-muted/30 p-4">
       <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink-muted">
-        4. Media & Operational Status
+        5. Media & Operational Status
       </h4>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>

@@ -76,21 +76,21 @@ export class ResendEmailService implements IEmailService {
       const response = await this.resend.emails.send({
         from: "onboarding@resend.dev",
         to: data.email,
-        subject: `Welcome to Moviera - Cinema Partner Access for ${data.theatreName}`,
+        subject: `Welcome to Moviera - Theatre Partner Access for ${data.theatreName}`,
         html: `
           <!DOCTYPE html>
           <html>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Moviera Cinema Access</title>
+            <title>Moviera Theatre Access</title>
           </head>
           <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b;">
             <div style="max-width: 600px; margin: 32px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
               <!-- Header -->
               <div style="background-color: #09090b; padding: 28px 32px; text-align: left; border-bottom: 2px solid #e11d48;">
                 <span style="font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">MOVIERA</span>
-                <span style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #e11d48; font-weight: 600; margin-top: 4px;">Cinema Partner Portal</span>
+                <span style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #e11d48; font-weight: 600; margin-top: 4px;">Theatre Partner Portal</span>
               </div>
 
               <!-- Body -->
@@ -99,14 +99,14 @@ export class ResendEmailService implements IEmailService {
                   Hello ${data.name},
                 </h1>
                 <p style="font-size: 15px; line-height: 1.6; color: #475569; margin-bottom: 24px;">
-                  You have been authorized by the Super Administrator to manage <strong>${data.theatreName}</strong> on the Moviera Cinema Management Platform.
+                  You have been authorized by the Super Administrator to manage <strong>${data.theatreName}</strong> on the Moviera Theatre Management Platform.
                 </p>
 
                 <!-- Details Card -->
                 <div style="background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 22px; margin-bottom: 24px;">
                   <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                      <td style="padding: 6px 0; font-size: 13px; color: #64748b; width: 140px;">Cinema Multiplex:</td>
+                      <td style="padding: 6px 0; font-size: 13px; color: #64748b; width: 140px;">Theatre Multiplex:</td>
                       <td style="padding: 6px 0; font-size: 14px; color: #0f172a; font-weight: 600;">${data.theatreName}</td>
                     </tr>
                     <tr>
@@ -125,7 +125,7 @@ export class ResendEmailService implements IEmailService {
                 <!-- Action Button -->
                 <div style="text-align: center; margin: 32px 0 24px 0;">
                   <a href="${data.loginUrl}" style="background-color: #e11d48; color: #ffffff; padding: 13px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-block; box-shadow: 0 2px 4px rgba(225, 29, 72, 0.2);">
-                    Log In to Cinema Portal
+                    Log In to Theatre Portal
                   </a>
                 </div>
 

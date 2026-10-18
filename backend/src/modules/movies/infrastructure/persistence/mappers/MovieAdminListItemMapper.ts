@@ -16,7 +16,7 @@ export class MovieAdminListItemMapper {
       slug: movie.slug,
       primaryGenre: movie.primaryGenre,
       languages: movie.languages.map(({ language }) => language),
-      cinemaFormats: movie.cinemaFormats.map(({ cinemaFormat }) => cinemaFormat),
+      theatreFormats: movie.cinemaFormats.map(({ cinemaFormat }) => cinemaFormat),
     };
   }
 }

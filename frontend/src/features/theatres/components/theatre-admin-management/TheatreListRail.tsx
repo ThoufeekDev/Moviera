@@ -20,7 +20,7 @@ export const TheatreListRail = ({
     <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-3">
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-semibold tracking-wider text-ink-muted uppercase">
-          Cinemas Directory ({theatres.length}
+          Theatres Directory ({theatres.length}
           {totalTheatresCount > theatres.length ? ` of ${totalTheatresCount}` : ''})
         </span>
         <span className="text-xs text-brand-600 font-medium">Select to manage</span>
@@ -32,11 +32,11 @@ export const TheatreListRail = ({
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface p-8 text-center shadow-card">
             <Building2 size={26} className="text-ink-muted mb-2" />
             <p className="text-sm font-medium text-ink">
-              {totalTheatresCount === 0 ? 'No cinemas found on backend' : 'No matching cinemas'}
+              {totalTheatresCount === 0 ? 'No theatres found on backend' : 'No matching theatres'}
             </p>
             <p className="text-xs text-ink-muted mt-1">
               {totalTheatresCount === 0
-                ? 'No cinemas have been added to the platform yet.'
+                ? 'No theatres have been added to the platform yet.'
                 : 'Try adjusting your search criteria or city filter.'}
             </p>
           </div>
@@ -84,7 +84,7 @@ export const TheatreListRail = ({
                   )}
                 </div>
 
-                {/* Cinema Title */}
+                {/* Theatre Title */}
                 <div className="mt-0.5">
                   <h2 className="text-sm sm:text-base font-bold text-ink group-hover:text-brand-600 transition-colors">
                     {theatre.name}

@@ -31,7 +31,7 @@ export const TheatreAdminDirectoryView = ({
             Global Administrator Directory ({admins.length})
           </h2>
           <p className="text-xs sm:text-sm text-ink-muted mt-0.5">
-            Complete roster of all assigned cinema operators and administrators across Moviera.
+            Complete roster of all assigned theatre operators and administrators across Moviera.
           </p>
         </div>
 
@@ -45,14 +45,14 @@ export const TheatreAdminDirectoryView = ({
           <Users size={32} className="text-ink-muted mb-3" />
           <h3 className="text-base font-bold text-ink">No Administrators Assigned</h3>
           <p className="text-xs text-ink-muted mt-1 max-w-sm">
-            There are currently no theatre administrators assigned to any cinema on the platform.
-            Click &ldquo;Assign Theatre Admin&rdquo; to authorize cinema managers.
+            There are currently no theatre administrators assigned to any theatre on the platform.
+            Click &ldquo;Assign Theatre Admin&rdquo; to authorize theatre managers.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {admins.map((admin) => {
-            const assignedCinema = theatres.find((t) => t.id === admin.theatreId);
+            const assignedTheatre = theatres.find((t) => t.id === admin.theatreId);
             const roleInfo = ROLE_CONFIG[admin.role];
 
             return (
@@ -93,25 +93,25 @@ export const TheatreAdminDirectoryView = ({
                     )}
                   </div>
 
-                  {/* Assigned Cinema Box */}
+                  {/* Assigned Theatre Box */}
                   <div className="mt-3 rounded-md border border-border bg-surface-muted p-2.5">
                     <span className="text-[10px] uppercase tracking-wider text-ink-muted block font-semibold">
-                      Assigned Cinema
+                      Assigned Theatre
                     </span>
                     <button
                       type="button"
                       onClick={() => {
-                        if (assignedCinema) {
-                          onSelectTheatre(assignedCinema.id);
+                        if (assignedTheatre) {
+                          onSelectTheatre(assignedTheatre.id);
                         }
                       }}
                       className="mt-0.5 text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors flex items-center gap-1 cursor-pointer text-left"
                     >
                       <Building2 size={12} className="shrink-0" />
-                      <span className="truncate">{assignedCinema?.name ?? 'Unknown Cinema'}</span>
+                      <span className="truncate">{assignedTheatre?.name ?? 'Unknown Theatre'}</span>
                     </button>
                     <span className="text-[11px] text-ink-muted block mt-0.5">
-                      {assignedCinema?.city} • {roleInfo.label}
+                      {assignedTheatre?.city} • {roleInfo.label}
                     </span>
                   </div>
                 </div>

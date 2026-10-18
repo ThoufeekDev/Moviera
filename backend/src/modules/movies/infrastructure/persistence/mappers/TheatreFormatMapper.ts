@@ -1,6 +1,6 @@
-import { CinemaFormat } from "../../../domain/entities/CinemaFormat";
+import { TheatreFormat } from "../../../domain/entities/TheatreFormat";
 
-export class CinemaFormatMapper {
+export class TheatreFormatMapper {
   static toDomain(data: {
     id: string;
     name: string;
@@ -8,8 +8,8 @@ export class CinemaFormatMapper {
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
-  }): CinemaFormat {
-    return new CinemaFormat(
+  }): TheatreFormat {
+    return new TheatreFormat(
       data.id,
       data.name,
       data.slug,
@@ -28,7 +28,7 @@ export class CinemaFormatMapper {
       createdAt: Date;
       updatedAt: Date;
     }[]
-  ): CinemaFormat[] {
-    return data.map((cinemaFormat) => this.toDomain(cinemaFormat));
+  ): TheatreFormat[] {
+    return data.map((theatreFormat) => this.toDomain(theatreFormat));
   }
 }
