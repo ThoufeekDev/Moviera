@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import env from '@/shared/lib/env';
 import { useCities } from './useCities';
 import { useCreateTheatre } from './useCreateTheatre';
-import type { ExtractedPlaceDetails } from '../services/googlePlaces.service';
+import type { ExtractedLocationDetails } from '@/shared/ui';
 import {
   clientCreateTheatreSchema,
   defaultCreateTheatreFormValues,
@@ -112,7 +112,7 @@ export function useCreateTheatreForm({ onClose, onSuccess }: UseCreateTheatreFor
    * Extracts location fields and populates the form without overwriting unchanged manual inputs.
    */
   const handleGooglePlaceSelect = useCallback(
-    (details: ExtractedPlaceDetails) => {
+    (details: ExtractedLocationDetails) => {
       clearErrors(['address', 'cityName', 'state', 'country', 'latitude', 'longitude']);
 
       if (details.googlePlaceId) {

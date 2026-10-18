@@ -1,8 +1,7 @@
 import { memo } from 'react';
 import { MapPin, PenTool } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
-import { GoogleMapPicker } from '../../GoogleMapPicker';
-import type { ExtractedPlaceDetails } from '../../../services/googlePlaces.service';
+import { GoogleMapPicker, type ExtractedLocationDetails } from '@/shared/ui';
 import { CitySelector } from './CitySelector';
 import { AddressFields } from './AddressFields';
 
@@ -14,7 +13,7 @@ export interface LocationSectionProps {
   isCitiesLoading: boolean;
   cityOptions: Array<{ value: string; label: string; secondaryLabel?: string }>;
   onCityChange: (cityId: string) => void;
-  onGooglePlaceSelect: (details: ExtractedPlaceDetails) => void;
+  onGooglePlaceSelect: (details: ExtractedLocationDetails) => void;
   selectedPlaceId?: string;
   selectedAddress?: string;
   selectedCoordinates?: { lat: number; lng: number } | null;

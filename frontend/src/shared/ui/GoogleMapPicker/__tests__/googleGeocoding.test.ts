@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { extractPlaceDetailsFromGeocoderResults } from '../googleGeocoding.service';
-import type { GoogleGeocoderResult } from '../../types/googleMap.types';
+import { extractPlaceDetailsFromGeocoderResults } from '../googleGeocoding';
+import type { GoogleGeocoderResult } from '../googleMap.types';
 
 describe('extractPlaceDetailsFromGeocoderResults', () => {
   it('returns fallback coords and empty address when results are empty', () => {
