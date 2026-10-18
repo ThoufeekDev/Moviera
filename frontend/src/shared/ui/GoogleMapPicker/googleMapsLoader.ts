@@ -1,17 +1,27 @@
-import type { GoogleMapsScriptWindow } from './googleMap.types';
+import type {
+  GoogleMapsScriptWindow,
+  GoogleMapsLibrary,
+  GoogleMarkerLibrary,
+  GooglePlacesLibrary,
+  GoogleGeocodingLibrary,
+} from './googleMap.types';
 
 let mapsLoadingPromise: Promise<void> | null = null;
+let mapsLibPromise: Promise<GoogleMapsLibrary> | null = null;
+let markerLibPromise: Promise<GoogleMarkerLibrary> | null = null;
+let placesLibPromise: Promise<GooglePlacesLibrary> | null = null;
+let geocodingLibPromise: Promise<GoogleGeocodingLibrary> | null = null;
 
 export function isGoogleMapsLoaded(): boolean {
   if (typeof window === 'undefined') return false;
   const win = window as GoogleMapsScriptWindow;
-  return Boolean(win.google?.maps?.Map && win.google?.maps?.Geocoder);
+  return Boolean(win.google?.maps?.importLibrary || win.google?.maps?.Map);
 }
 
 export function loadGoogleMapsSdk(apiKey: string): Promise<void> {
   const win = window as GoogleMapsScriptWindow;
 
-  if (win.google?.maps?.Map && win.google?.maps?.Geocoder) {
+  if (win.google?.maps?.importLibrary) {
     return Promise.resolve();
   }
 
@@ -28,7 +38,7 @@ export function loadGoogleMapsSdk(apiKey: string): Promise<void> {
 
   mapsLoadingPromise = new Promise<void>((resolve, reject) => {
     const existingScript = document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]');
-    if (existingScript && win.google?.maps) {
+    if (existingScript && win.google?.maps?.importLibrary) {
       resolve();
       return;
     }
@@ -36,7 +46,7 @@ export function loadGoogleMapsSdk(apiKey: string): Promise<void> {
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
       trimmedKey,
-    )}&libraries=places&loading=async`;
+    )}&loading=async`;
     script.async = true;
     script.defer = true;
 
@@ -51,19 +61,19 @@ export function loadGoogleMapsSdk(apiKey: string): Promise<void> {
 
     script.onload = () => {
       const interval = setInterval(() => {
-        if (win.google?.maps?.Map && win.google?.maps?.Geocoder) {
+        if (win.google?.maps?.importLibrary) {
           clearInterval(interval);
           resolve();
         }
-      }, 50);
+      }, 30);
 
       setTimeout(() => {
         clearInterval(interval);
-        if (win.google?.maps?.Map && win.google?.maps?.Geocoder) {
+        if (win.google?.maps?.importLibrary) {
           resolve();
         } else {
           mapsLoadingPromise = null;
-          reject(new Error('Google Maps SDK loaded but failed to initialize maps library.'));
+          reject(new Error('Google Maps SDK loaded but failed to initialize importLibrary.'));
         }
       }, 5000);
     };
@@ -77,4 +87,40 @@ export function loadGoogleMapsSdk(apiKey: string): Promise<void> {
   });
 
   return mapsLoadingPromise;
+}
+
+export async function importMapsLibrary(apiKey: string): Promise<GoogleMapsLibrary> {
+  await loadGoogleMapsSdk(apiKey);
+  if (!mapsLibPromise) {
+    const win = window as GoogleMapsScriptWindow;
+    mapsLibPromise = win.google!.maps.importLibrary('maps') as Promise<GoogleMapsLibrary>;
+  }
+  return mapsLibPromise;
+}
+
+export async function importMarkerLibrary(apiKey: string): Promise<GoogleMarkerLibrary> {
+  await loadGoogleMapsSdk(apiKey);
+  if (!markerLibPromise) {
+    const win = window as GoogleMapsScriptWindow;
+    markerLibPromise = win.google!.maps.importLibrary('marker') as Promise<GoogleMarkerLibrary>;
+  }
+  return markerLibPromise;
+}
+
+export async function importPlacesLibrary(apiKey: string): Promise<GooglePlacesLibrary> {
+  await loadGoogleMapsSdk(apiKey);
+  if (!placesLibPromise) {
+    const win = window as GoogleMapsScriptWindow;
+    placesLibPromise = win.google!.maps.importLibrary('places') as Promise<GooglePlacesLibrary>;
+  }
+  return placesLibPromise;
+}
+
+export async function importGeocodingLibrary(apiKey: string): Promise<GoogleGeocodingLibrary> {
+  await loadGoogleMapsSdk(apiKey);
+  if (!geocodingLibPromise) {
+    const win = window as GoogleMapsScriptWindow;
+    geocodingLibPromise = win.google!.maps.importLibrary('geocoding') as Promise<GoogleGeocodingLibrary>;
+  }
+  return geocodingLibPromise;
 }

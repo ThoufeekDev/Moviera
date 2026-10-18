@@ -59,6 +59,7 @@ export interface GoogleMapListener {
 export interface GoogleMapOptions {
   center: GoogleLatLngLiteral;
   zoom: number;
+  mapId?: string;
   mapTypeControl?: boolean;
   streetViewControl?: boolean;
   fullscreenControl?: boolean;
@@ -67,20 +68,32 @@ export interface GoogleMapOptions {
   styles?: Array<Record<string, unknown>>;
 }
 
-export interface GoogleMarkerOptions {
-  position: GoogleLatLngLiteral;
+export interface GoogleAdvancedMarkerOptions {
   map?: GoogleMapInstance | null;
-  draggable?: boolean;
+  position?: GoogleLatLngLiteral | GoogleLatLngObject | null;
+  gmpDraggable?: boolean;
   title?: string;
-  animation?: unknown;
 }
 
-export interface GoogleMarkerInstance {
-  setPosition: (latLng: GoogleLatLngLiteral | GoogleLatLngObject) => void;
-  getPosition: () => GoogleLatLngObject | null;
-  setMap: (map: GoogleMapInstance | null) => void;
-  addListener: (event: string, handler: (e?: GoogleMapMouseEvent) => void) => GoogleMapListener;
-  setVisible: (visible: boolean) => void;
+export interface GoogleAdvancedMarkerInstance {
+  position: GoogleLatLngLiteral | GoogleLatLngObject | null;
+  map: GoogleMapInstance | null;
+  gmpDraggable: boolean;
+  title?: string;
+  addEventListener: (event: string, handler: (e?: unknown) => void) => void;
+  removeEventListener?: (event: string, handler: (e?: unknown) => void) => void;
+  addListener?: (event: string, handler: (e?: unknown) => void) => GoogleMapListener;
+}
+
+// Backward-compatibility aliases
+export type GoogleMarkerInstance = GoogleAdvancedMarkerInstance;
+export type GoogleMarkerOptions = GoogleAdvancedMarkerOptions;
+
+export interface GooglePlacePrediction {
+  placeId: string;
+  description: string;
+  mainText: string;
+  secondaryText?: string;
 }
 
 export interface GoogleMapInstance {
@@ -92,11 +105,66 @@ export interface GoogleMapInstance {
   addListener: (event: string, handler: (e: GoogleMapMouseEvent) => void) => GoogleMapListener;
 }
 
-export interface GooglePlacePrediction {
-  placeId: string;
-  description: string;
-  mainText: string;
-  secondaryText?: string;
+export interface PlaceAddressComponent {
+  longText?: string;
+  shortText?: string;
+  types?: string[];
+}
+
+export type PlaceDisplayName = string | { text?: string };
+
+export type PlaceLocation =
+  | GoogleLatLngLiteral
+  | GoogleLatLngObject
+  | { lat: number; lng: number }
+  | { lat: () => number; lng: () => number };
+
+export interface PlaceInstance {
+  id?: string;
+  displayName?: PlaceDisplayName;
+  formattedAddress?: string;
+  addressComponents?: PlaceAddressComponent[];
+  location?: PlaceLocation;
+  fetchFields: (options: { fields: string[] }) => Promise<void>;
+}
+
+export interface PlacePredictionItem {
+  toPlace: () => PlaceInstance;
+}
+
+export interface PlaceSelectEvent extends Event {
+  placePrediction?: PlacePredictionItem;
+  place?: PlaceInstance;
+}
+
+export interface PlaceAutocompleteElementOptions {
+  includedRegionCodes?: string[];
+  componentRestrictions?: { country: string | string[] };
+  requestedLanguage?: string;
+  requestedRegion?: string;
+}
+
+export interface PlaceAutocompleteElementInstance extends HTMLElement {
+  addEventListener: (event: string, handler: (e: Event) => void) => void;
+  removeEventListener: (event: string, handler: (e: Event) => void) => void;
+}
+
+export interface GoogleMapsLibrary {
+  Map: new (element: HTMLElement, options?: GoogleMapOptions) => GoogleMapInstance;
+}
+
+export interface GoogleMarkerLibrary {
+  AdvancedMarkerElement: new (options?: GoogleAdvancedMarkerOptions) => GoogleAdvancedMarkerInstance;
+}
+
+export interface GooglePlacesLibrary {
+  PlaceAutocompleteElement: new (
+    options?: PlaceAutocompleteElementOptions,
+  ) => PlaceAutocompleteElementInstance;
+}
+
+export interface GoogleGeocodingLibrary {
+  Geocoder: new () => GoogleGeocoder;
 }
 
 export interface ExtractedLocationDetails {
@@ -113,74 +181,23 @@ export interface ExtractedLocationDetails {
   longitude?: number;
 }
 
-// Backwards compatibility alias
 export type ExtractedPlaceDetails = ExtractedLocationDetails;
-
-export interface GooglePlacesPredictionItem {
-  place_id: string;
-  description: string;
-  structured_formatting?: {
-    main_text: string;
-    secondary_text?: string;
-  };
-}
-
-export interface GooglePlaceDetailsResult {
-  place_id?: string;
-  name?: string;
-  formatted_address?: string;
-  address_components?: Array<{
-    long_name: string;
-    short_name: string;
-    types: string[];
-  }>;
-  geometry?: {
-    location?: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
-}
-
-export interface GoogleAutocompleteService {
-  getPlacePredictions: (
-    request: { input: string; sessionToken?: string },
-    callback: (predictions: GooglePlacesPredictionItem[] | null, status: string) => void,
-  ) => void;
-}
-
-export interface GooglePlacesService {
-  getDetails: (
-    request: { placeId: string; fields?: string[]; sessionToken?: string },
-    callback: (place: GooglePlaceDetailsResult | null, status: string) => void,
-  ) => void;
-}
-
-export interface GooglePlacesServiceStatus {
-  OK: string;
-  ZERO_RESULTS: string;
-  OVER_QUERY_LIMIT: string;
-  REQUEST_DENIED: string;
-  INVALID_REQUEST: string;
-}
 
 export interface GoogleMapsScriptWindow extends Window {
   google?: {
     maps: {
       Map: new (element: HTMLElement, options?: GoogleMapOptions) => GoogleMapInstance;
-      Marker: new (options?: GoogleMarkerOptions) => GoogleMarkerInstance;
       Geocoder: new () => GoogleGeocoder;
-      Animation?: {
-        DROP: unknown;
-        BOUNCE: unknown;
-      };
-      event?: {
-        clearInstanceListeners: (instance: unknown) => void;
+      importLibrary: (library: string) => Promise<unknown>;
+      marker?: {
+        AdvancedMarkerElement: new (
+          options?: GoogleAdvancedMarkerOptions,
+        ) => GoogleAdvancedMarkerInstance;
       };
       places?: {
-        AutocompleteService: new () => GoogleAutocompleteService;
-        PlacesService: new (attrContainer: HTMLDivElement) => GooglePlacesService;
-        PlacesServiceStatus: GooglePlacesServiceStatus;
+        PlaceAutocompleteElement: new (
+          options?: PlaceAutocompleteElementOptions,
+        ) => PlaceAutocompleteElementInstance;
       };
     };
   };

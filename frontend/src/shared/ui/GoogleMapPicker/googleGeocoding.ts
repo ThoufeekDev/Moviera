@@ -1,10 +1,9 @@
 import type {
   GoogleGeocoderResult,
-  GoogleMapsScriptWindow,
   GoogleGeocoderStatus,
   ExtractedLocationDetails,
 } from './googleMap.types';
-import { loadGoogleMapsSdk } from './googleMapsLoader';
+import { importGeocodingLibrary } from './googleMapsLoader';
 
 /**
  * Extracts normalized address and location fields from Google Geocoder results.
@@ -93,21 +92,15 @@ export function extractPlaceDetailsFromGeocoderResults(
 }
 
 /**
- * Reverse geocodes a geographic coordinate (lat, lng) to obtain comprehensive address components.
+ * Reverse geocodes a geographic coordinate (lat, lng) using the modern geocoding library.
  */
 export async function reverseGeocodeCoordinate(
   lat: number,
   lng: number,
   apiKey: string,
 ): Promise<ExtractedLocationDetails> {
-  await loadGoogleMapsSdk(apiKey);
-
-  const win = window as GoogleMapsScriptWindow;
-  if (!win.google?.maps?.Geocoder) {
-    throw new Error('Google Maps Geocoder is unavailable.');
-  }
-
-  const geocoder = new win.google.maps.Geocoder();
+  const geocodingLib = await importGeocodingLibrary(apiKey);
+  const geocoder = new geocodingLib.Geocoder();
 
   return new Promise<ExtractedLocationDetails>((resolve, reject) => {
     geocoder.geocode({ location: { lat, lng } }, (results, status: GoogleGeocoderStatus) => {
