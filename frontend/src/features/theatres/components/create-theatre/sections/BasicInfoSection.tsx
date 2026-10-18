@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input, Textarea } from '@/shared/ui';
 import type { FormValues } from '../../../schemas/createTheatreForm.schema';
@@ -6,7 +7,7 @@ export interface BasicInfoSectionProps {
   disabled?: boolean;
 }
 
-export function BasicInfoSection({ disabled }: BasicInfoSectionProps) {
+export const BasicInfoSection = memo(function BasicInfoSection({ disabled }: BasicInfoSectionProps) {
   const {
     register,
     formState: { errors },
@@ -39,6 +40,6 @@ export function BasicInfoSection({ disabled }: BasicInfoSectionProps) {
       </div>
     </div>
   );
-}
+});
 
 export default BasicInfoSection;

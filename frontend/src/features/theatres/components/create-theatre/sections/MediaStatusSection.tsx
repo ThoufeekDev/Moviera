@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { ImageUpload } from '@/shared/ui';
 import type { FormValues } from '../../../schemas/createTheatreForm.schema';
@@ -9,7 +10,7 @@ export interface MediaStatusSectionProps {
   disabled?: boolean;
 }
 
-export function MediaStatusSection({
+export const MediaStatusSection = memo(function MediaStatusSection({
   logoError,
   onLogoSelect,
   onLogoRemove,
@@ -64,6 +65,6 @@ export function MediaStatusSection({
       </div>
     </div>
   );
-}
+});
 
 export default MediaStatusSection;

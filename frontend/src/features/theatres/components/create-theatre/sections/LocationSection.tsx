@@ -1,6 +1,7 @@
-import { Search, PenTool } from 'lucide-react';
+import { memo } from 'react';
+import { MapPin, PenTool } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
-import { GooglePlacesSearch } from '../../GooglePlacesSearch';
+import { GoogleMapPicker } from '../../GoogleMapPicker';
 import type { ExtractedPlaceDetails } from '../../../services/googlePlaces.service';
 import { CitySelector } from './CitySelector';
 import { AddressFields } from './AddressFields';
@@ -14,12 +15,13 @@ export interface LocationSectionProps {
   cityOptions: Array<{ value: string; label: string; secondaryLabel?: string }>;
   onCityChange: (cityId: string) => void;
   onGooglePlaceSelect: (details: ExtractedPlaceDetails) => void;
-  watchedGooglePlaceId?: string;
-  watchedAddress?: string;
+  selectedPlaceId?: string;
+  selectedAddress?: string;
+  selectedCoordinates?: { lat: number; lng: number } | null;
   disabled?: boolean;
 }
 
-export function LocationSection({
+export const LocationSection = memo(function LocationSection({
   locationMode,
   onSwitchLocationMode,
   manualCityType,
@@ -28,8 +30,9 @@ export function LocationSection({
   cityOptions,
   onCityChange,
   onGooglePlaceSelect,
-  watchedGooglePlaceId,
-  watchedAddress,
+  selectedPlaceId,
+  selectedAddress,
+  selectedCoordinates,
   disabled,
 }: LocationSectionProps) {
   return (
@@ -40,7 +43,7 @@ export function LocationSection({
             2. Address & Location
           </h4>
           <p className="text-xs text-ink-muted mt-0.5">
-            Choose how you want to locate and enter theatre address details.
+            Locate theatre on Google Map or enter address manually.
           </p>
         </div>
 
@@ -64,8 +67,8 @@ export function LocationSection({
                 : 'text-ink-muted hover:text-ink',
             )}
           >
-            <Search className="h-3.5 w-3.5" />
-            <span>Search with Google Places</span>
+            <MapPin className="h-3.5 w-3.5" />
+            <span>Search with Google Map</span>
           </button>
 
           <button
@@ -88,14 +91,15 @@ export function LocationSection({
         </div>
       </div>
 
-      {/* Mode 1: Google Places Search */}
+      {/* Mode 1: Google Map & Places Search */}
       {locationMode === 'google' && (
         <div className="space-y-4">
-          <GooglePlacesSearch
-            onSelectPlace={onGooglePlaceSelect}
+          <GoogleMapPicker
+            onSelectLocation={onGooglePlaceSelect}
             onSwitchToManual={() => onSwitchLocationMode('manual')}
-            selectedPlaceId={watchedGooglePlaceId}
-            selectedAddress={watchedAddress}
+            selectedPlaceId={selectedPlaceId}
+            selectedAddress={selectedAddress}
+            selectedCoordinates={selectedCoordinates}
             disabled={disabled}
           />
 
@@ -105,6 +109,7 @@ export function LocationSection({
           </div>
         </div>
       )}
+
 
       {/* Mode 2: Manual Address Entry */}
       {locationMode === 'manual' && (
@@ -123,6 +128,6 @@ export function LocationSection({
       )}
     </div>
   );
-}
+});
 
 export default LocationSection;

@@ -1,3 +1,5 @@
+import { loadGoogleMapsSdk } from './googleMapsLoader.service';
+
 export interface GooglePlacePrediction {
   placeId: string;
   description: string;
@@ -368,7 +370,6 @@ interface GoogleMapsScriptWindow extends Window {
   gm_authFailure?: () => void;
 }
 
-let mapsLoadingPromise: Promise<void> | null = null;
 let placesServiceInstance: InstanceType<
   NonNullable<NonNullable<GoogleMapsScriptWindow['google']>['maps']['places']['PlacesService']>
 > | null = null;
@@ -376,59 +377,6 @@ let autocompleteServiceInstance: InstanceType<
   NonNullable<NonNullable<GoogleMapsScriptWindow['google']>['maps']['places']['AutocompleteService']>
 > | null = null;
 
-function loadGoogleMapsSdk(apiKey: string): Promise<void> {
-  const win = window as GoogleMapsScriptWindow;
-
-  if (win.google?.maps?.places) {
-    return Promise.resolve();
-  }
-
-  if (mapsLoadingPromise) {
-    return mapsLoadingPromise;
-  }
-
-  mapsLoadingPromise = new Promise<void>((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
-      apiKey.trim(),
-    )}&libraries=places&loading=async`;
-    script.async = true;
-    script.defer = true;
-
-    win.gm_authFailure = () => {
-      mapsLoadingPromise = null;
-      reject(new Error('Google Maps authentication failed. Check your API key and billing setup.'));
-    };
-
-    script.onload = () => {
-      const interval = setInterval(() => {
-        if (win.google?.maps?.places) {
-          clearInterval(interval);
-          resolve();
-        }
-      }, 50);
-
-      setTimeout(() => {
-        clearInterval(interval);
-        if (win.google?.maps?.places) {
-          resolve();
-        } else {
-          mapsLoadingPromise = null;
-          reject(new Error('Google Maps Places library failed to initialize.'));
-        }
-      }, 5000);
-    };
-
-    script.onerror = () => {
-      mapsLoadingPromise = null;
-      reject(new Error('Failed to load Google Maps SDK script.'));
-    };
-
-    document.head.appendChild(script);
-  });
-
-  return mapsLoadingPromise;
-}
 
 async function fetchPlacePredictionsFromJsSdk(
   query: string,

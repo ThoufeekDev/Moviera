@@ -23,8 +23,9 @@ export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatre
     serverError,
     isCitiesLoading,
     cityOptions,
-    watchedGooglePlaceId,
-    watchedAddress,
+    selectedPlaceId,
+    selectedPlaceAddress,
+    selectedCoordinates,
     isPending,
     handleClose,
     handleLogoSelect,
@@ -71,8 +72,9 @@ export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatre
             cityOptions={cityOptions}
             onCityChange={handleCityChange}
             onGooglePlaceSelect={handleGooglePlaceSelect}
-            watchedGooglePlaceId={watchedGooglePlaceId}
-            watchedAddress={watchedAddress}
+            selectedPlaceId={selectedPlaceId}
+            selectedAddress={selectedPlaceAddress}
+            selectedCoordinates={selectedCoordinates}
             disabled={isPending}
           />
 

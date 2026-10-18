@@ -4,6 +4,7 @@ import { useAllTheatres } from '../hooks/useAllTheatres';
 import CreateTheatreModal from '../components/CreateTheatreModal';
 import SuperAdminTheatreCard from '../components/SuperAdminTheatreCard';
 import SuperAdminTheatreCardSkeleton from '../components/SuperAdminTheatreCardSkeleton';
+import { useSearchParams } from 'react-router-dom';
 import {
   Pagination,
   ErrorState,
@@ -18,12 +19,20 @@ import {
 export default function ManageTheatresPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [createdTheatreName, setCreatedTheatreName] = useState<string | null>(null);
-  const [appliedSearch, setAppliedSearch] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [appliedSearch, setAppliedSearch] = useState(
+    () => searchParams.get('q') || '',
+  );
   const [status, setStatus] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
   const [page, setPage] = useState(1);
 
   // Search handler (SearchBar handles debounce, Enter, and button click)
   const handleSearch = (term: string) => {
+    if (term) {
+      setSearchParams({ q: term });
+    } else {
+      setSearchParams({});
+    }
     setAppliedSearch(term);
     setPage(1);
   };

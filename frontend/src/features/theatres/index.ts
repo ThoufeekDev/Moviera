@@ -49,5 +49,9 @@ export { default as FacilityCardSkeleton } from './components/FacilityCardSkelet
 export { default as FacilityModal } from './components/FacilityModal';
 export { default as FacilityStatusConfirmModal } from './components/FacilityStatusConfirmModal';
 export { default as GooglePlacesSearch } from './components/GooglePlacesSearch';
+export { default as GoogleMapPicker } from './components/GoogleMapPicker';
 export * from './services/googlePlaces.service';
+export * from './services/googleMapsLoader.service';
+export * from './services/googleGeocoding.service';
+export * from './types/googleMap.types';
 

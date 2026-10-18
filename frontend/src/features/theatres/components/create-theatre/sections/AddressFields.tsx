@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/shared/ui';
 import { cn } from '@/shared/lib/cn';
@@ -8,7 +9,7 @@ export interface AreaDistrictFieldsProps {
   disabled?: boolean;
 }
 
-export function AreaDistrictFields({ mode, disabled }: AreaDistrictFieldsProps) {
+export const AreaDistrictFields = memo(function AreaDistrictFields({ mode, disabled }: AreaDistrictFieldsProps) {
   const {
     register,
     formState: { errors },
@@ -38,14 +39,14 @@ export function AreaDistrictFields({ mode, disabled }: AreaDistrictFieldsProps) 
       />
     </div>
   );
-}
+});
 
 export interface AddressFieldsProps {
   mode: 'google' | 'manual';
   disabled?: boolean;
 }
 
-export function AddressFields({ mode, disabled }: AddressFieldsProps) {
+export const AddressFields = memo(function AddressFields({ mode, disabled }: AddressFieldsProps) {
   const {
     register,
     formState: { errors },
@@ -161,6 +162,6 @@ export function AddressFields({ mode, disabled }: AddressFieldsProps) {
       </div>
     </div>
   );
-}
+});
 
 export default AddressFields;

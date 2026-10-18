@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Input, Combobox } from '@/shared/ui';
 import type { FormValues } from '../../../schemas/createTheatreForm.schema';
@@ -12,7 +13,7 @@ export interface CitySelectorProps {
   disabled?: boolean;
 }
 
-export function CitySelector({
+export const CitySelector = memo(function CitySelector({
   manualCityType,
   onManualCityTypeChange,
   isCitiesLoading,
@@ -114,6 +115,6 @@ export function CitySelector({
       )}
     </div>
   );
-}
+});
 
 export default CitySelector;

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/shared/ui';
 import type { FormValues } from '../../../schemas/createTheatreForm.schema';
@@ -6,7 +7,7 @@ export interface ContactLicenseSectionProps {
   disabled?: boolean;
 }
 
-export function ContactLicenseSection({ disabled }: ContactLicenseSectionProps) {
+export const ContactLicenseSection = memo(function ContactLicenseSection({ disabled }: ContactLicenseSectionProps) {
   const {
     register,
     formState: { errors },
@@ -50,6 +51,6 @@ export function ContactLicenseSection({ disabled }: ContactLicenseSectionProps) 
       </div>
     </div>
   );
-}
+});
 
 export default ContactLicenseSection;
