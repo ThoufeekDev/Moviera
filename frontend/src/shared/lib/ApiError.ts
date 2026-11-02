@@ -20,9 +20,3 @@ export class ApiError extends Error {
     }
 }
 
-// ! Defines a standard error object for the app
-
-// It gives our application a predictable error:
-
-// error.message
-// error.statusCode

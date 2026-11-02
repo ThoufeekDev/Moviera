@@ -45,6 +45,7 @@ import {
   toggleFacilityStatusBodySchema,
   toggleFacilityStatusParamSchema,
 } from '../schemas/ToggleFacilityStatusSchema';
+import { GetSuperAdminTheatreDetailController } from '../controllers/GetSuperAdminTheatreDetailController';
 import { upload } from '../../../../shared/middleware/upload.middleware';
 
 interface TheatreRouteControllers {
@@ -66,6 +67,7 @@ interface TheatreRouteControllers {
   createFacilityController: CreateFacilityController;
   editFacilityController: EditFacilityController;
   toggleFacilityStatusController: ToggleFacilityStatusController;
+  getSuperAdminTheatreDetailController: GetSuperAdminTheatreDetailController;
 }
 
 export function createTheatreRoutes(controllers: TheatreRouteControllers): Router {
@@ -217,6 +219,13 @@ export function createTheatreRoutes(controllers: TheatreRouteControllers): Route
   );
 
   // ── Parameterized Route (keep after static routes) ────────────────────────
+  router.get(
+    '/:theatreId/details',
+    ...superAdmin,
+    validate({ params: getTheatreOverviewParamSchema }),
+    adapt(controllers.getSuperAdminTheatreDetailController.handle),
+  );
+
   router.get(
     '/:theatreId',
     ...theatreAdmin,

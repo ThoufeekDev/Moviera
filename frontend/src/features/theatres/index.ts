@@ -39,6 +39,7 @@ export * from './icons/facilityIcons';
 export { default as FacilitiesPage } from './pages/FacilitiesPage';
 export { default as ManageTheatresPage } from './pages/ManageTheatresPage';
 export { default as TheatreAdminManagementPage } from './pages/TheatreAdminManagementPage';
+export { default as SuperAdminTheatreDetailPage } from './pages/SuperAdminTheatreDetailPage';
 
 // Components
 export { default as SuperAdminTheatreCard } from './components/SuperAdminTheatreCard';

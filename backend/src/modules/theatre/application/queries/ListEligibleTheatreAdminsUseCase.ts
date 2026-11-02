@@ -17,6 +17,7 @@ export class ListEligibleTheatreAdminsUseCase implements IUseCase<
   constructor(private readonly userReader: ITheatreAdminUserReader) {}
 
   async execute(request: ListEligibleTheatreAdminsRequest): Promise<EligibleAdminUser[]> {
+    
     return this.userReader.findEligibleAdmins(request.query?.search);
   }
 }

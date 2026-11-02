@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { Skeleton } from '@/shared/ui/Skeleton';
+import { ErrorState } from '@/shared/ui';
 import { useTheatreOverview } from '../hooks/useTheatreOverview';
 
 import TheatreHeader from '../components/TheatreHeader';
@@ -17,7 +18,7 @@ export default function TheatreDetailsPage() {
 
   const [activeTab, setActiveTab] = useState<TheatreTab>('OVERVIEW');
 
-  const { data: overview, isLoading } = useTheatreOverview(theatreId!);
+  const { data: overview, isLoading, isError, error, refetch } = useTheatreOverview(theatreId!);
 
   const theatre = overview?.theatre;
 
@@ -37,9 +38,20 @@ export default function TheatreDetailsPage() {
     );
   }
 
-  if (!theatre || !overview) {
-    return null;
+  if (isError || !theatre || !overview) {
+    return (
+      <ErrorState
+        title="Failed to load theatre"
+        message={
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong while loading theatre details.'
+        }
+        onRetry={refetch}
+      />
+    );
   }
+
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">

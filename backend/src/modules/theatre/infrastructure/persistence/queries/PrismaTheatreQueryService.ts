@@ -10,6 +10,7 @@ import { SuperAdminListTheatresItems } from '../../../application/read-models/Su
 import { CityOption } from '../../../application/read-models/CityOption';
 import { SuperAdminFacilityListItem } from '../../../application/read-models/SuperAdminFacilityListItem';
 import { ActiveFacilityOption } from '../../../application/read-models/ActiveFacilityOption';
+import { SuperAdminTheatreDetail } from '../../../application/read-models/SuperAdminTheatreDetail';
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 
@@ -440,6 +441,237 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       },
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
     });
+  }
+
+  async getTheatreDetailForSuperAdmin(identifier: string): Promise<SuperAdminTheatreDetail | null> {
+    const theatre = await this.prisma.theatre.findFirst({
+      where: {
+        deletedAt: null,
+        OR: [{ id: identifier }, { slug: identifier }],
+      },
+      include: {
+        city: true,
+        area: true,
+        facilities: {
+          include: {
+            facility: true,
+          },
+        },
+        screens: {
+          include: {
+            cinemaFormats: {
+              include: {
+                cinemaFormat: true,
+              },
+            },
+            _count: {
+              select: {
+                seats: {
+                  where: {
+                    isActive: true,
+                  },
+                },
+                shows: true,
+              },
+            },
+          },
+          orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+        },
+        adminAssignments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+              },
+            },
+          },
+          orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+        },
+      },
+    });
+
+    if (!theatre || theatre.deletedAt) {
+      return null;
+    }
+
+    const now = new Date();
+    const startOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+
+    const [todayShowsCount, todayBookingsCount, createdByUser] = await Promise.all([
+      this.prisma.show.count({
+        where: {
+          screen: {
+            theatreId: theatre.id,
+          },
+          startTime: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        },
+      }),
+      this.prisma.booking.count({
+        where: {
+          show: {
+            screen: {
+              theatreId: theatre.id,
+            },
+          },
+          createdAt: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        },
+      }),
+      theatre.createdById
+        ? this.prisma.user.findUnique({
+            where: { id: theatre.createdById },
+            select: { name: true, email: true },
+          })
+        : null,
+    ]);
+
+    const totalScreens = theatre.screens.length;
+    const totalSeats = theatre.screens.reduce((sum, s) => sum + s._count.seats, 0);
+
+    const activityHistory: SuperAdminTheatreDetail['activityHistory'] = [];
+
+    activityHistory.push({
+      id: `act-theatre-created-${theatre.id}`,
+      type: 'THEATRE_CREATED',
+      title: 'Theatre Registered',
+      description: `Theatre "${theatre.name}" was registered in ${theatre.city.name}`,
+      performedBy: createdByUser?.name || 'Super Admin',
+      timestamp: theatre.createdAt.toISOString(),
+    });
+
+    if (theatre.updatedAt.getTime() - theatre.createdAt.getTime() > 2000) {
+      activityHistory.push({
+        id: `act-theatre-updated-${theatre.id}`,
+        type: 'THEATRE_UPDATED',
+        title: 'Theatre Information Updated',
+        description: 'Theatre details and configuration were updated',
+        performedBy: 'Super Admin',
+        timestamp: theatre.updatedAt.toISOString(),
+      });
+    }
+
+    theatre.screens.forEach((screen) => {
+      activityHistory.push({
+        id: `act-screen-created-${screen.id}`,
+        type: 'SCREEN_CREATED',
+        title: 'Screen Added',
+        description: `Screen "${screen.name}" (${screen._count.seats} seats) added to theatre`,
+        performedBy: 'Theatre Management',
+        timestamp: screen.createdAt.toISOString(),
+      });
+      if (screen.updatedAt.getTime() - screen.createdAt.getTime() > 2000) {
+        activityHistory.push({
+          id: `act-screen-updated-${screen.id}`,
+          type: 'SCREEN_UPDATED',
+          title: 'Screen Updated',
+          description: `Screen "${screen.name}" configuration updated`,
+          performedBy: 'Theatre Management',
+          timestamp: screen.updatedAt.toISOString(),
+        });
+      }
+    });
+
+    theatre.adminAssignments.forEach((assignment) => {
+      activityHistory.push({
+        id: `act-admin-assigned-${assignment.id}`,
+        type: 'ADMIN_ASSIGNED',
+        title: 'Administrator Assigned',
+        description: `${assignment.user.name} assigned as ${assignment.role.replace(/_/g, ' ')}`,
+        performedBy: 'Super Admin',
+        timestamp: assignment.createdAt.toISOString(),
+      });
+    });
+
+    activityHistory.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+    return {
+      id: theatre.id,
+      name: theatre.name,
+      slug: theatre.slug,
+      address: theatre.address,
+      description: theatre.description,
+      logoUrl: theatre.logoUrl,
+      email: theatre.email,
+      phone: theatre.phone,
+      latitude: theatre.latitude,
+      longitude: theatre.longitude,
+      pincode: theatre.pincode,
+      landmark: theatre.landmark,
+      googlePlaceId: theatre.googlePlaceId,
+      isActive: theatre.isActive,
+      licenseNumber: theatre.licenseNumber,
+      createdAt: theatre.createdAt.toISOString(),
+      updatedAt: theatre.updatedAt.toISOString(),
+      createdById: theatre.createdById,
+      createdByName: createdByUser?.name ?? null,
+
+      city: {
+        id: theatre.city.id,
+        name: theatre.city.name,
+        district: theatre.city.district,
+        state: theatre.city.state,
+        country: theatre.city.country,
+      },
+
+      area: theatre.area
+        ? {
+            id: theatre.area.id,
+            name: theatre.area.name,
+          }
+        : null,
+
+      statistics: {
+        totalScreens,
+        totalSeats,
+        todayShows: todayShowsCount,
+        todayBookings: todayBookingsCount,
+      },
+
+      screens: theatre.screens.map((screen) => ({
+        id: screen.id,
+        name: screen.name,
+        slug: screen.slug,
+        isActive: screen.isActive,
+        cinemaFormats: screen.cinemaFormats.map((cf) => ({
+          id: cf.cinemaFormat.id,
+          name: cf.cinemaFormat.name,
+        })),
+        seatingCapacity: screen._count.seats,
+        createdAt: screen.createdAt.toISOString(),
+        updatedAt: screen.updatedAt.toISOString(),
+      })),
+
+      facilities: theatre.facilities.map((f) => ({
+        id: f.facility.id,
+        name: f.facility.name,
+        slug: f.facility.slug,
+        description: f.facility.description,
+        icon: f.facility.icon,
+        iconKey: f.facility.iconKey,
+      })),
+
+      assignedAdmins: theatre.adminAssignments.map((a) => ({
+        assignmentId: a.id,
+        userId: a.user.id,
+        name: a.user.name,
+        email: a.user.email,
+        phone: a.user.phone,
+        role: a.role,
+        isActive: a.isActive,
+        assignedAt: a.createdAt.toISOString(),
+      })),
+
+      activityHistory,
+    };
   }
 }
 

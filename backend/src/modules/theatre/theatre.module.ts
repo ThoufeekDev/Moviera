@@ -37,6 +37,7 @@ import { EditFacilityUseCase } from './application/commands/EditFacilityUseCase'
 import { ToggleFacilityStatusUseCase } from './application/commands/ToggleFacilityStatusUseCase';
 import { ListFacilitiesUseCase } from './application/queries/ListFacilitiesUseCase';
 import { ListActiveFacilitiesUseCase } from './application/queries/ListActiveFacilitiesUseCase';
+import { ViewTheatreDetailPageForSuperAdmin } from './application/queries/ViewTheatreDetailPageForSuperAdmin';
 import { PrismaFacilityRepository } from './infrastructure/persistence/repositories/PrismaFacilityRepository';
 
 import { CreateTheatreController } from './presentation/controllers/CreateTheatreController';
@@ -58,6 +59,7 @@ import { EditFacilityController } from './presentation/controllers/EditFacilityC
 import { ToggleFacilityStatusController } from './presentation/controllers/ToggleFacilityStatusController';
 import { ListFacilitiesController } from './presentation/controllers/ListFacilitiesController';
 import { ListActiveFacilitiesController } from './presentation/controllers/ListActiveFacilitiesController';
+import { GetSuperAdminTheatreDetailController } from './presentation/controllers/GetSuperAdminTheatreDetailController';
 
 import { createTheatreRoutes } from './presentation/routes/theatre.routes';
 import { createSeatRoutes } from './presentation/routes/seat.routes';
@@ -144,6 +146,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   const toggleFacilityStatusUseCase = new ToggleFacilityStatusUseCase(facilityRepository);
   const listFacilitiesUseCase = new ListFacilitiesUseCase(theatreQueryService);
   const listActiveFacilitiesUseCase = new ListActiveFacilitiesUseCase(theatreQueryService);
+  const viewTheatreDetailPageForSuperAdmin = new ViewTheatreDetailPageForSuperAdmin(theatreQueryService);
 
   // Controllers
   const createTheatreController = new CreateTheatreController(createTheatreUseCase);
@@ -186,6 +189,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   const toggleFacilityStatusController = new ToggleFacilityStatusController(toggleFacilityStatusUseCase);
   const listFacilitiesController = new ListFacilitiesController(listFacilitiesUseCase);
   const listActiveFacilitiesController = new ListActiveFacilitiesController(listActiveFacilitiesUseCase);
+  const getSuperAdminTheatreDetailController = new GetSuperAdminTheatreDetailController(viewTheatreDetailPageForSuperAdmin);
 
   // Routers
   const theatreRouter = createTheatreRoutes({
@@ -207,6 +211,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
     createFacilityController,
     editFacilityController,
     toggleFacilityStatusController,
+    getSuperAdminTheatreDetailController,
   });
 
   const seatRouter = createSeatRoutes({

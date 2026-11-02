@@ -8,10 +8,12 @@ import type { status } from '../../domain/enums/status';
 import type { CityOption } from '../read-models/CityOption';
 import type { SuperAdminFacilityListItem } from '../read-models/SuperAdminFacilityListItem';
 import type { ActiveFacilityOption } from '../read-models/ActiveFacilityOption';
+import type { SuperAdminTheatreDetail } from '../read-models/SuperAdminTheatreDetail';
 
 export interface ITheatreQueryService {
   findByAdminId(adminId: string): Promise<TheatreWithCity[]>;
   getOverview(theatreId: string, adminId: string): Promise<TheatreOverview | null>;
+  getTheatreDetailForSuperAdmin(theatreId: string): Promise<SuperAdminTheatreDetail | null>;
   listForSuperAdmin(filter?: {
     search?: string;
     city?: string;

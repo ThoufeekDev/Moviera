@@ -28,11 +28,12 @@ export default function SuperAdminTheatreCard({
   const [copiedLicence, setCopiedLicence] = useState(false);
 
   const handleDetailsClick = () => {
+    const slugOrId = theatre.slug || theatre.id;
     if (onViewDetails) {
-      onViewDetails(theatre.id);
+      onViewDetails(slugOrId);
     } else {
-      // Navigate to theatre detail route
-      navigate(`/theatre-admin/theatres/${theatre.id}`);
+      // Navigate to super admin theatre detail route using slug
+      navigate(`/super-admin/theatres/${slugOrId}`);
     }
   };
 

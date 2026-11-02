@@ -13,20 +13,22 @@ export class PrismaFacilityRepository implements IFacilityRepository {
     return raw ? this.toDomain(raw) : null;
   }
 
-  async findActiveByIds(ids: string[]): Promise<Facility[]> {
-    if (!ids || ids.length === 0) {
-      return [];
-    }
+async findActiveByIds(ids: string[]): Promise<Facility[]> {
+  const facilities: Facility[] = [];
 
-    const raw = await this.prisma.theatreFacility.findMany({
-      where: {
-        id: { in: ids },
-        isActive: true,
-      },
-    });
-
-    return raw.map((item) => this.toDomain(item));
+  if (ids.length === 0) {
+    return facilities;
   }
+
+  const rows = await this.prisma.theatreFacility.findMany({
+    where: {
+      id: { in: ids },
+      isActive: true,
+    },
+  });
+
+  return rows.map((row) => this.toDomain(row));
+}
 
   async findByName(name: string): Promise<Facility | null> {
     const raw = await this.prisma.theatreFacility.findFirst({

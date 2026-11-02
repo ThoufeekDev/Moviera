@@ -24,6 +24,6 @@ export class PrismaTheatreAccessPolicy implements ITheatreAccessPolicy {
             }
         })
         
-        return !assignment;
+        return !!assignment;
     }
 }

@@ -61,4 +61,66 @@ describe('CreateMovieUseCase', () => {
     await expect(useCase.execute(movieInput)).rejects.toThrow(conflictError);
     expect(mockImageService.rollbackUploads).toHaveBeenCalledWith(uploadedImages);
   });
+
+  it('should successfully create movie with theatreFormatIds and mapped fields', async () => {
+    const mockRepo: IMovieRepository = {
+      create: vi.fn().mockResolvedValue(undefined),
+      findById: vi.fn(),
+      existsBySlug: vi.fn(),
+      updateMovie: vi.fn(),
+    };
+
+    const mockRefValidator = {
+      validateForCreate: vi.fn().mockResolvedValue(undefined),
+    } as unknown as MovieReferenceValidator;
+
+    const mockSlugService = {
+      generateUniqueSlug: vi.fn().mockResolvedValue('test-movie-2025'),
+    } as unknown as MovieSlugService;
+
+    const uploadedImages = {
+      poster: { publicId: 'poster-1', secureUrl: 'https://example.com/poster.jpg' },
+      backdrop: { publicId: 'backdrop-1', secureUrl: 'https://example.com/backdrop.jpg' },
+    };
+
+    const mockImageService = {
+      uploadImages: vi.fn().mockResolvedValue(uploadedImages),
+      rollbackUploads: vi.fn().mockResolvedValue(undefined),
+    } as unknown as MovieImageService;
+
+    const useCase = new CreateMovieUseCase(
+      mockRepo,
+      mockRefValidator,
+      mockImageService,
+      mockSlugService,
+    );
+
+    const movieInput: CreateMovieDTO = {
+      title: 'Test Movie',
+      description: 'Test description',
+      duration: 120,
+      releaseDate: new Date('2025-01-01'),
+      primaryGenreId: 'genre-1',
+      genreIds: ['genre-1'],
+      certification: Certification.UA,
+      languageIds: ['lang-1'],
+      theatreFormatIds: ['format-1'],
+      cast: [],
+      crew: [],
+    };
+
+    await useCase.execute(movieInput);
+
+    expect(mockRefValidator.validateForCreate).toHaveBeenCalledWith(movieInput);
+    expect(mockSlugService.generateUniqueSlug).toHaveBeenCalledWith('Test Movie', movieInput.releaseDate);
+    expect(mockRepo.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Test Movie',
+        slug: 'test-movie-2025',
+        theatreFormatIds: ['format-1'],
+        languageIds: ['lang-1'],
+        isActive: true,
+      }),
+    );
+  });
 });
