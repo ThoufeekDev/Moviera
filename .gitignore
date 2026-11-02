@@ -1,2 +1,6 @@
 node_modules/
 AGENTS.md
+# Environment files
+.env
+.env.*
+!.env.example
