@@ -5,11 +5,11 @@ import { ListMoviesForAdminQuery } from '../../../application/query-params/ListM
 import { PaginatedResult } from '../../../../../shared/types/Pagination';
 import { MovieAdminDetail } from '../../../application/read-models/MovieAdminDetail';
 import { MovieStatus } from '../../../application/query-params/MovieStatus';
-import { movieAdminListSelect } from '../selects/movieListSelect';
+import { movieAdminListSelect } from '../selects/MovieListSelect';
 import { MovieAdminListItemMapper } from '../mappers/MovieAdminListItemMapper';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 import { MovieAdminDetailMapper } from '../mappers/MovieAdminDetailMapper';
-import { movieAdminDetailSelect } from '../selects/movieAdminDetailSelect';
+import { movieAdminDetailSelect } from '../selects/MovieAdminDetailSelect';
 
 export class PrismaMovieQueryService implements IMovieQueryService {
   constructor(private readonly prisma: PrismaClient) {}

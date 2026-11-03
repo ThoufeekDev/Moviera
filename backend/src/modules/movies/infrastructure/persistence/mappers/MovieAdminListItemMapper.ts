@@ -1,7 +1,7 @@
 import { MovieAdminListItem } from '../../../application/read-models/MovieAdminListItem';
 import { Certification } from '../../../domain/enums/Certification';
 import { Prisma } from '@prisma/client';
-import { movieAdminListSelect } from '../selects/movieListSelect';
+import { movieAdminListSelect } from '../selects/MovieListSelect';
 
 type MovieAdminListRow = Prisma.MovieGetPayload<{select:typeof movieAdminListSelect}>
 export class MovieAdminListItemMapper {

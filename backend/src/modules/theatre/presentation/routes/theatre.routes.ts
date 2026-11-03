@@ -35,6 +35,8 @@ import { ListActiveFacilitiesController } from '../controllers/ListActiveFacilit
 import { CreateFacilityController } from '../controllers/CreateFacilityController';
 import { EditFacilityController } from '../controllers/EditFacilityController';
 import { ToggleFacilityStatusController } from '../controllers/ToggleFacilityStatusController';
+import { ListScreensController } from '../controllers/ListScreenController';
+import { listScreensQuerySchema } from '../schemas/ListScreenSchema';
 import { listFacilitiesQuerySchema } from '../schemas/ListFacilitiesSchema';
 import { createFacilitySchema } from '../schemas/CreateFacilitySchema';
 import {
@@ -68,6 +70,7 @@ interface TheatreRouteControllers {
   editFacilityController: EditFacilityController;
   toggleFacilityStatusController: ToggleFacilityStatusController;
   getSuperAdminTheatreDetailController: GetSuperAdminTheatreDetailController;
+  listScreensController: ListScreensController;
 }
 
 export function createTheatreRoutes(controllers: TheatreRouteControllers): Router {
@@ -92,12 +95,25 @@ export function createTheatreRoutes(controllers: TheatreRouteControllers): Route
     adapt(controllers.createTheatreController.handle),
   );
 
+
+
+
   // ── Theatre Admin Routes ──────────────────────────────────────────────────
   router.get(
     '/my-theatres',
     ...theatreAdmin,
     adapt(controllers.getMyTheatresController.handle),
   );
+
+  router.get(
+  '/:theatreId/screens',
+  ...theatreAdmin,
+  validate({
+    params: getTheatreOverviewParamSchema,
+    query: listScreensQuerySchema,
+  }),
+  adapt(controllers.listScreensController.handle),
+);
 
   router.post(
     '/screens',

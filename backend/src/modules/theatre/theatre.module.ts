@@ -10,6 +10,8 @@ import { PrismaTheatreAccessPolicy } from './infrastructure/persistence/reposito
 import { PrismaTheatreAdminAssignmentRepository } from './infrastructure/persistence/repositories/PrismaTheatreAdminAssignmentRepository';
 import { PrismaTheatreAdminUserReader } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserReader';
 import { PrismaTheatreAdminUserManager } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserManager';
+import { PrismaScreenQueryService } from './infrastructure/persistence/queries/PrismaScreenQueryService';
+
 import { ResendEmailService } from '../../shared/infrastructure/email/ResendEmailService';
 import { IStorageService } from '../../shared/application/ports/IStorageService';
 
@@ -37,6 +39,7 @@ import { EditFacilityUseCase } from './application/commands/EditFacilityUseCase'
 import { ToggleFacilityStatusUseCase } from './application/commands/ToggleFacilityStatusUseCase';
 import { ListFacilitiesUseCase } from './application/queries/ListFacilitiesUseCase';
 import { ListActiveFacilitiesUseCase } from './application/queries/ListActiveFacilitiesUseCase';
+import { ListScreenUseCase } from './application/queries/ListScreensUseCase';
 import { ViewTheatreDetailPageForSuperAdmin } from './application/queries/ViewTheatreDetailPageForSuperAdmin';
 import { PrismaFacilityRepository } from './infrastructure/persistence/repositories/PrismaFacilityRepository';
 
@@ -72,6 +75,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   const screenRepository = new PrismaScreenRepository(prisma);
   const seatRepository = new PrismaSeatRepository(prisma);
   const theatreQueryService = new PrismaTheatreQueryService(prisma);
+  const screenQueryService = new PrismaScreenQueryService(prisma);
   const theatreAccessPolicy = new PrismaTheatreAccessPolicy(prisma);
   const assignmentRepository = new PrismaTheatreAdminAssignmentRepository(prisma);
   const theatreAdminUserReader = new PrismaTheatreAdminUserReader(prisma);
@@ -105,6 +109,10 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
     theatreAccessPolicy,
   );
   const getMyTheatresUseCase = new GetMyTheatresUseCase(theatreQueryService);
+  const listScreenUseCase = new ListScreenUseCase(
+    screenQueryService,
+    theatreAccessPolicy,
+  )
   const getTheatreOverviewUseCase = new GetTheatreOverviewUseCase(
     theatreQueryService,
     theatreAccessPolicy,

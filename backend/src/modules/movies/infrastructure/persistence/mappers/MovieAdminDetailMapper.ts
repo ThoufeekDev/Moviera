@@ -1,7 +1,7 @@
 import { Certification } from '../../../domain/enums/Certification';
 import { Prisma } from '@prisma/client';
 import { MovieAdminDetail } from '../../../application/read-models/MovieAdminDetail';
-import { movieAdminDetailSelect } from '../selects/movieAdminDetailSelect';
+import { movieAdminDetailSelect } from '../selects/MovieAdminDetailSelect';
 
 type MovieDetailRow = Prisma.MovieGetPayload<{ select: typeof movieAdminDetailSelect }>;
 

@@ -22,6 +22,9 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       where: {
         userId: adminId,
         isActive: true,
+        user: {
+          isActive:true,
+        },
         theatre: {
           deletedAt:null,
           isActive: true,
@@ -48,6 +51,9 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
         theatreId,
         userId: adminId,
         isActive: true,
+        user: {
+          isActive:true,
+        },
         theatre: {
           isActive: true,
           deletedAt:null,
