@@ -8,5 +8,9 @@ export const createSeatParamSchema = z.object({
   screenId: z.string().trim().min(1, 'Screen ID is required'),
 });
 
+
+export const updateSeatParamSchema = z.object({
+  seatId: z.string().trim().min(1, 'Seat ID is required'),
+});
 export type GetTheatreOverviewParamInput = z.infer<typeof getTheatreOverviewParamSchema>;
 export type CreateSeatParamInput = z.infer<typeof createSeatParamSchema>;

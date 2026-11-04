@@ -5,5 +5,7 @@ export interface ScreenListItem {
   slug: string;
   isActive: boolean;
   totalSeats: number;
+  totalRows: number;
   totalShows: number;
+  seatConfigurationStatus: 'CONFIGURED' | 'NOT_CONFIGURED';
 }

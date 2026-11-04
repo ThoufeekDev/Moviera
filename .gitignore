@@ -4,3 +4,6 @@ AGENTS.md
 .env
 .env.*
 !.env.example
+# Generated project archives
+/backend.zip
+/frontend.zip

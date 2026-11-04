@@ -1,7 +1,11 @@
+import type { GetScreensParams } from './types/screen.types';
+
 export const theatreKeys = {
   all: ['theatres'] as const,
   myTheatres: () => [...theatreKeys.all, 'my-theatres'] as const,
   overview: (theatreId: string) => [...theatreKeys.all, 'overview', theatreId] as const,
+  screens: (theatreId: string, query?: GetScreensParams) =>
+    [...theatreKeys.all, 'screens', theatreId, query] as const,
   forAdmin: (query?: {
     search?: string;
     city?: string;
@@ -18,4 +22,3 @@ export const theatreKeys = {
   activeFacilities: () => [...theatreKeys.all, 'facilities', 'active'] as const,
   superAdminDetail: (theatreId: string) => [...theatreKeys.all, 'super-admin-detail', theatreId] as const,
 };
-

@@ -8,6 +8,8 @@ import { PrismaSeatRepository } from './infrastructure/persistence/repositories/
 import { PrismaTheatreQueryService } from './infrastructure/persistence/queries/PrismaTheatreQueryService';
 import { PrismaTheatreAccessPolicy } from './infrastructure/persistence/repositories/PrismaTheatreAccessPolicy';
 import { PrismaTheatreAdminAssignmentRepository } from './infrastructure/persistence/repositories/PrismaTheatreAdminAssignmentRepository';
+import { PrismaTheatreLocationRepository } from './infrastructure/persistence/repositories/PrismaTheatreLocationRepository';
+
 import { PrismaTheatreAdminUserReader } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserReader';
 import { PrismaTheatreAdminUserManager } from './infrastructure/persistence/repositories/PrismaTheatreAdminUserManager';
 import { PrismaScreenQueryService } from './infrastructure/persistence/queries/PrismaScreenQueryService';
@@ -20,6 +22,7 @@ import { IStorageService } from '../../shared/application/ports/IStorageService'
 import { TheatreSlugService } from './application/services/TheatreSlugService';
 import { ResolveTheatreLocationService } from './application/services/ResolveTheatreLocationService';
 
+// ^ UseCases
 import { CreateTheatreUseCase } from './application/commands/CreateTheatreUseCase';
 import { CreateScreenUseCase } from './application/commands/CreateScreenUseCase';
 import { CreateSeatUseCase } from './application/commands/CreateSeatUseCase';
@@ -40,9 +43,17 @@ import { ToggleFacilityStatusUseCase } from './application/commands/ToggleFacili
 import { ListFacilitiesUseCase } from './application/queries/ListFacilitiesUseCase';
 import { ListActiveFacilitiesUseCase } from './application/queries/ListActiveFacilitiesUseCase';
 import { ListScreenUseCase } from './application/queries/ListScreensUseCase';
+import { BulkCreateSeatsUseCase } from './application/commands/BulkCreateSeatsUseCase';
+import { GetScreenSeatLayoutUseCase } from './application/queries/GetScreenSeatLayoutUseCase';
+import { UpdateSeatLayoutUseCase } from './application/commands/UpdateSeatLayoutUseCase';
+import { UpdateSeatUseCase } from './application/commands/UpdateSeatUseCase';
+
+
 import { ViewTheatreDetailPageForSuperAdmin } from './application/queries/ViewTheatreDetailPageForSuperAdmin';
 import { PrismaFacilityRepository } from './infrastructure/persistence/repositories/PrismaFacilityRepository';
 
+
+// & Controllers
 import { CreateTheatreController } from './presentation/controllers/CreateTheatreController';
 import { CreateScreenController } from './presentation/controllers/CreateScreenController';
 import { CreateSeatController } from './presentation/controllers/CreateSeatController';
@@ -63,10 +74,18 @@ import { ToggleFacilityStatusController } from './presentation/controllers/Toggl
 import { ListFacilitiesController } from './presentation/controllers/ListFacilitiesController';
 import { ListActiveFacilitiesController } from './presentation/controllers/ListActiveFacilitiesController';
 import { GetSuperAdminTheatreDetailController } from './presentation/controllers/GetSuperAdminTheatreDetailController';
+import { ListScreensController } from './presentation/controllers/ListScreenController';
+import { BulkCreateSeatsController } from './presentation/controllers/BulkCreateSeatsController';
+import { GetScreenSeatLayoutController } from './presentation/controllers/GetScreenSeatLayoutController';
+import { UpdateSeatLayoutController } from './presentation/controllers/UpdateSeatLayoutController';
+import { UpdateSeatController } from './presentation/controllers/UpdateSeatController';
+
+
+
 
 import { createTheatreRoutes } from './presentation/routes/theatre.routes';
 import { createSeatRoutes } from './presentation/routes/seat.routes';
-import { PrismaTheatreLocationRepository } from './infrastructure/persistence/repositories/PrismaTheatreLocationRepository';
+
 
 export function buildTheatreModule(prisma: PrismaClient, storageService?: IStorageService) {
   // Repositories & Query Service
@@ -112,7 +131,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   const listScreenUseCase = new ListScreenUseCase(
     screenQueryService,
     theatreAccessPolicy,
-  )
+  );
   const getTheatreOverviewUseCase = new GetTheatreOverviewUseCase(
     theatreQueryService,
     theatreAccessPolicy,
@@ -148,6 +167,29 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   );
   const listCitiesUseCase = new ListCitiesUseCase(theatreQueryService);
 
+const bulkCreateSeatsUseCase = new BulkCreateSeatsUseCase(
+  seatRepository,
+  screenRepository,
+  theatreAccessPolicy,
+);
+
+  const getScreenSeatLayoutUseCase = new GetScreenSeatLayoutUseCase(
+  seatRepository,
+  screenRepository,
+  theatreAccessPolicy,
+);
+const updateSeatLayoutUseCase = new UpdateSeatLayoutUseCase(
+  seatRepository,
+  screenRepository,
+  theatreAccessPolicy,
+);
+const updateSeatUseCase = new UpdateSeatUseCase(
+  seatRepository,
+  screenRepository,
+  theatreAccessPolicy,
+);
+
+
   // Facility Use Cases
   const createFacilityUseCase = new CreateFacilityUseCase(facilityRepository);
   const editFacilityUseCase = new EditFacilityUseCase(facilityRepository);
@@ -159,7 +201,20 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   // Controllers
   const createTheatreController = new CreateTheatreController(createTheatreUseCase);
   const createScreenController = new CreateScreenController(createScreenUseCase);
+  const listScreensController = new ListScreensController(listScreenUseCase);
   const createSeatController = new CreateSeatController(createSeatUseCase);
+  const bulkCreateSeatsController = new BulkCreateSeatsController(
+  bulkCreateSeatsUseCase,
+  );
+  const getScreenSeatLayoutController = new GetScreenSeatLayoutController(
+  getScreenSeatLayoutUseCase,
+  );
+  const updateSeatLayoutController = new UpdateSeatLayoutController(
+  updateSeatLayoutUseCase,
+  );
+  const updateSeatController = new UpdateSeatController(
+  updateSeatUseCase,
+);
   const getMyTheatresController = new GetMyTheatresController(getMyTheatresUseCase);
   const getTheatreOverviewController = new GetTheatreOverviewController(
     getTheatreOverviewUseCase,
@@ -203,6 +258,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   const theatreRouter = createTheatreRoutes({
     getMyTheatresController,
     createScreenController,
+    listScreensController,
     getTheatreOverviewController,
     assignTheatreAdminController,
     updateTheatreAdminAssignmentController,
@@ -222,10 +278,13 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
     getSuperAdminTheatreDetailController,
   });
 
-  const seatRouter = createSeatRoutes({
-    createSeatController,
-  });
-
+const seatRouter = createSeatRoutes({
+  createSeatController,
+  bulkCreateSeatsController,
+  getScreenSeatLayoutController,
+  updateSeatLayoutController,
+  updateSeatController,
+});
   return {
     theatreRouter,
     seatRouter,

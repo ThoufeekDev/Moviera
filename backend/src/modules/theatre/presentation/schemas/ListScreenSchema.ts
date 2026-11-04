@@ -11,3 +11,5 @@ export const listScreensQuerySchema = z.object({
 
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
+
+export type ListScreensQueryInput = z.infer<typeof listScreensQuerySchema>;
