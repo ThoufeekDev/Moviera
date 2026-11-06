@@ -21,4 +21,5 @@ export const theatreKeys = {
   facilities: (query?: unknown) => [...theatreKeys.all, 'facilities', query] as const,
   activeFacilities: () => [...theatreKeys.all, 'facilities', 'active'] as const,
   superAdminDetail: (theatreId: string) => [...theatreKeys.all, 'super-admin-detail', theatreId] as const,
+  seatLayout: (screenId: string) => [...theatreKeys.all, 'seat-layout', screenId] as const,
 };

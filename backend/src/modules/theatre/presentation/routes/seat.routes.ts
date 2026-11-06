@@ -11,7 +11,7 @@ import {
   bulkCreateSeatsSchema,
 } from "../schemas/CreateSeatSchema";
 
-import { createSeatParamSchema } from "../schemas/TheatreParamsSchema";
+import { createSeatParamSchema, updateSeatParamSchema } from "../schemas/TheatreParamsSchema";
 
 import { CreateSeatController } from "../controllers/CreateSeatController";
 import { BulkCreateSeatsController } from "../controllers/BulkCreateSeatsController";
@@ -19,15 +19,18 @@ import { UpdateSeatLayoutController } from "../controllers/UpdateSeatLayoutContr
 import { updateSeatLayoutSchema } from "../schemas/UpdateSeatLayoutSchema";
 import { UpdateSeatController } from '../controllers/UpdateSeatController';
 import { updateSeatSchema } from '../schemas/UpdateSeatSchema';
+import { UpdateSeatPropertiesController } from '../controllers/UpdateSeatPropertiesController';
+import { updateSeatPropertiesSchema } from '../schemas/UpdateSeatPropertiesSchema';
 
-import { updateSeatParamSchema } from '../schemas/TheatreParamsSchema';
 interface SeatRouteControllers {
   createSeatController: CreateSeatController;
   bulkCreateSeatsController: BulkCreateSeatsController;
   getScreenSeatLayoutController: GetScreenSeatLayoutController;
   updateSeatLayoutController: UpdateSeatLayoutController;
   updateSeatController: UpdateSeatController;
+  updateSeatPropertiesController: UpdateSeatPropertiesController;
 }
+
 export function createSeatRoutes(controllers: SeatRouteControllers): Router {
   const router = Router();
 
@@ -58,33 +61,46 @@ export function createSeatRoutes(controllers: SeatRouteControllers): Router {
     adapt(controllers.bulkCreateSeatsController.handle),
   );
 
-
+  // Get screen seat layout
   router.get(
-  "/screens/:screenId/seat-layout",
-  ...theatreAdmin,
-  validate({ params: createSeatParamSchema }),
-  adapt(controllers.getScreenSeatLayoutController.handle),
+    "/screens/:screenId/seat-layout",
+    ...theatreAdmin,
+    validate({ params: createSeatParamSchema }),
+    adapt(controllers.getScreenSeatLayoutController.handle),
   );
 
+  // Batch update seat positions
   router.patch(
-  "/screens/:screenId/seat-layout",
-  ...theatreAdmin,
-  validate({
-    params: createSeatParamSchema,
-    body: updateSeatLayoutSchema,
-  }),
-  adapt(controllers.updateSeatLayoutController.handle),
+    "/screens/:screenId/seat-layout",
+    ...theatreAdmin,
+    validate({
+      params: createSeatParamSchema,
+      body: updateSeatLayoutSchema,
+    }),
+    adapt(controllers.updateSeatLayoutController.handle),
   );
 
-router.patch(
-  '/seats/:seatId',
-  ...theatreAdmin,
-  validate({
-    params: updateSeatParamSchema,
-    body: updateSeatSchema,
-  }),
-  adapt(controllers.updateSeatController.handle),
-);
+  // Batch update seat properties (atomic)
+  router.patch(
+    "/screens/:screenId/seats/properties",
+    ...theatreAdmin,
+    validate({
+      params: createSeatParamSchema,
+      body: updateSeatPropertiesSchema,
+    }),
+    adapt(controllers.updateSeatPropertiesController.handle),
+  );
+
+  // Individual seat property update
+  router.patch(
+    '/seats/:seatId',
+    ...theatreAdmin,
+    validate({
+      params: updateSeatParamSchema,
+      body: updateSeatSchema,
+    }),
+    adapt(controllers.updateSeatController.handle),
+  );
 
   return router;
 }

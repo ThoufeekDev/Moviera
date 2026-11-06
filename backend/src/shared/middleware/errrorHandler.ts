@@ -9,12 +9,13 @@ import { errorResponse } from '../utils/apiResponse';
 import Sentry from '../infrastructure/monitoring/sentry';
 import { Prisma } from '@prisma/client';
 import { MAX_FILE_SIZE_MB } from './upload.middleware';
+
 export const errorHandler = (error: unknown, _req: Request, res: Response, next: NextFunction) => {
-// !This prevents the handler from trying to send a second response after Express
-// ! has already started sending one.
+  // Prevent sending multiple responses if headers were already sent
   if (res.headersSent) {
-    return next(error)
+    return next(error);
   }
+
   if (error instanceof ZodError) {
     const firstMsg = error.issues[0]?.message || 'Validation failed';
     return errorResponse(
@@ -29,22 +30,34 @@ export const errorHandler = (error: unknown, _req: Request, res: Response, next:
 
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
-      return errorResponse(res, HttpStatusCode.BAD_REQUEST, false, `File size must not exceed ${MAX_FILE_SIZE_MB}`);
+      return errorResponse(
+        res,
+        HttpStatusCode.BAD_REQUEST,
+        false,
+        `File size must not exceed ${MAX_FILE_SIZE_MB} MB`,
+        'FILE_TOO_LARGE',
+      );
     }
 
-    return errorResponse(res, HttpStatusCode.BAD_REQUEST, false, error.message);
+    return errorResponse(
+      res,
+      HttpStatusCode.BAD_REQUEST,
+      false,
+      error.message,
+      'FILE_TOO_LARGE',
+    );
   }
 
-if (error instanceof AppError) {
-  return errorResponse(
-    res,
-    error.statusCode,
-    false,
-    error.message,
-    error.code,
-    error.details,
-  );
-}
+  if (error instanceof AppError) {
+    return errorResponse(
+      res,
+      error.statusCode,
+      false,
+      error.message,
+      error.code,
+      error.details,
+    );
+  }
 
   if (error instanceof DomainError) {
     return errorResponse(res, HttpStatusCode.BAD_REQUEST, false, error.message, 'DOMAIN_ERROR');
@@ -81,7 +94,13 @@ if (error instanceof AppError) {
     error instanceof TokenExpiredError ||
     error instanceof NotBeforeError
   ) {
-    return errorResponse(res, HttpStatusCode.UNAUTHORIZED, false, 'Invalid or expired token');
+    return errorResponse(
+      res,
+      HttpStatusCode.UNAUTHORIZED,
+      false,
+      'Invalid or expired token',
+      'UNAUTHORIZED',
+    );
   }
 
   const errorType = (error as { type?: string } | null)?.type;
@@ -117,13 +136,3 @@ if (error instanceof AppError) {
     'INTERNAL_ERROR',
   );
 };
-
-// Zod
-// → Multer
-// → AppError
-// → DomainError
-// → Prisma
-// → JWT
-// → malformed JSON
-// → oversized body
-// → unknown 500

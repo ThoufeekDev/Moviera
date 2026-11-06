@@ -1,9 +1,12 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Modal,
   Button,
   Input,
   Textarea,
+  FormErrorBanner,
 } from '@/shared/ui';
 import {
   ALLOWED_FACILITY_ICON_KEYS,
@@ -15,7 +18,11 @@ import {
 import { useCreateFacility } from '../hooks/useCreateFacility';
 import { useEditFacility } from '../hooks/useEditFacility';
 import type { SuperAdminFacilityItem } from '../api/facilities.api';
-import { extractFormErrors } from '@/shared/lib/extractFormErrors';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
+import {
+  facilityFormSchema,
+  type FacilityFormData,
+} from '../schemas/facilityForm.schema';
 import { cn } from '@/shared/lib/cn';
 import { Sparkles } from 'lucide-react';
 
@@ -33,11 +40,6 @@ export default function FacilityModal({
   onSuccess,
 }: FacilityModalProps) {
   const isEditing = Boolean(facility);
-
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedIconKey, setSelectedIconKey] = useState<FacilityIconKey | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
 
   const createMutation = useCreateFacility();
@@ -45,58 +47,57 @@ export default function FacilityModal({
 
   const isSubmitting = createMutation.isPending || editMutation.isPending;
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    setError,
+    control,
+    formState: { errors },
+  } = useForm<FacilityFormData>({
+    resolver: zodResolver(facilityFormSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      iconKey: null,
+    },
+  });
+
+  const watchedName = useWatch({ control, name: 'name' }) || '';
+  const watchedDescription = useWatch({ control, name: 'description' }) || '';
+  const watchedIconKey = useWatch({ control, name: 'iconKey' });
+
   // Populate or reset form whenever isOpen or facility changes
   useEffect(() => {
     if (isOpen) {
       if (facility) {
-        setName(facility.name);
-        setDescription(facility.description ?? '');
-        setSelectedIconKey(
-          facility.iconKey && ALLOWED_FACILITY_ICON_KEYS.includes(facility.iconKey as FacilityIconKey)
-            ? (facility.iconKey as FacilityIconKey)
-            : null,
-        );
+        reset({
+          name: facility.name,
+          description: facility.description ?? '',
+          iconKey:
+            facility.iconKey && ALLOWED_FACILITY_ICON_KEYS.includes(facility.iconKey as FacilityIconKey)
+              ? (facility.iconKey as FacilityIconKey)
+              : null,
+        });
       } else {
-        setName('');
-        setDescription('');
-        setSelectedIconKey(null);
+        reset({
+          name: '',
+          description: '',
+          iconKey: null,
+        });
       }
-      setFieldErrors({});
       setGeneralError(null);
     }
-  }, [isOpen, facility]);
+  }, [isOpen, facility, reset]);
 
-  // Client-side quick validation
-  const validateForm = (): boolean => {
-    const errors: Record<string, string> = {};
-    const trimmed = name.trim().replace(/\s+/g, ' ');
-
-    if (!trimmed) {
-      errors.name = 'Facility name is required.';
-    } else if (trimmed.length < 2) {
-      errors.name = 'Facility name must be at least 2 characters.';
-    } else if (trimmed.length > 60) {
-      errors.name = 'Facility name must not exceed 60 characters.';
-    }
-
-    if (description.length > 300) {
-      errors.description = 'Description must not exceed 300 characters.';
-    }
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FacilityFormData) => {
     setGeneralError(null);
 
-    if (!validateForm()) return;
-
     const payload = {
-      name: name.trim().replace(/\s+/g, ' '),
-      description: description.trim() || null,
-      iconKey: selectedIconKey || null,
+      name: data.name.trim().replace(/\s+/g, ' '),
+      description: data.description?.trim() || null,
+      iconKey: data.iconKey || null,
     };
 
     try {
@@ -113,9 +114,8 @@ export default function FacilityModal({
         onSuccess(payload.name, isEditing);
       }
     } catch (error) {
-      const parsed = extractFormErrors(error);
-      setFieldErrors(parsed.fieldErrors);
-      setGeneralError(parsed.generalMessage);
+      const result = setFormServerErrors(setError, error);
+      setGeneralError(result.generalMessage);
     }
   };
 
@@ -133,40 +133,30 @@ export default function FacilityModal({
       }
       size="lg"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
         {/* General Error Alert */}
-        {generalError && !fieldErrors.name && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm font-medium text-red-800">
-            {generalError}
-          </div>
-        )}
+        <FormErrorBanner message={generalError} />
 
         {/* Name Field */}
         <div className="flex flex-col gap-1.5">
           <Input
             id="facility-name"
             label="Facility Name *"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (fieldErrors.name) {
-                setFieldErrors((prev) => {
-                  const updated = { ...prev };
-                  delete updated.name;
-                  return updated;
-                });
-              }
-            }}
             placeholder="e.g. VIP Lounge, Valet Parking, Food Court"
             disabled={isSubmitting}
             maxLength={60}
-            error={fieldErrors.name}
+            error={errors.name?.message}
             helperText={
-              !fieldErrors.name
+              !errors.name
                 ? 'Must be unique, 2 to 60 characters. A web-friendly slug will be automatically created.'
                 : undefined
             }
             autoFocus
+            {...register('name', {
+              onChange: () => {
+                if (generalError) setGeneralError(null);
+              },
+            })}
           />
         </div>
 
@@ -177,31 +167,25 @@ export default function FacilityModal({
             <span
               className={cn(
                 'text-xs tabular-nums',
-                description.length > 280 ? 'font-semibold text-amber-600' : 'text-ink-muted',
+                watchedDescription.length > 280 ? 'font-semibold text-amber-600' : 'text-ink-muted',
               )}
             >
-              {description.length} / 300
+              {watchedDescription.length} / 300
             </span>
           </div>
           <Textarea
             id="facility-description"
             label="Description (Optional)"
             rows={3}
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-              if (fieldErrors.description) {
-                setFieldErrors((prev) => {
-                  const updated = { ...prev };
-                  delete updated.description;
-                  return updated;
-                });
-              }
-            }}
             placeholder="Brief explanation of what this facility provides to theatre visitors..."
             disabled={isSubmitting}
             maxLength={300}
-            error={fieldErrors.description}
+            error={errors.description?.message}
+            {...register('description', {
+              onChange: () => {
+                if (generalError) setGeneralError(null);
+              },
+            })}
           />
         </div>
 
@@ -211,10 +195,10 @@ export default function FacilityModal({
             <span className="text-sm font-semibold text-ink">
               Facility Icon <span className="text-xs font-normal text-ink-muted">(Optional)</span>
             </span>
-            {selectedIconKey && (
+            {watchedIconKey && (
               <button
                 type="button"
-                onClick={() => setSelectedIconKey(null)}
+                onClick={() => setValue('iconKey', null, { shouldDirty: true })}
                 className="text-xs font-medium text-brand-600 hover:text-brand-700 hover:underline cursor-pointer"
               >
                 Clear selection
@@ -225,20 +209,20 @@ export default function FacilityModal({
           {/* Live Preview Bar */}
           <div className="flex items-center gap-3 rounded-lg border border-border/80 bg-surface-muted/50 p-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-surface border border-border shadow-xs text-brand-600">
-              <FacilityIcon iconKey={selectedIconKey} size={22} />
+              <FacilityIcon iconKey={watchedIconKey as FacilityIconKey | null} size={22} />
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-semibold text-ink">
-                  {selectedIconKey ? FACILITY_ICON_LABELS[selectedIconKey] : 'Default Fallback Icon'}
+                  {watchedIconKey ? FACILITY_ICON_LABELS[watchedIconKey as FacilityIconKey] : 'Default Fallback Icon'}
                 </span>
                 <span className="inline-flex items-center gap-1 rounded bg-brand-50 px-1.5 py-0.5 text-[10px] font-semibold text-brand-700">
                   <Sparkles size={10} /> Live Preview
                 </span>
               </div>
               <p className="text-xs text-ink-muted truncate">
-                {name.trim() || 'Facility Name Preview'}
-                {selectedIconKey ? ` • Key: ${selectedIconKey}` : ' • Neutral fallback icon will be used'}
+                {watchedName.trim() || 'Facility Name Preview'}
+                {watchedIconKey ? ` • Key: ${watchedIconKey}` : ' • Neutral fallback icon will be used'}
               </p>
             </div>
           </div>
@@ -250,7 +234,7 @@ export default function FacilityModal({
             className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2"
           >
             {ALLOWED_FACILITY_ICON_KEYS.map((key) => {
-              const isSelected = selectedIconKey === key;
+              const isSelected = watchedIconKey === key;
               const IconComp = FACILITY_ICON_REGISTRY[key];
               const label = FACILITY_ICON_LABELS[key];
 
@@ -260,7 +244,12 @@ export default function FacilityModal({
                   type="button"
                   role="radio"
                   aria-checked={isSelected}
-                  onClick={() => setSelectedIconKey(isSelected ? null : key)}
+                  onClick={() =>
+                    setValue('iconKey', isSelected ? null : key, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
                   className={cn(
                     'flex flex-col items-center justify-center gap-1.5 rounded-lg border p-2.5 text-center transition-all cursor-pointer select-none',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1',

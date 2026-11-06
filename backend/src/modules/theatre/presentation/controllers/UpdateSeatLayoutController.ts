@@ -1,10 +1,9 @@
-
 import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
 import type { HttpRequest, HttpResponse } from '../../../../shared/http/HttpTypes';
 import { ok } from '../../../../shared/http/response';
-
 import type { UpdateSeatLayoutUseCase } from '../../application/commands/UpdateSeatLayoutUseCase';
 import type { UpdateSeatLayoutInput } from '../schemas/UpdateSeatLayoutSchema';
+import { SeatResponseMapper, type SeatResponse } from '../response-mappers/SeatResponseMapper';
 
 interface UpdateSeatLayoutParams {
   screenId: string;
@@ -17,7 +16,7 @@ export class UpdateSeatLayoutController {
 
   handle = async (
     req: HttpRequest<UpdateSeatLayoutParams, UpdateSeatLayoutInput>,
-  ): Promise<HttpResponse> => {
+  ): Promise<HttpResponse<SeatResponse[]>> => {
     if (!req.user?.userId) {
       throw new UnauthorizedError('Authentication required');
     }
@@ -31,6 +30,6 @@ export class UpdateSeatLayoutController {
       seats: req.body.seats,
     });
 
-    return ok(updatedSeats, 'Seat layout updated successfully');
+    return ok(SeatResponseMapper.toListResponse(updatedSeats), 'Seat layout updated successfully');
   };
 }

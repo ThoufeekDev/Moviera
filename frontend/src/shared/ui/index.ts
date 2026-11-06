@@ -3,6 +3,7 @@ export * from './Input';
 export * from './Select';
 export * from './Textarea';
 export * from './FormError';
+export * from './FormErrorBanner';
 export * from './Loader';
 export * from './InlineLoader';
 export * from './ContentLoader';

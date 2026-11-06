@@ -1,9 +1,1 @@
-node_modules/
-AGENTS.md
-# Environment files
-.env
-.env.*
-!.env.example
-# Generated project archives
-/backend.zip
-/frontend.zip
+node_modules

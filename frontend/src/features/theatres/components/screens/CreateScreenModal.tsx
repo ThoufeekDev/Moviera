@@ -1,4 +1,4 @@
-import { Button, Input, Modal } from '@/shared/ui';
+import { Button, FormErrorBanner, Input, Modal } from '@/shared/ui';
 import { SCREEN_NAME_MAX_LENGTH } from '../../schemas/createScreenForm.schema';
 import { useCreateScreenForm } from '../../hooks/useCreateScreenForm';
 
@@ -9,10 +9,19 @@ export interface CreateScreenModalProps {
 }
 
 export default function CreateScreenModal({ isOpen, onClose, theatreId }: CreateScreenModalProps) {
-  const { form, onSubmit, handleClose, isSubmitting, serverError } = useCreateScreenForm({
+  const {
+    form,
+    onSubmit,
+    handleClose,
+    isSubmitting,
+    serverError,
+    setServerError,
+    unmappedErrors,
+  } = useCreateScreenForm({
     theatreId,
     onClose,
   });
+
   const {
     register,
     formState: { errors },
@@ -27,14 +36,11 @@ export default function CreateScreenModal({ isOpen, onClose, theatreId }: Create
       size="md"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-6" noValidate>
-        {serverError && (
-          <div
-            role="alert"
-            className="rounded-lg border border-brand-100 bg-brand-50 p-3.5 text-sm font-medium text-danger-600"
-          >
-            {serverError}
-          </div>
-        )}
+        <FormErrorBanner
+          message={serverError}
+          unmappedErrors={unmappedErrors}
+          onDismiss={() => setServerError(null)}
+        />
 
         <Input
           id="screen-name"

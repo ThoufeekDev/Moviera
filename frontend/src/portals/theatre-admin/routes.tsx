@@ -22,6 +22,9 @@ const MyTheatresPage = lazy(() =>
 const TheatreDetailsPage = lazy(() =>
   import('@/features/theatres').then((m) => ({ default: m.TheatreDetailsPage }))
 );
+const ScreenSeatManagementPage = lazy(() =>
+  import('@/features/theatres').then((m) => ({ default: m.ScreenSeatManagementPage }))
+);
 
 export const theatreAdminRoutes = (
   <>
@@ -57,6 +60,10 @@ export const theatreAdminRoutes = (
         <Route index element={<TheatreAdminDashboardPage />} />
         <Route path="theatres" element={<MyTheatresPage />} />
         <Route path="theatres/:theatreId" element={<TheatreDetailsPage />} />
+        <Route
+          path="theatres/:theatreId/screens/:screenId/seats"
+          element={<ScreenSeatManagementPage />}
+        />
         <Route
           path="settings"
           element={

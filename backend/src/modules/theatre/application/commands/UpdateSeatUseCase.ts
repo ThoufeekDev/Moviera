@@ -2,6 +2,7 @@ import type { IUseCase } from '../../../../shared/application/interfaces/IUseCas
 
 import { NotFoundError } from '../../../../shared/errors/NotFoundError';
 import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
+import { ConflictError } from '../../../../shared/errors/ConflictError';
 import { ForbiddenError } from '../../../../shared/errors/ForbiddenError';
 
 import type { ISeatRepository } from '../../domain/repositories/ISeatRepository';
@@ -34,6 +35,10 @@ export class UpdateSeatUseCase implements IUseCase<UpdateSeatDTO, Seat> {
 
     if (!screen) {
       throw new NotFoundError('Screen not found');
+    }
+
+    if (!screen.isActive) {
+      throw new ConflictError('Screen is inactive');
     }
 
     const allowed = await this.theatreAccessPolicy.canManage(

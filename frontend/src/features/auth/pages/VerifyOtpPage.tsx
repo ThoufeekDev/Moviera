@@ -9,6 +9,7 @@ import AuthBrandHeader from '../components/AuthBrandHeader';
 import { verifyOtpSchema, type VerifyOtpFormData } from '../schemas/verifyOtp.schema';
 import { Button } from '@/shared/ui/Button';
 import { Role } from '@/shared/constants/Role';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
 import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 
 const OTP_LENGTH = 6;
@@ -51,6 +52,7 @@ export default function VerifyOtpPage() {
   const {
     setValue,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<VerifyOtpFormData>({
     resolver: zodResolver(verifyOtpSchema),
@@ -118,8 +120,9 @@ export default function VerifyOtpPage() {
       } else {
         navigate('/');
       }
-    } catch (error: any) {
-      setOtpError(getErrorMessage(error) || 'Invalid or expired verification code.');
+    } catch (error: unknown) {
+      const result = setFormServerErrors(setError, error);
+      setOtpError(result.generalMessage || 'Invalid or expired verification code.');
     } finally {
       setIsSubmitting(false);
     }

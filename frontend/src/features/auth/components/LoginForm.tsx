@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth.store';
-import { getErrorMessage } from '@/shared/lib/getErrorMessage';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
 import { loginSchema, type LoginFormData } from '../schemas/login.schema';
 import { Role } from '@/shared/constants/Role';
 
@@ -51,6 +51,7 @@ export default function LoginForm({
     register,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -86,7 +87,8 @@ export default function LoginForm({
 
       navigate(targetUrl, { replace: true });
     } catch (error) {
-      setAuthError(getErrorMessage(error));
+      const result = setFormServerErrors(setError, error);
+      setAuthError(result.generalMessage || '');
     }
   };
 

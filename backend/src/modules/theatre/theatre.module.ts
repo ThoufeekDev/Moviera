@@ -47,6 +47,7 @@ import { BulkCreateSeatsUseCase } from './application/commands/BulkCreateSeatsUs
 import { GetScreenSeatLayoutUseCase } from './application/queries/GetScreenSeatLayoutUseCase';
 import { UpdateSeatLayoutUseCase } from './application/commands/UpdateSeatLayoutUseCase';
 import { UpdateSeatUseCase } from './application/commands/UpdateSeatUseCase';
+import { UpdateSeatPropertiesUseCase } from './application/commands/UpdateSeatPropertiesUseCase';
 
 
 import { ViewTheatreDetailPageForSuperAdmin } from './application/queries/ViewTheatreDetailPageForSuperAdmin';
@@ -79,6 +80,7 @@ import { BulkCreateSeatsController } from './presentation/controllers/BulkCreate
 import { GetScreenSeatLayoutController } from './presentation/controllers/GetScreenSeatLayoutController';
 import { UpdateSeatLayoutController } from './presentation/controllers/UpdateSeatLayoutController';
 import { UpdateSeatController } from './presentation/controllers/UpdateSeatController';
+import { UpdateSeatPropertiesController } from './presentation/controllers/UpdateSeatPropertiesController';
 
 
 
@@ -188,6 +190,11 @@ const updateSeatUseCase = new UpdateSeatUseCase(
   screenRepository,
   theatreAccessPolicy,
 );
+const updateSeatPropertiesUseCase = new UpdateSeatPropertiesUseCase(
+  seatRepository,
+  screenRepository,
+  theatreAccessPolicy,
+);
 
 
   // Facility Use Cases
@@ -215,6 +222,9 @@ const updateSeatUseCase = new UpdateSeatUseCase(
   const updateSeatController = new UpdateSeatController(
   updateSeatUseCase,
 );
+  const updateSeatPropertiesController = new UpdateSeatPropertiesController(
+    updateSeatPropertiesUseCase,
+  );
   const getMyTheatresController = new GetMyTheatresController(getMyTheatresUseCase);
   const getTheatreOverviewController = new GetTheatreOverviewController(
     getTheatreOverviewUseCase,
@@ -284,6 +294,7 @@ const seatRouter = createSeatRoutes({
   getScreenSeatLayoutController,
   updateSeatLayoutController,
   updateSeatController,
+  updateSeatPropertiesController,
 });
   return {
     theatreRouter,

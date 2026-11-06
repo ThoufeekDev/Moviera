@@ -88,45 +88,47 @@ export class PrismaTheatreRepository implements ITheatreRepository {
   }
 
   async create(theatre: Theatre, facilityIds: string[] = []): Promise<Theatre> {
-  
-    return this.prisma.$transaction(async (tx) => {
-       const created = await tx.theatre.create({
-    data: {
-      ...(theatre.id ? { id: theatre.id } : {}),
-      cityId: theatre.cityId,
-      areaId: theatre.areaId,
-      googlePlaceId: theatre.googlePlaceId,
-      name: theatre.name,
-      slug: theatre.slug,
-      address: theatre.address,
-      description: theatre.description,
-      logoUrl: theatre.logoUrl,
-      logoPublicId: theatre.logoPublicId,
-      email: theatre.email,
-      phone: theatre.phone,
-      latitude: theatre.latitude,
-      longitude: theatre.longitude,
-      pincode: theatre.pincode,
-      landmark: theatre.landmark,
-      isActive: theatre.isActive,
-      licenseNumber: theatre.licenseNumber,
-      createdById: theatre.createdById,
-      deletedAt: theatre.deletedAt,
-    },
-  });
+    return this.prisma.$transaction(
+      async (tx) => {
+        const created = await tx.theatre.create({
+          data: {
+            ...(theatre.id ? { id: theatre.id } : {}),
+            cityId: theatre.cityId,
+            areaId: theatre.areaId,
+            googlePlaceId: theatre.googlePlaceId,
+            name: theatre.name,
+            slug: theatre.slug,
+            address: theatre.address,
+            description: theatre.description,
+            logoUrl: theatre.logoUrl,
+            logoPublicId: theatre.logoPublicId,
+            email: theatre.email,
+            phone: theatre.phone,
+            latitude: theatre.latitude,
+            longitude: theatre.longitude,
+            pincode: theatre.pincode,
+            landmark: theatre.landmark,
+            isActive: theatre.isActive,
+            licenseNumber: theatre.licenseNumber,
+            createdById: theatre.createdById,
+            deletedAt: theatre.deletedAt,
+          },
+        });
 
-  if (facilityIds.length > 0) {
-    await tx.theatreFacilityAssignment.createMany({
-      data: facilityIds.map((facilityId) => ({
-        theatreId: created.id,
-        facilityId
-      }))
-    });
+        if (facilityIds.length > 0) {
+          await tx.theatreFacilityAssignment.createMany({
+            data: facilityIds.map((facilityId) => ({
+              theatreId: created.id,
+              facilityId,
+            })),
+          });
+        }
+        return TheatreMapper.toDomain(created);
+      },
+      {
+        maxWait: 10000,
+        timeout: 15000,
+      },
+    );
   }
-      return TheatreMapper.toDomain(created);
-    })
- 
-
-  
-}
 }

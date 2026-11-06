@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
-import { AlertCircle, Loader2 } from 'lucide-react';
-import { Modal, Button } from '@/shared/ui';
+import { Loader2 } from 'lucide-react';
+import { Modal, Button, FormErrorBanner } from '@/shared/ui';
 import { useCreateTheatreForm } from '../../hooks/useCreateTheatreForm';
 import { BasicInfoSection } from './sections/BasicInfoSection';
 import { LocationSection } from './sections/LocationSection';
@@ -22,6 +22,8 @@ export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatre
     setManualCityType,
     logoError,
     serverError,
+    setServerError,
+    unmappedErrors,
     isCitiesLoading,
     cityOptions,
     selectedPlaceId,
@@ -47,18 +49,11 @@ export function CreateTheatreModal({ isOpen, onClose, onSuccess }: CreateTheatre
     >
       <FormProvider {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {serverError && (
-            <div
-              role="alert"
-              className="flex items-start gap-3 rounded-lg border border-danger-200 bg-danger-50 p-3.5 text-danger-700"
-            >
-              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-danger-600" />
-              <div className="text-sm">
-                <span className="font-semibold">Unable to register theatre:</span>
-                <p className="mt-0.5">{serverError}</p>
-              </div>
-            </div>
-          )}
+          <FormErrorBanner
+            message={serverError}
+            unmappedErrors={unmappedErrors}
+            onDismiss={() => setServerError(null)}
+          />
 
           {/* Section 1: Basic Information */}
           <BasicInfoSection disabled={isPending} />

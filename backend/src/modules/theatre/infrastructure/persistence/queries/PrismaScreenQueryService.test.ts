@@ -5,6 +5,7 @@ import { PrismaScreenQueryService } from './PrismaScreenQueryService';
 describe('PrismaScreenQueryService.listByTheatre', () => {
   let prismaMock: {
     screen: { findMany: ReturnType<typeof vi.fn>; count: ReturnType<typeof vi.fn> };
+    seat: { groupBy: ReturnType<typeof vi.fn> };
   };
   let service: PrismaScreenQueryService;
 
@@ -22,6 +23,12 @@ describe('PrismaScreenQueryService.listByTheatre', () => {
       screen: {
         findMany: vi.fn().mockResolvedValue([dbScreen]),
         count: vi.fn().mockResolvedValue(1),
+      },
+      seat: {
+        groupBy: vi.fn().mockResolvedValue([
+          { screenId: 'screen-1', rowLabel: 'A' },
+          { screenId: 'screen-1', rowLabel: 'B' },
+        ]),
       },
     };
     service = new PrismaScreenQueryService(prismaMock as unknown as PrismaClient);
@@ -49,7 +56,9 @@ describe('PrismaScreenQueryService.listByTheatre', () => {
           slug: 'audi-1',
           isActive: true,
           totalSeats: 120,
+          totalRows: 2,
           totalShows: 4,
+          seatConfigurationStatus: 'CONFIGURED',
         },
       ],
       pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
@@ -106,4 +115,3 @@ describe('PrismaScreenQueryService.listByTheatre', () => {
     );
   });
 });
-

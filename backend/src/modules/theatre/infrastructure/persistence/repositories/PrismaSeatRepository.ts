@@ -26,24 +26,30 @@ export class PrismaSeatRepository implements ISeatRepository {
   }
 
   async create(data: CreateSeatProps): Promise<Seat> {
-    return this.prisma.$transaction(async (tx) => {
-      await this.lockScreenSeats(tx, data.screenId);
+    return this.prisma.$transaction(
+      async (tx) => {
+        await this.lockScreenSeats(tx, data.screenId);
 
-      const createdSeat = await tx.seat.create({
-        data: {
-          screenId: data.screenId,
-          rowLabel: data.rowLabel,
-          seatNumber: data.seatNumber,
-          label: data.label,
-          x: data.x,
-          y: data.y,
-          rotation: data.rotation,
-          type: data.type,
-        },
-      });
+        const createdSeat = await tx.seat.create({
+          data: {
+            screenId: data.screenId,
+            rowLabel: data.rowLabel,
+            seatNumber: data.seatNumber,
+            label: data.label,
+            x: data.x,
+            y: data.y,
+            rotation: data.rotation,
+            type: data.type,
+          },
+        });
 
-      return SeatMapper.toDomain(createdSeat);
-    });
+        return SeatMapper.toDomain(createdSeat);
+      },
+      {
+        maxWait: 5000,
+        timeout: 10000,
+      },
+    );
   }
 
   async countByScreenId(screenId: string): Promise<number> {
@@ -56,41 +62,48 @@ export class PrismaSeatRepository implements ISeatRepository {
     screenId: string,
     seats: CreateSeatProps[],
   ): Promise<Seat[] | null> {
-    return this.prisma.$transaction(async (tx) => {
-      await this.lockScreenSeats(tx, screenId);
+    return this.prisma.$transaction(
+      async (tx) => {
+        await this.lockScreenSeats(tx, screenId);
 
-      const existingSeatCount = await tx.seat.count({
-        where: { screenId },
-      });
+        const existingSeatCount = await tx.seat.count({
+          where: { screenId },
+        });
 
-      if (existingSeatCount > 0) {
-        return null;
-      }
+        if (existingSeatCount > 0) {
+          return null;
+        }
 
-      await tx.seat.createMany({
-        data: seats.map((seat) => ({
-          screenId,
-          rowLabel: seat.rowLabel,
-          seatNumber: seat.seatNumber,
-          label: seat.label,
-          x: seat.x,
-          y: seat.y,
-          rotation: seat.rotation,
-          type: seat.type,
-        })),
-      });
+        const createdSeats = await tx.seat.createManyAndReturn({
+          data: seats.map((seat) => ({
+            screenId,
+            rowLabel: seat.rowLabel,
+            seatNumber: seat.seatNumber,
+            label: seat.label,
+            x: seat.x,
+            y: seat.y,
+            rotation: seat.rotation,
+            type: seat.type,
+          })),
+        });
 
-      const createdSeats = await tx.seat.findMany({
-        where: { screenId },
-        orderBy: [{ rowLabel: 'asc' }, { seatNumber: 'asc' }],
-      });
+        createdSeats.sort((a, b) => {
+          const rowCompare = a.rowLabel.localeCompare(b.rowLabel);
+          if (rowCompare !== 0) return rowCompare;
+          return a.seatNumber - b.seatNumber;
+        });
 
-      return createdSeats.map(SeatMapper.toDomain);
-    });
+        return createdSeats.map(SeatMapper.toDomain);
+      },
+      {
+        maxWait: 10000,
+        timeout: 30000,
+      },
+    );
   }
 
   private async lockScreenSeats(tx: Prisma.TransactionClient, screenId: string): Promise<void> {
-    await tx.$queryRaw`
+    await tx.$executeRaw`
       SELECT pg_advisory_xact_lock(
         hashtext('movira_seats'),
         hashtext(${screenId})
@@ -120,49 +133,62 @@ async updateManySeatPositions(
     rotation: number;
   }[],
 ): Promise<Seat[] | null> {
-  return this.prisma.$transaction(async (tx) => {
-    await this.lockScreenSeats(tx, screenId);
+  if (seats.length === 0) {
+    return [];
+  }
 
-    const seatIds = seats.map((seat) => seat.seatId);
+  return this.prisma.$transaction(
+    async (tx) => {
+      await this.lockScreenSeats(tx, screenId);
 
-    const existingSeats = await tx.seat.findMany({
-      where: {
-        screenId,
-        id: { in: seatIds },
-      },
-      select: { id: true },
-    });
+      const seatIds = seats.map((seat) => seat.seatId);
 
-if (existingSeats.length !== seatIds.length) {
-  return null;
-}
+      const existingSeats = await tx.seat.findMany({
+        where: {
+          screenId,
+          id: { in: seatIds },
+        },
+        select: { id: true },
+      });
 
-    await Promise.all(
-      seats.map((seat) =>
-        tx.seat.update({
-          where: { id: seat.seatId },
-          data: {
-            x: seat.x,
-            y: seat.y,
-            rotation: seat.rotation,
-          },
-        }),
-      ),
-    );
+      if (existingSeats.length !== seatIds.length) {
+        return null;
+      }
 
-    const updatedSeats = await tx.seat.findMany({
-      where: {
-        screenId,
-        id: { in: seatIds },
-      },
-      orderBy: [
-        { rowLabel: 'asc' },
-        { seatNumber: 'asc' },
-      ],
-    });
+      const values = seats.map(
+        (seat) =>
+          Prisma.sql`(${seat.seatId}, ${seat.x}::double precision, ${seat.y}::double precision, ${seat.rotation}::double precision)`,
+      );
 
-    return updatedSeats.map(SeatMapper.toDomain);
-  });
+      await tx.$executeRaw`
+        UPDATE "Seat" AS s
+        SET
+          x = v.x,
+          y = v.y,
+          rotation = v.rotation,
+          "updatedAt" = NOW()
+        FROM (VALUES ${Prisma.join(values)}) AS v(id, x, y, rotation)
+        WHERE s.id = v.id AND s."screenId" = ${screenId}
+      `;
+
+      const updatedSeats = await tx.seat.findMany({
+        where: {
+          screenId,
+          id: { in: seatIds },
+        },
+        orderBy: [
+          { rowLabel: 'asc' },
+          { seatNumber: 'asc' },
+        ],
+      });
+
+      return updatedSeats.map(SeatMapper.toDomain);
+    },
+    {
+      maxWait: 10000,
+      timeout: 30000,
+    },
+  );
 }
 
   async updateSeatDetails(
@@ -172,28 +198,107 @@ if (existingSeats.length !== seatIds.length) {
     isActive?: boolean;
   },
 ): Promise<Seat | null> {
-  return this.prisma.$transaction(async (tx) => {
-    const existingSeat = await tx.seat.findUnique({
-      where: { id: seatId },
-      select: { screenId: true },
-    });
+  return this.prisma.$transaction(
+    async (tx) => {
+      const existingSeat = await tx.seat.findUnique({
+        where: { id: seatId },
+        select: { screenId: true },
+      });
 
-    if (!existingSeat) {
-      return null;
+      if (!existingSeat) {
+        return null;
+      }
+
+      await this.lockScreenSeats(tx, existingSeat.screenId);
+
+      const updatedSeat = await tx.seat.update({
+        where: { id: seatId },
+        data: {
+          ...(data.type !== undefined && { type: data.type }),
+          ...(data.isActive !== undefined && { isActive: data.isActive }),
+        },
+      });
+
+      return SeatMapper.toDomain(updatedSeat);
+    },
+    {
+      maxWait: 5000,
+      timeout: 10000,
+    },
+  );
+}
+
+  async updateManySeatProperties(
+    screenId: string,
+    seats: {
+      seatId: string;
+      type?: SeatType;
+      isActive?: boolean;
+    }[],
+  ): Promise<Seat[] | null> {
+    if (seats.length === 0) {
+      return [];
     }
 
-    await this.lockScreenSeats(tx, existingSeat.screenId);
+    return this.prisma.$transaction(
+      async (tx) => {
+        await this.lockScreenSeats(tx, screenId);
 
-    const updatedSeat = await tx.seat.update({
-      where: { id: seatId },
-      data: {
-        ...(data.type !== undefined && { type: data.type }),
-        ...(data.isActive !== undefined && { isActive: data.isActive }),
+        const seatIds = seats.map((seat) => seat.seatId);
+
+        const existingSeats = await tx.seat.findMany({
+          where: {
+            screenId,
+            id: { in: seatIds },
+          },
+          select: { id: true },
+        });
+
+        if (existingSeats.length !== seatIds.length) {
+          return null;
+        }
+
+        const values = seats.map((seat) => {
+          const typeSql =
+            seat.type !== undefined
+              ? Prisma.sql`${seat.type}::"SeatType"`
+              : Prisma.sql`NULL::"SeatType"`;
+          const activeSql =
+            seat.isActive !== undefined
+              ? Prisma.sql`${seat.isActive}::boolean`
+              : Prisma.sql`NULL::boolean`;
+
+          return Prisma.sql`(${seat.seatId}, ${typeSql}, ${activeSql})`;
+        });
+
+        await tx.$executeRaw`
+          UPDATE "Seat" AS s
+          SET
+            type = COALESCE(v.type, s.type),
+            "isActive" = COALESCE(v.is_active, s."isActive"),
+            "updatedAt" = NOW()
+          FROM (VALUES ${Prisma.join(values)}) AS v(id, type, is_active)
+          WHERE s.id = v.id AND s."screenId" = ${screenId}
+        `;
+
+        const updatedSeats = await tx.seat.findMany({
+          where: {
+            screenId,
+            id: { in: seatIds },
+          },
+          orderBy: [
+            { rowLabel: 'asc' },
+            { seatNumber: 'asc' },
+          ],
+        });
+
+        return updatedSeats.map(SeatMapper.toDomain);
       },
-    });
-
-    return SeatMapper.toDomain(updatedSeat);
-  });
-}
+      {
+        maxWait: 10000,
+        timeout: 30000,
+      },
+    );
+  }
 
 }

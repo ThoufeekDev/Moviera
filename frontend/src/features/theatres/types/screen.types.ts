@@ -1,6 +1,7 @@
 import type { Paginated } from '@/shared/types/apiResponse';
 
 export type ScreenStatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
+export type SeatConfigurationStatus = 'CONFIGURED' | 'NOT_CONFIGURED';
 
 export interface ScreenListItem {
   id: string;
@@ -9,7 +10,9 @@ export interface ScreenListItem {
   slug: string;
   isActive: boolean;
   totalSeats: number;
+  totalRows: number;
   totalShows: number;
+  seatConfigurationStatus: SeatConfigurationStatus;
 }
 
 export interface Screen {

@@ -68,11 +68,14 @@ api.interceptors.response.use(
       _retry?: boolean;
     };
 
+    const isLoginOrRefresh =
+      originalRequest.url?.includes('/auth/login') ||
+      originalRequest.url?.includes('/auth/refresh-token');
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== '/auth/refresh-token' &&
-      originalRequest.url !== '/auth/login'
+      !isLoginOrRefresh
     ) {
       originalRequest._retry = true;
 

@@ -48,7 +48,7 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
     const result = await service.ListAllTheatres();
 
     expect(prismaMock.theatre.findMany).toHaveBeenCalledWith({
-      where: {},
+      where: { deletedAt: null },
       take: 20,
       skip: 0,
       select: expect.objectContaining({
@@ -102,6 +102,7 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
     expect(prismaMock.theatre.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
+          deletedAt: null,
           AND: [
             {
               OR: [
@@ -125,6 +126,7 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
     expect(prismaMock.theatre.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
+          deletedAt: null,
           AND: [{ isActive: true }],
         },
       }),
@@ -140,6 +142,7 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
     expect(prismaMock.theatre.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
+          deletedAt: null,
           AND: [{ isActive: false }],
         },
       }),
@@ -155,6 +158,7 @@ describe('PrismaTheatreQueryService - ListAllTheatres', () => {
     expect(prismaMock.theatre.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
+          deletedAt: null,
           AND: [
             {
               OR: [

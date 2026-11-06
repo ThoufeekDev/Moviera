@@ -1,6 +1,7 @@
 import type { Seat } from '../entities/Seat';
 import type { CreateSeatProps } from '../types/CreateSeatProps';
 import type { SeatType } from '../enums/SeatType';
+
 export interface ISeatRepository {
   findById(id: string): Promise<Seat | null>;
 
@@ -31,4 +32,13 @@ export interface ISeatRepository {
       isActive?: boolean;
     },
   ): Promise<Seat | null>;
+
+  updateManySeatProperties(
+    screenId: string,
+    seats: {
+      seatId: string;
+      type?: SeatType;
+      isActive?: boolean;
+    }[],
+  ): Promise<Seat[] | null>;
 }

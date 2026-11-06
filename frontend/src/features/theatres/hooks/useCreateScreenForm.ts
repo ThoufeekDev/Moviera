@@ -8,7 +8,7 @@ import {
   type CreateScreenFormValues,
 } from '../schemas/createScreenForm.schema';
 import { buildCreateScreenPayload } from '../utils/buildCreateScreenPayload';
-import { mapScreenServerError } from '../utils/mapScreenServerError';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
 import { useCreateScreen } from './useCreateScreen';
 
 interface UseCreateScreenFormOptions {
@@ -18,6 +18,7 @@ interface UseCreateScreenFormOptions {
 
 export const useCreateScreenForm = ({ theatreId, onClose }: UseCreateScreenFormOptions) => {
   const [serverError, setServerError] = useState<string | null>(null);
+  const [unmappedErrors, setUnmappedErrors] = useState<string[]>([]);
   const createScreenMutation = useCreateScreen();
 
   const form = useForm<CreateScreenFormValues>({
@@ -33,11 +34,13 @@ export const useCreateScreenForm = ({ theatreId, onClose }: UseCreateScreenFormO
     if (isSubmitting) return;
     reset(defaultCreateScreenFormValues);
     setServerError(null);
+    setUnmappedErrors([]);
     onClose();
   }, [isSubmitting, reset, onClose]);
 
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
+    setUnmappedErrors([]);
     const payload = buildCreateScreenPayload(theatreId, values);
 
     try {
@@ -46,14 +49,19 @@ export const useCreateScreenForm = ({ theatreId, onClose }: UseCreateScreenFormO
       reset(defaultCreateScreenFormValues);
       onClose();
     } catch (error) {
-      const mapped = mapScreenServerError(error);
-      if (mapped.field) {
-        setError(mapped.field, { type: 'server', message: mapped.message }, { shouldFocus: true });
-      } else {
-        setServerError(mapped.serverError);
-      }
+      const result = setFormServerErrors(setError, error);
+      setServerError(result.generalMessage);
+      setUnmappedErrors(result.unmappedErrors);
     }
   });
 
-  return { form, onSubmit, handleClose, isSubmitting, serverError };
+  return {
+    form,
+    onSubmit,
+    handleClose,
+    isSubmitting,
+    serverError,
+    setServerError,
+    unmappedErrors,
+  };
 };

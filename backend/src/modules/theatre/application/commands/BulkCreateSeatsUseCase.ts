@@ -45,23 +45,34 @@ export class BulkCreateSeatsUseCase
       );
     }
 
-    // 4. Generate individual seats from row configurations
+    // 4. Generate individual seats from row configurations with standard theatre grid coordinates
+    const BLOCK_ORIGIN_X = 160;
+    const BLOCK_ORIGIN_Y = 120;
+    const SEAT_PITCH_X = 30;
+    const SEAT_PITCH_Y = 28;
+    const WORLD_WIDTH = 3000;
+    const WORLD_HEIGHT = 2000;
+
     const seats: CreateSeatProps[] = request.rows.flatMap(
       (row, rowIndex) => {
         const rowLabel = row.rowLabel.trim().toUpperCase();
+        const worldY = BLOCK_ORIGIN_Y + rowIndex * SEAT_PITCH_Y;
+        const normalizedY = Math.round((worldY / WORLD_HEIGHT) * 10000) / 10000;
 
         return Array.from(
           { length: row.seatCount },
           (_, seatIndex) => {
             const seatNumber = seatIndex + 1;
+            const worldX = BLOCK_ORIGIN_X + seatIndex * SEAT_PITCH_X;
+            const normalizedX = Math.round((worldX / WORLD_WIDTH) * 10000) / 10000;
 
             return {
               screenId: request.screenId,
               rowLabel,
               seatNumber,
               label: `${rowLabel}${seatNumber}`,
-              x: (seatIndex + 1) / (row.seatCount + 1),
-              y: (rowIndex + 1) / (request.rows.length + 1),
+              x: normalizedX,
+              y: normalizedY,
               rotation: row.rotation ?? 0,
               type: row.type,
             };

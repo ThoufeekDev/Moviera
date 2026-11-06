@@ -1,10 +1,9 @@
-
 import { UnauthorizedError } from '../../../../shared/errors/UnauthorizedError';
 import type { HttpRequest, HttpResponse } from '../../../../shared/http/HttpTypes';
 import { created } from '../../../../shared/http/response';
-
 import { BulkCreateSeatsUseCase } from '../../application/commands/BulkCreateSeatsUseCase';
 import type { BulkCreateSeatsInput } from '../schemas/CreateSeatSchema';
+import { SeatResponseMapper, type SeatResponse } from '../response-mappers/SeatResponseMapper';
 
 interface BulkCreateSeatsParams {
   screenId: string;
@@ -17,7 +16,7 @@ export class BulkCreateSeatsController {
 
   handle = async (
     req: HttpRequest<BulkCreateSeatsParams, BulkCreateSeatsInput>,
-  ): Promise<HttpResponse> => {
+  ): Promise<HttpResponse<SeatResponse[]>> => {
     if (!req.user?.userId) {
       throw new UnauthorizedError('Authentication required');
     }
@@ -31,6 +30,6 @@ export class BulkCreateSeatsController {
       },
     });
 
-    return created(createdSeats, 'Seats created successfully');
+    return created(SeatResponseMapper.toListResponse(createdSeats), 'Seats created successfully');
   };
 }

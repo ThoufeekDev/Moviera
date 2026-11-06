@@ -12,7 +12,7 @@ import {
   type FormValues,
 } from '../schemas/createTheatreForm.schema';
 import { buildCreateTheatrePayload } from '../utils/buildCreateTheatrePayload';
-import { mapServerErrorToField } from '../utils/mapServerErrorToField';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
 
 export interface UseCreateTheatreFormOptions {
   onClose: () => void;
@@ -31,6 +31,7 @@ export function useCreateTheatreForm({ onClose, onSuccess }: UseCreateTheatreFor
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoError, setLogoError] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [unmappedErrors, setUnmappedErrors] = useState<string[]>([]);
 
   // Track chosen Google Place for confirmation badge without listening to live keystrokes
   const [selectedPlaceId, setSelectedPlaceId] = useState<string>('');
@@ -78,6 +79,7 @@ export function useCreateTheatreForm({ onClose, onSuccess }: UseCreateTheatreFor
     setLogoFile(null);
     setLogoError(null);
     setServerError(null);
+    setUnmappedErrors([]);
     setSelectedPlaceId('');
     setSelectedPlaceAddress('');
     setSelectedCoordinates(null);
@@ -240,12 +242,13 @@ export function useCreateTheatreForm({ onClose, onSuccess }: UseCreateTheatreFor
           toast.success('Theatre created successfully!');
         }
       } catch (err: unknown) {
-        const mapped = mapServerErrorToField(err, values);
-        if (mapped.field) {
-          setError(mapped.field, { type: 'server', message: mapped.message });
-        } else if (mapped.serverError) {
-          setServerError(mapped.serverError);
-        }
+        const result = setFormServerErrors(setError, err, {
+          fieldAliases: {
+            city: values.cityId ? 'cityId' : 'cityName',
+          },
+        });
+        setServerError(result.generalMessage);
+        setUnmappedErrors(result.unmappedErrors);
       }
     },
     [logoFile, locationMode, createTheatreMutation, handleClose, onSuccess, setError],
@@ -261,6 +264,8 @@ export function useCreateTheatreForm({ onClose, onSuccess }: UseCreateTheatreFor
     logoFile,
     logoError,
     serverError,
+    setServerError,
+    unmappedErrors,
     cities,
     isCitiesLoading,
     cityOptions,

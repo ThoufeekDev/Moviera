@@ -24,16 +24,17 @@ export class CreateSeatUseCase {
     
     if(!allowed) throw new ForbiddenError("You are not assigned to manage this theatre")
 
-    const label = `${seat.rowLabel}$${seat.seatNumber}`;
+    const rowLabel = seat.rowLabel.trim().toUpperCase();
+    const label = `${rowLabel}${seat.seatNumber}`;
 
     const existingSeat = await this.seatRepository.findByLabel(seat.screenId, label);
 
     if (existingSeat)
-      throw new ConflictError("Seat with this label already exists in theis screen");
+      throw new ConflictError("Seat with this label already exists in this screen");
 
     return this.seatRepository.create({
       screenId: seat.screenId,
-      rowLabel: seat.rowLabel,
+      rowLabel,
       seatNumber: seat.seatNumber,
       label,
       x: seat.x,

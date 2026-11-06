@@ -6,7 +6,7 @@ import { Turnstile } from 'react-turnstile';
 
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
-import { getErrorMessage } from '@/shared/lib/getErrorMessage';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
 import env from '@/shared/lib/env';
 
 import AuthBrandHeader from '../components/AuthBrandHeader';
@@ -26,6 +26,7 @@ export default function UserRegisterPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -48,7 +49,8 @@ export default function UserRegisterPage() {
         },
       });
     } catch (error) {
-      setAuthError(getErrorMessage(error));
+      const result = setFormServerErrors(setError, error);
+      setAuthError(result.generalMessage || '');
     }
   };
 

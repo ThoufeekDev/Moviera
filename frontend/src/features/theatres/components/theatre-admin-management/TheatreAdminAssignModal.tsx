@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   UserPlus,
   Building2,
@@ -16,13 +18,18 @@ import {
 } from 'lucide-react';
 import Modal from '@/shared/ui/Modal/Modal';
 import { Button } from '@/shared/ui/Button';
+import { FormErrorBanner } from '@/shared/ui/FormErrorBanner';
 import {
   useAssignTheatreAdmin,
   type AdminRole,
   type EligibleAdminUserResponse,
 } from '@/features/theatres';
-import { extractFormErrors } from '@/shared/lib/extractFormErrors';
+import { setFormServerErrors } from '@/shared/lib/formErrors';
 import { type TheatreItem, ROLE_CONFIG } from './types';
+import {
+  theatreAdminAssignSchema,
+  type TheatreAdminAssignFormData,
+} from '../../schemas/theatreAdminAssign.schema';
 
 export interface TheatreAdminAssignModalProps {
   isOpen: boolean;
@@ -33,8 +40,6 @@ export interface TheatreAdminAssignModalProps {
   onAssignSuccess: (adminName: string, theatreName: string, role: AdminRole) => void;
 }
 
-type OnboardingMode = 'EMAIL' | 'EXISTING';
-
 export const TheatreAdminAssignModal = ({
   isOpen,
   onClose,
@@ -43,21 +48,7 @@ export const TheatreAdminAssignModal = ({
   initialTheatreId,
   onAssignSuccess,
 }: TheatreAdminAssignModalProps) => {
-  const [mode, setMode] = useState<OnboardingMode>('EMAIL');
-  const [selectedTheatreId, setSelectedTheatreId] = useState<string>('');
-  const [selectedUserId, setSelectedUserId] = useState<string>('');
-  const [selectedRole, setSelectedRole] = useState<AdminRole>('PRIMARY_MANAGER');
-
-  // Form fields for new admin creation
-  const [adminName, setAdminName] = useState('');
-  const [adminEmail, setAdminEmail] = useState('');
-  const [adminPhone, setAdminPhone] = useState('');
-
-  // Dual-layer validation error states
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  // Success state when a new user is created with a temporary password
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const [createdCredentials, setCreatedCredentials] = useState<{
     email: string;
     temporaryPassword?: string;
@@ -66,47 +57,52 @@ export const TheatreAdminAssignModal = ({
     role: AdminRole;
     emailSent?: boolean;
   } | null>(null);
-
   const [hasCopied, setHasCopied] = useState(false);
 
   const assignMutation = useAssignTheatreAdmin();
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    setError,
+    clearErrors,
+    control,
+    formState: { errors },
+  } = useForm<TheatreAdminAssignFormData>({
+    resolver: zodResolver(theatreAdminAssignSchema),
+    defaultValues: {
+      theatreId: initialTheatreId || theatres[0]?.id || '',
+      role: 'PRIMARY_MANAGER',
+      mode: 'EMAIL',
+      userId: eligibleAdmins[0]?.id || '',
+      name: '',
+      email: '',
+      phone: '',
+    },
+  });
+
+  const currentMode = useWatch({ control, name: 'mode' });
+  const currentRole = useWatch({ control, name: 'role' });
+
   // Reset or initialize when modal opens
   useEffect(() => {
     if (isOpen) {
-      setSelectedTheatreId(initialTheatreId || theatres[0]?.id || '');
-      setSelectedRole('PRIMARY_MANAGER');
-      setAdminName('');
-      setAdminEmail('');
-      setAdminPhone('');
-      setErrorMessage(null);
-      setFieldErrors({});
+      reset({
+        theatreId: initialTheatreId || theatres[0]?.id || '',
+        role: 'PRIMARY_MANAGER',
+        mode: 'EMAIL',
+        userId: eligibleAdmins[0]?.id || '',
+        name: '',
+        email: '',
+        phone: '',
+      });
+      setGeneralError(null);
       setCreatedCredentials(null);
       setHasCopied(false);
-
-      if (eligibleAdmins.length > 0) {
-        setSelectedUserId(eligibleAdmins[0].id);
-        setMode('EMAIL');
-      } else {
-        setSelectedUserId('');
-        setMode('EMAIL');
-      }
     }
-  }, [isOpen, initialTheatreId, theatres, eligibleAdmins]);
-
-  // Clear specific field error as user types or modifies a field
-  const clearFieldError = (fieldName: string) => {
-    if (fieldErrors[fieldName]) {
-      setFieldErrors((prev) => {
-        const next = { ...prev };
-        delete next[fieldName];
-        return next;
-      });
-    }
-    if (errorMessage) {
-      setErrorMessage(null);
-    }
-  };
+  }, [isOpen, initialTheatreId, theatres, eligibleAdmins, reset]);
 
   const handleCopyCredentials = () => {
     if (!createdCredentials) return;
@@ -127,156 +123,48 @@ export const TheatreAdminAssignModal = ({
     onClose();
   };
 
-  // ── Client-side validation rules (used for blur feedback & backend error fallback) ──
-  const validateClient = (): Record<string, string> => {
-    const errors: Record<string, string> = {};
+  const onSubmit = async (data: TheatreAdminAssignFormData) => {
+    setGeneralError(null);
 
-    if (!selectedTheatreId) {
-      errors.theatreId = 'Please select a target theatre multiplex.';
-    }
-
-    if (mode === 'EMAIL') {
-      const trimmedName = adminName.trim();
-      const trimmedEmail = adminEmail.trim();
-      const trimmedPhone = adminPhone.trim();
-
-      if (!trimmedName) {
-        errors.name = 'Full name is required.';
-      } else if (trimmedName.length < 2) {
-        errors.name = 'Full name must be at least 2 characters.';
-      }
-
-      if (!trimmedEmail) {
-        errors.email = 'Email address is required.';
-      } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(trimmedEmail)) {
-          errors.email = 'Please enter a valid email address (e.g. manager@theatre.com).';
-        }
-      }
-
-      if (trimmedPhone && trimmedPhone.length < 7) {
-        errors.phone = 'Contact phone must be at least 7 digits.';
-      }
-    } else {
-      if (!selectedUserId) {
-        errors.userId = 'Please select an eligible administrator user.';
-      }
-    }
-
-    return errors;
-  };
-
-  const handleBlurField = (field: 'theatreId' | 'name' | 'email' | 'phone' | 'userId') => {
-    // Only run frontend blur check if no error is currently set for this field
-    if (fieldErrors[field]) return;
-
-    if (field === 'name' && mode === 'EMAIL') {
-      const trimmed = adminName.trim();
-      if (!trimmed) {
-        setFieldErrors((prev) => ({ ...prev, name: 'Full name is required.' }));
-        setErrorMessage('Full name is required.');
-      } else if (trimmed.length < 2) {
-        setFieldErrors((prev) => ({ ...prev, name: 'Full name must be at least 2 characters.' }));
-        setErrorMessage('Full name must be at least 2 characters.');
-      }
-    } else if (field === 'email' && mode === 'EMAIL') {
-      const trimmed = adminEmail.trim();
-      if (!trimmed) {
-        setFieldErrors((prev) => ({ ...prev, email: 'Email address is required.' }));
-        setErrorMessage('Email address is required.');
-      } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(trimmed)) {
-          setFieldErrors((prev) => ({
-            ...prev,
-            email: 'Please enter a valid email address (e.g. manager@theatre.com).',
-          }));
-          setErrorMessage('Please enter a valid email address (e.g. manager@theatre.com).');
-        }
-      }
-    } else if (field === 'phone' && mode === 'EMAIL') {
-      const trimmed = adminPhone.trim();
-      if (trimmed && trimmed.length < 7) {
-        setFieldErrors((prev) => ({
-          ...prev,
-          phone: 'Contact phone must be at least 7 digits.',
-        }));
-        setErrorMessage('Contact phone must be at least 7 digits.');
-      }
-    } else if (field === 'userId' && mode === 'EXISTING') {
-      if (!selectedUserId) {
-        setFieldErrors((prev) => ({ ...prev, userId: 'Please select an eligible administrator user.' }));
-        setErrorMessage('Please select an eligible administrator user.');
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage(null);
-    setFieldErrors({});
-
-    const targetTheatre = theatres.find((t) => t.id === selectedTheatreId);
+    const targetTheatre = theatres.find((t) => t.id === data.theatreId);
     const theatreName = targetTheatre?.name || 'Theatre';
 
-    // ── Primary: Send to Backend & Let Backend Validation Flow Through ────────
     try {
       const result = await assignMutation.mutateAsync({
-        theatreId: selectedTheatreId,
-        role: selectedRole,
-        ...(mode === 'EMAIL'
+        theatreId: data.theatreId,
+        role: data.role,
+        ...(data.mode === 'EMAIL'
           ? {
-              email: adminEmail.trim(),
-              name: adminName.trim(),
-              phone: adminPhone.trim() || undefined,
+              email: data.email!.trim(),
+              name: data.name!.trim(),
+              phone: data.phone?.trim() || undefined,
             }
           : {
-              userId: selectedUserId,
+              userId: data.userId!,
             }),
       });
 
       if (result.temporaryPassword) {
-        // Show credentials dialog so Super Admin can immediately view and copy them
         setCreatedCredentials({
-          email: adminEmail.trim(),
+          email: data.email!.trim(),
           temporaryPassword: result.temporaryPassword,
-          adminName: adminName.trim(),
+          adminName: data.name!.trim(),
           theatreName,
-          role: selectedRole,
+          role: data.role,
           emailSent: result.emailSent,
         });
       } else {
         const assignedName =
-          mode === 'EMAIL'
-            ? adminName.trim()
-            : eligibleAdmins.find((u) => u.id === selectedUserId)?.name || 'Administrator';
+          data.mode === 'EMAIL'
+            ? data.name!.trim()
+            : eligibleAdmins.find((u) => u.id === data.userId)?.name || 'Administrator';
 
-        onAssignSuccess(assignedName, theatreName, selectedRole);
+        onAssignSuccess(assignedName, theatreName, data.role);
         onClose();
       }
     } catch (err: unknown) {
-      // ── Layer 1: Extract authoritative Backend Validation & Business Errors ─
-      const backendResult = extractFormErrors(
-        err,
-        'Failed to assign theatre administrator. Please verify input.',
-      );
-
-      // ── Layer 2: Frontend Fallback Validation (if backend validation not returned for any field) ─
-      const clientFallback = validateClient();
-
-      // Merge: Backend validation always takes priority over client fallback
-      const mergedErrors: Record<string, string> = {
-        ...clientFallback,
-        ...backendResult.fieldErrors,
-      };
-
-      setFieldErrors(mergedErrors);
-      setErrorMessage(
-        backendResult.generalMessage ||
-          Object.values(mergedErrors)[0] ||
-          'Validation failed. Please verify inputs.',
-      );
+      const result = setFormServerErrors(setError, err);
+      setGeneralError(result.generalMessage);
     }
   };
 
@@ -380,29 +268,21 @@ export const TheatreAdminAssignModal = ({
         </div>
       ) : (
         /* ── Input Form ───────────────────────────────────────────────────────── */
-        <form onSubmit={handleSubmit} noValidate className="space-y-4 pt-1">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 pt-1">
           {/* Top Error Alert Banner */}
-          {errorMessage && (
-            <div className="flex items-start gap-2.5 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 animate-in fade-in duration-150">
-              <AlertCircle size={16} className="mt-0.5 shrink-0 text-rose-600" />
-              <div className="space-y-0.5">
-                <p className="font-semibold text-rose-800">Action could not be completed</p>
-                <p className="text-[11px] text-rose-700 leading-relaxed">{errorMessage}</p>
-              </div>
-            </div>
-          )}
+          <FormErrorBanner message={generalError} />
 
           {/* Mode Selector Tabs */}
           <div className="grid grid-cols-2 rounded-lg border border-border bg-surface-muted/50 p-1 text-xs font-medium">
             <button
               type="button"
               onClick={() => {
-                setMode('EMAIL');
-                setErrorMessage(null);
-                setFieldErrors({});
+                setValue('mode', 'EMAIL', { shouldValidate: true });
+                setGeneralError(null);
+                clearErrors();
               }}
               className={`flex items-center justify-center gap-1.5 rounded-md py-1.5 transition-colors cursor-pointer ${
-                mode === 'EMAIL'
+                currentMode === 'EMAIL'
                   ? 'bg-surface text-ink font-bold shadow-sm'
                   : 'text-ink-muted hover:text-ink'
               }`}
@@ -414,16 +294,16 @@ export const TheatreAdminAssignModal = ({
               type="button"
               onClick={() => {
                 if (eligibleAdmins.length > 0) {
-                  setMode('EXISTING');
-                  setErrorMessage(null);
-                  setFieldErrors({});
+                  setValue('mode', 'EXISTING', { shouldValidate: true });
+                  setGeneralError(null);
+                  clearErrors();
                 }
               }}
               disabled={eligibleAdmins.length === 0}
               className={`flex items-center justify-center gap-1.5 rounded-md py-1.5 transition-colors ${
                 eligibleAdmins.length === 0
                   ? 'opacity-40 cursor-not-allowed text-ink-muted'
-                  : mode === 'EXISTING'
+                  : currentMode === 'EXISTING'
                     ? 'bg-surface text-ink font-bold shadow-sm cursor-pointer'
                     : 'text-ink-muted hover:text-ink cursor-pointer'
               }`}
@@ -435,19 +315,15 @@ export const TheatreAdminAssignModal = ({
 
           {/* Theatre Selection */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
+            <label htmlFor="theatreId" className="text-xs font-semibold text-ink flex items-center gap-1.5">
               <Building2 size={13} className="text-brand-600" />
               Target Theatre
             </label>
             <select
-              value={selectedTheatreId}
-              onChange={(e) => {
-                setSelectedTheatreId(e.target.value);
-                clearFieldError('theatreId');
-              }}
-              onBlur={() => handleBlurField('theatreId')}
+              id="theatreId"
+              {...register('theatreId')}
               className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink transition-colors focus:outline-none focus:ring-1 ${
-                fieldErrors.theatreId
+                errors.theatreId
                   ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                   : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
               }`}
@@ -458,78 +334,78 @@ export const TheatreAdminAssignModal = ({
                 </option>
               ))}
             </select>
+            {errors.theatreId && (
+              <p className="text-xs text-danger-600">{errors.theatreId.message}</p>
+            )}
           </div>
 
           {/* Mode A: Invite by Email */}
-          {mode === 'EMAIL' ? (
+          {currentMode === 'EMAIL' ? (
             <div className="space-y-3 rounded-lg border border-border/80 bg-surface-muted/30 p-3">
               {/* Full Name */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
+                <label htmlFor="adminName" className="text-xs font-semibold text-ink flex items-center gap-1.5">
                   <User size={13} className="text-brand-600" />
                   Administrator Full Name
                 </label>
                 <input
+                  id="adminName"
                   type="text"
                   placeholder="e.g. Rachel Green"
-                  value={adminName}
-                  onChange={(e) => {
-                    setAdminName(e.target.value);
-                    clearFieldError('name');
-                  }}
-                  onBlur={() => handleBlurField('name')}
+                  {...register('name')}
                   className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink placeholder:text-ink-muted/50 transition-colors focus:outline-none focus:ring-1 ${
-                    fieldErrors.name
+                    errors.name
                       ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                       : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                   }`}
                 />
+                {errors.name && (
+                  <p className="text-xs text-danger-600">{errors.name.message}</p>
+                )}
               </div>
 
               {/* Email Address */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
+                <label htmlFor="adminEmail" className="text-xs font-semibold text-ink flex items-center gap-1.5">
                   <Mail size={13} className="text-brand-600" />
                   Email Address (Login ID)
                 </label>
                 <input
+                  id="adminEmail"
                   type="email"
                   placeholder="e.g. manager@theatrepartner.com"
-                  value={adminEmail}
-                  onChange={(e) => {
-                    setAdminEmail(e.target.value);
-                    clearFieldError('email');
-                  }}
-                  onBlur={() => handleBlurField('email')}
+                  {...register('email')}
                   className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink placeholder:text-ink-muted/50 transition-colors focus:outline-none focus:ring-1 ${
-                    fieldErrors.email
+                    errors.email
                       ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                       : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                   }`}
                 />
+                {errors.email && (
+                  <p className="text-xs text-danger-600">{errors.email.message}</p>
+                )}
               </div>
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
+                <label htmlFor="adminPhone" className="text-xs font-semibold text-ink flex items-center gap-1.5">
                   <Phone size={13} className="text-brand-600" />
                   Contact Phone (Optional)
                 </label>
                 <input
+                  id="adminPhone"
                   type="tel"
                   placeholder="e.g. +91 98765 43210"
-                  value={adminPhone}
-                  onChange={(e) => {
-                    setAdminPhone(e.target.value);
-                    clearFieldError('phone');
-                  }}
-                  onBlur={() => handleBlurField('phone')}
+                  {...register('phone')}
                   className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink placeholder:text-ink-muted/50 transition-colors focus:outline-none focus:ring-1 ${
-                    fieldErrors.phone
+                    errors.phone
                       ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                       : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                   }`}
                 />
+                {errors.phone && (
+                  <p className="text-xs text-danger-600">{errors.phone.message}</p>
+                )}
               </div>
 
               <p className="text-[11px] text-ink-muted leading-relaxed">
@@ -540,19 +416,15 @@ export const TheatreAdminAssignModal = ({
           ) : (
             /* Mode B: Existing Eligible Admin */
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
+              <label htmlFor="userId" className="text-xs font-semibold text-ink flex items-center gap-1.5">
                 <UserPlus size={13} className="text-brand-600" />
                 Eligible Administrator User
               </label>
               <select
-                value={selectedUserId}
-                onChange={(e) => {
-                  setSelectedUserId(e.target.value);
-                  clearFieldError('userId');
-                }}
-                onBlur={() => handleBlurField('userId')}
+                id="userId"
+                {...register('userId')}
                 className={`w-full rounded-md border py-2 px-3 text-xs sm:text-sm text-ink transition-colors focus:outline-none focus:ring-1 ${
-                  fieldErrors.userId
+                  errors.userId
                     ? 'border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/30'
                     : 'border-border bg-surface focus:border-brand-600 focus:ring-brand-600'
                 }`}
@@ -563,6 +435,9 @@ export const TheatreAdminAssignModal = ({
                   </option>
                 ))}
               </select>
+              {errors.userId && (
+                <p className="text-xs text-danger-600">{errors.userId.message}</p>
+              )}
             </div>
           )}
 
@@ -575,14 +450,13 @@ export const TheatreAdminAssignModal = ({
             <div className="grid grid-cols-1 gap-2 pt-1">
               {(Object.keys(ROLE_CONFIG) as AdminRole[]).map((roleKey) => {
                 const cfg = ROLE_CONFIG[roleKey];
-                const isSelected = selectedRole === roleKey;
+                const isSelected = currentRole === roleKey;
                 return (
                   <button
                     type="button"
                     key={roleKey}
                     onClick={() => {
-                      setSelectedRole(roleKey);
-                      clearFieldError('role');
+                      setValue('role', roleKey, { shouldValidate: true, shouldDirty: true });
                     }}
                     className={`flex items-start justify-between rounded-lg border p-3 text-left transition-colors cursor-pointer ${
                       isSelected
@@ -621,14 +495,14 @@ export const TheatreAdminAssignModal = ({
               variant="primary"
               size="sm"
               disabled={
-                assignMutation.isPending || (mode === 'EXISTING' && eligibleAdmins.length === 0)
+                assignMutation.isPending || (currentMode === 'EXISTING' && eligibleAdmins.length === 0)
               }
             >
               {assignMutation.isPending
-                ? mode === 'EMAIL'
+                ? currentMode === 'EMAIL'
                   ? 'Creating & Emailing...'
                   : 'Assigning...'
-                : mode === 'EMAIL'
+                : currentMode === 'EMAIL'
                   ? 'Create & Dispatch Access'
                   : 'Confirm Assignment'}
             </Button>
