@@ -297,7 +297,8 @@ const seatRouter = createSeatRoutes({
   updateSeatPropertiesController,
 });
   return {
-    theatreRouter,
-    seatRouter,
+  theatreRouter,
+  seatRouter,
+  theatreAccessPolicy,
   };
 }

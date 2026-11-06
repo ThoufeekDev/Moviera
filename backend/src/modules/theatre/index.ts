@@ -9,4 +9,8 @@ export type { TheatreOverviewFacility } from './application/read-models/TheatreO
 export type { SuperAdminFacilityListItem } from './application/read-models/SuperAdminFacilityListItem';
 export type { ActiveFacilityOption } from './application/read-models/ActiveFacilityOption';
 export type { SuperAdminTheatreDetail } from './application/read-models/SuperAdminTheatreDetail';
+export type {
+  ITheatreAccessPolicy,
+  TheatreAccessActor,
+} from './application/ports/ITheatreAccessPolicy';
 export { ALLOWED_FACILITY_ICON_KEYS, type FacilityIconKey } from './domain/constants/FacilityIconKey';
