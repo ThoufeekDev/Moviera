@@ -59,7 +59,13 @@ function fireNodeMouseDown(
   node: Konva.Node,
   clientX: number,
   clientY: number,
-  options: { shiftKey?: boolean; ctrlKey?: boolean; altKey?: boolean; button?: number } = {},
+  options: {
+    shiftKey?: boolean;
+    ctrlKey?: boolean;
+    altKey?: boolean;
+    button?: number;
+    detail?: number;
+  } = {},
 ) {
   act(() => {
     node.fire(
@@ -69,9 +75,32 @@ function fireNodeMouseDown(
           clientX,
           clientY,
           button: options.button ?? 0,
+          detail: options.detail ?? 1,
           shiftKey: options.shiftKey ?? false,
           ctrlKey: options.ctrlKey ?? false,
           altKey: options.altKey ?? false,
+          bubbles: true,
+        }),
+      },
+      true,
+    );
+  });
+}
+
+function fireNodeDblClick(node: Konva.Node, clientX: number, clientY: number) {
+  fireNodeMouseDown(node, clientX, clientY, { detail: 1 });
+  fireWindowMouseUp(clientX, clientY);
+  fireNodeMouseDown(node, clientX, clientY, { detail: 2 });
+  fireWindowMouseUp(clientX, clientY);
+  act(() => {
+    node.fire(
+      'dblclick',
+      {
+        evt: new MouseEvent('dblclick', {
+          clientX,
+          clientY,
+          button: 0,
+          detail: 2,
           bubbles: true,
         }),
       },
@@ -136,7 +165,7 @@ describe('SeatCanvas Konva Interactions (1-10)', () => {
     return { ...utils, stage: getLatestStage() };
   };
 
-  it('1. Press and drag an unselected seat 100px: only that seat moved, one history entry, dirty flag set', () => {
+  it('1. Double-click a seat to select it first, then drag 100px: single-click does not move unselected seat, double-click selects and drags it with one history entry', () => {
     const seats = makeGridSeats(['A', 'B'], 4);
     const { stage } = mountWith1xStage(seats, true);
 
@@ -146,7 +175,18 @@ describe('SeatCanvas Konva Interactions (1-10)', () => {
       seats.find((s) => s.id === 'A4')!.y,
     );
 
-    // Press on unselected seat A4 and drag +100px right (snaps to +90px = 3 pitches)
+    // 1a. Single press + drag on unselected seat A4 must NOT select or move it
+    fireNodeMouseDown(a4Node, startWorld.x + 10, startWorld.y + 10, { detail: 1 });
+    fireWindowMouseMove(startWorld.x + 110, startWorld.y + 10);
+    fireWindowMouseUp(startWorld.x + 110, startWorld.y + 10);
+    expect(useSeatEditorStore.getState().selectedSeatIds.size).toBe(0);
+    expect(useSeatEditorStore.getState().history).toHaveLength(0);
+
+    // 1b. Double-click A4 to select it for drag-and-drop
+    fireNodeDblClick(a4Node, startWorld.x + 10, startWorld.y + 10);
+    expect(Array.from(useSeatEditorStore.getState().selectedSeatIds)).toEqual(['A4']);
+
+    // 1c. Now press and drag the selected seat A4 +100px right (snaps to +90px = 3 pitches)
     fireNodeMouseDown(a4Node, startWorld.x + 10, startWorld.y + 10);
     fireWindowMouseMove(startWorld.x + 110, startWorld.y + 10);
 
@@ -297,7 +337,8 @@ describe('SeatCanvas Konva Interactions (1-10)', () => {
     const { stage } = mountWith1xStage(seats, true);
 
     const a1Node = stage.findOne('#A1')!;
-    // Drag A1 +30px right directly onto A2's occupied slot (x=190)
+    // Double-click A1 to select it, then drag +30px right directly onto A2's occupied slot (x=190)
+    fireNodeDblClick(a1Node, 165, 125);
     fireNodeMouseDown(a1Node, 165, 125);
     fireWindowMouseMove(195, 125);
     fireWindowMouseUp(195, 125);
@@ -338,11 +379,12 @@ describe('SeatCanvas Konva Interactions (1-10)', () => {
     expect(selectIsDirty(useSeatEditorStore.getState())).toBe(true);
   });
 
-  it('7. A drag shorter than 4px selects without moving', () => {
+  it('7. Double-click selects a seat, and a drag shorter than 4px keeps selection without moving', () => {
     const seats = makeGridSeats(['A'], 2);
     const { stage } = mountWith1xStage(seats, true);
 
     const a2Node = stage.findOne('#A2')!;
+    fireNodeDblClick(a2Node, 195, 125);
     // Move only 2.5px (< 4px threshold)
     fireNodeMouseDown(a2Node, 195, 125);
     fireWindowMouseMove(197, 126);
@@ -382,8 +424,9 @@ describe('SeatCanvas Konva Interactions (1-10)', () => {
     expect(initialFrame.box.x).toBe(40);
     expect(initialFrame.screen.top - initialFrame.seatBounds.lastRowBottom).toBe(SCREEN_GAP);
 
-    // 9a. Drag A1 left by 60px (from x=250 to x=190, inside the left padding area without passing the 120px edge at x=160)
+    // 9a. Double-click A1 to select it, then drag left by 60px (from x=250 to x=190, inside the left padding area without passing the 120px edge at x=160)
     const a1Node = stage.findOne('#A1')!;
+    fireNodeDblClick(a1Node, 255, 125);
     fireNodeMouseDown(a1Node, 255, 125);
     fireWindowMouseMove(195, 125);
     fireWindowMouseUp(195, 125);

@@ -10,14 +10,16 @@ export interface SeatShapeProps {
   x: number;
   y: number;
   isSelected: boolean;
-  /** Mouse press on the seat. Click vs drag is decided by the canvas (3-4px threshold). */
+  /** Mouse press on the seat (arms drag if seat is selected or double-clicked). */
   onSeatMouseDown: (id: string, e: Konva.KonvaEventObject<MouseEvent>) => void;
+  /** Double-click on the seat to select it for drag-and-drop. */
+  onSeatDblClick?: (id: string, e: Konva.KonvaEventObject<MouseEvent>) => void;
   /** Lets the canvas move this node imperatively while dragging (no React state per mousemove). */
   registerNode: (id: string, node: Konva.Group | null) => void;
 }
 
 export const SeatShape: React.FC<SeatShapeProps> = React.memo(
-  ({ seat, x, y, isSelected, onSeatMouseDown, registerNode }) => {
+  ({ seat, x, y, isSelected, onSeatMouseDown, onSeatDblClick, registerNode }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     const tierColor = (TIER_COLORS[seat.type] ?? TIER_COLORS.REGULAR).color;
@@ -59,6 +61,7 @@ export const SeatShape: React.FC<SeatShapeProps> = React.memo(
         x={x}
         y={y}
         onMouseDown={(e) => onSeatMouseDown(seat.id, e)}
+        onDblClick={(e) => onSeatDblClick?.(seat.id, e)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

@@ -21,6 +21,8 @@ import { SELECTION_THEME } from '../utils/seatTheme';
 
 export { LAYOUT_BOX_PADDING };
 
+const DOUBLE_CLICK_WINDOW_MS = 350;
+
 interface PendingSeatPress {
   kind: 'pending';
   seatId: string;
@@ -112,6 +114,7 @@ export function useSeatCanvasInteractions({
 }: SeatCanvasInteractionOptions) {
   const nodesRef = useRef(new Map<string, Konva.Group>());
   const interactionRef = useRef<Interaction | null>(null);
+  const lastSeatClickRef = useRef<{ seatId: string; time: number } | null>(null);
   const spaceDownRef = useRef(false);
   const pointerOverRef = useRef(false);
   const optionsRef = useRef({ snapToGrid, handToolActive });
@@ -618,12 +621,26 @@ export function useSeatCanvasInteractions({
     updateSeatDrag,
   ]);
 
-  /** Mouse press on a seat: select immediately (or keep group selection if already selected), then wait for 4px drag threshold. */
+  /**
+   * Mouse press on a seat:
+   *  - Unselected seats require a double-click (or Shift/Ctrl/Cmd modifier) to become selected.
+   *    Single-pressing an unselected seat does not select or drag it (preventing accidental moves).
+   *  - Already-selected seats arm a drag immediately on press (moving the selected seat or group).
+   */
   const handleSeatMouseDown = useCallback(
     (id: string, e: Konva.KonvaEventObject<MouseEvent>) => {
       if (e.evt.button !== 0 || isPanMode()) return; // middle mouse / pan mode pan the stage
       e.cancelBubble = true;
       e.evt.preventDefault();
+
+      const now = Date.now();
+      const prevClick = lastSeatClickRef.current;
+      const isRapidSecondClick =
+        prevClick !== null &&
+        prevClick.seatId === id &&
+        now - prevClick.time <= DOUBLE_CLICK_WINDOW_MS;
+      const isDoubleClick = e.evt.detail >= 2 || isRapidSecondClick;
+      lastSeatClickRef.current = isDoubleClick ? null : { seatId: id, time: now };
 
       const store = useSeatEditorStore.getState();
       const modifier = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
@@ -635,9 +652,13 @@ export function useSeatCanvasInteractions({
           interactionRef.current = null; // toggled off: nothing to drag
           return;
         }
-      } else if (!wasInSelection) {
-        // Pressing an unselected seat without Shift/Ctrl replaces the selection with this seat
+      } else if (isDoubleClick) {
+        // Double-click selects this seat (or isolates it from a multi-selection) for drag-and-drop
         store.selectSeat(id, false);
+      } else if (!wasInSelection) {
+        // Single press on an unselected seat: do not select or drag
+        interactionRef.current = null;
+        return;
       }
 
       interactionRef.current = {
@@ -646,9 +667,23 @@ export function useSeatCanvasInteractions({
         startClientX: e.evt.clientX,
         startClientY: e.evt.clientY,
         modifier,
-        wasInSelection,
-        collapseOnClick: !modifier && wasInSelection,
+        wasInSelection: wasInSelection || isDoubleClick,
+        collapseOnClick: false,
       };
+    },
+    [isPanMode],
+  );
+
+  /** Explicit Konva dblclick handler to select a seat for drag-and-drop. */
+  const handleSeatDblClick = useCallback(
+    (id: string, e: Konva.KonvaEventObject<MouseEvent>) => {
+      if (isPanMode()) return;
+      e.cancelBubble = true;
+      e.evt.preventDefault();
+
+      const modifier = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
+      useSeatEditorStore.getState().selectSeat(id, modifier);
+      lastSeatClickRef.current = null;
     },
     [isPanMode],
   );
@@ -725,10 +760,15 @@ export function useSeatCanvasInteractions({
         setCursor('grab');
         return;
       }
+      const seatAncestor = e.target.findAncestor('.seat');
+      if (seatAncestor) {
+        const seatId = seatAncestor.id();
+        const isSelected = useSeatEditorStore.getState().selectedSeatIds.has(seatId);
+        setCursor(isSelected ? 'move' : 'pointer');
+        return;
+      }
       const isDraggableTarget =
-        e.target.name() === 'selection-box' ||
-        Boolean(e.target.findAncestor('.seat')) ||
-        Boolean(e.target.findAncestor('.row-label'));
+        e.target.name() === 'selection-box' || Boolean(e.target.findAncestor('.row-label'));
       setCursor(isDraggableTarget ? 'move' : 'default');
     },
     [isPanMode, setCursor],
@@ -797,6 +837,7 @@ export function useSeatCanvasInteractions({
   return {
     registerNode,
     handleSeatMouseDown,
+    handleSeatDblClick,
     handleSelectionBoxMouseDown,
     handleRowLabelMouseDown,
     handleStageMouseDown,

@@ -51,6 +51,7 @@ export const SeatCanvas: React.FC<SeatCanvasProps> = ({
   const {
     registerNode,
     handleSeatMouseDown,
+    handleSeatDblClick,
     handleSelectionBoxMouseDown,
     handleRowLabelMouseDown,
     handleStageMouseDown,
@@ -403,6 +404,7 @@ export const SeatCanvas: React.FC<SeatCanvasProps> = ({
               y={pos.y}
               isSelected={selectedSeatIds.has(seat.id)}
               onSeatMouseDown={handleSeatMouseDown}
+              onSeatDblClick={handleSeatDblClick}
               registerNode={registerNode}
             />
           ))}
