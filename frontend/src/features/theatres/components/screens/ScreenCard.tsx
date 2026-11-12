@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Armchair, Clapperboard, Rows3, Settings2 } from 'lucide-react';
+import { Armchair, Clapperboard, Film, Rows3, Settings2 } from 'lucide-react';
 import { Badge, Button } from '@/shared/ui';
 import type { ScreenListItem } from '../../types/screen.types';
 
@@ -10,6 +10,7 @@ export interface ScreenCardProps {
 export default function ScreenCard({ screen }: ScreenCardProps) {
   const navigate = useNavigate();
   const isConfigured = screen.seatConfigurationStatus === 'CONFIGURED';
+  const formats = screen.cinemaFormats ?? [];
 
   return (
     <article className="flex flex-col justify-between gap-4 rounded-lg border border-border bg-surface p-5 shadow-card transition-colors hover:border-brand-600/40">
@@ -30,8 +31,8 @@ export default function ScreenCard({ screen }: ScreenCardProps) {
           </div>
         </div>
 
-        {/* Seat Configuration Badge */}
-        <div className="flex items-center gap-2">
+        {/* Seat Configuration & Screen Formats */}
+        <div className="flex flex-wrap items-center gap-2">
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
               isConfigured
@@ -46,6 +47,25 @@ export default function ScreenCard({ screen }: ScreenCardProps) {
             />
             {isConfigured ? 'Layout Configured' : 'No Seats Configured'}
           </span>
+        </div>
+
+        {/* Screen Formats */}
+        <div className="flex flex-wrap items-center gap-1.5" aria-label="Screen formats">
+          <Film size={13} className="text-ink-muted shrink-0" aria-hidden="true" />
+          {formats.length > 0 ? (
+            formats.map((format) => (
+              <span
+                key={format.id}
+                className="rounded-md border border-brand-500/20 bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700"
+              >
+                {format.name}
+              </span>
+            ))
+          ) : (
+            <span className="rounded-md border border-border bg-surface-muted px-2 py-0.5 text-xs font-medium text-ink-muted">
+              Standard 2D
+            </span>
+          )}
         </div>
       </div>
 

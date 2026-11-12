@@ -4,7 +4,11 @@ import type { ISeatRepository } from '../../../domain/repositories/ISeatReposito
 import type { CreateSeatProps } from '../../../domain/types/CreateSeatProps';
 import { SeatMapper } from '../mappers/SeatMapper';
 import type { SeatType } from '../../../domain/enums/SeatType';
-export class PrismaSeatRepository implements ISeatRepository {
+import type {
+  ActiveScreenSeat,
+  IActiveScreenSeatReader,
+} from '../../../application/ports/IActiveScreenSeatReader';
+export class PrismaSeatRepository implements ISeatRepository ,IActiveScreenSeatReader{
   constructor(private readonly prisma: PrismaClient) {}
 
   async findById(id: string): Promise<Seat | null> {
@@ -300,5 +304,22 @@ async updateManySeatPositions(
       },
     );
   }
+
+  async findActiveByScreenId(screenId: string): Promise<ActiveScreenSeat[]> {
+  return this.prisma.seat.findMany({
+    where: {
+      screenId,
+      isActive: true,
+    },
+    select: {
+      id: true,
+      type: true,
+    },
+    orderBy: [
+      { rowLabel: 'asc' },
+      { seatNumber: 'asc' },
+    ],
+  });
+}
 
 }

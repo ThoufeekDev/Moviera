@@ -4,6 +4,17 @@ export const TheatreListSelect = {
   name: true,
   slug: true,
   isActive: true,
+  cinemaFormats: {
+    select: {
+      cinemaFormat: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  },
   _count: {
     select: {
       seats: true,

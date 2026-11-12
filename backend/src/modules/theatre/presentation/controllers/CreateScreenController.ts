@@ -18,6 +18,7 @@ export class CreateScreenController {
     const result = await this.createScreenUseCase.execute({
       theatreId: req.body.theatreId,
       name: req.body.name,
+      ...(req.body.cinemaFormatIds ? { cinemaFormatIds: req.body.cinemaFormatIds } : {}),
       actor: {
         userId: req.user.userId,
         role: req.user.role,

@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMyTheatres } from '../hooks/useMyTheatres';
 import TheatreCard from '../components/TheatreCard';
-import TheatreCardSkeleton from '../components/TheatreCardSkeleton';
-import { ErrorState, EmptyState, SearchBar, StatusFilter } from '@/shared/ui';
+import { ContentLoader, ErrorState, EmptyState, SearchBar, StatusFilter } from '@/shared/ui';
 
 export function MyTheatrePage() {
   const navigate = useNavigate();
@@ -40,11 +39,11 @@ export function MyTheatrePage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map((key) => (
-            <TheatreCardSkeleton key={key} />
-          ))}
-        </div>
+        <ContentLoader
+          text="Loading My Theatres"
+          subtext="Fetching multiplexes and screens assigned to your account..."
+          minHeight="360px"
+        />
       </div>
     );
   }

@@ -17,6 +17,7 @@ const paginated: PaginatedResult<ScreenListItem> = {
       name: 'Audi 1',
       slug: 'audi-1',
       isActive: true,
+      cinemaFormats: [{ id: 'cf-1', name: 'IMAX 3D', slug: 'imax-3d' }],
       totalSeats: 120,
       totalRows: 6,
       totalShows: 4,

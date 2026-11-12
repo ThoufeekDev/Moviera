@@ -9,7 +9,7 @@ export interface IScreenRepository {
 
   findBySlug(theatreId: string, slug: string): Promise<Screen | null>;
 
+  findActiveCinemaFormatIds?(ids: string[]): Promise<string[]>;
+
   create(screen: CreateScreenProps): Promise<Screen>;
-
-
 }

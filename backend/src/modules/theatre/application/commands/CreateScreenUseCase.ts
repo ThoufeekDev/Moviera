@@ -51,10 +51,21 @@ export class CreateScreenUseCase implements IUseCase<CreateScreenDTO, ScreenResu
       );
     }
 
+    const cinemaFormatIds = [...new Set(screen.cinemaFormatIds ?? [])];
+    if (cinemaFormatIds.length > 0 && this.screenRepository.findActiveCinemaFormatIds) {
+      const activeFormatIds = await this.screenRepository.findActiveCinemaFormatIds(cinemaFormatIds);
+      if (activeFormatIds.length !== cinemaFormatIds.length) {
+        throw new BadRequestError('One or more selected screen formats are invalid or inactive', {
+          field: 'cinemaFormatIds',
+        });
+      }
+    }
+
     const created = await this.screenRepository.create({
       theatreId: screen.theatreId,
       name,
       slug,
+      ...(cinemaFormatIds.length > 0 ? { cinemaFormatIds } : {}),
     });
 
     return {

@@ -1,4 +1,6 @@
-import { Button, FormErrorBanner, Input, Modal } from '@/shared/ui';
+import { Controller } from 'react-hook-form';
+import { Button, ChipSelect, FormErrorBanner, Input, Modal } from '@/shared/ui';
+import { useTheatreFormats } from '@/features/movies';
 import { SCREEN_NAME_MAX_LENGTH } from '../../schemas/createScreenForm.schema';
 import { useCreateScreenForm } from '../../hooks/useCreateScreenForm';
 
@@ -22,10 +24,18 @@ export default function CreateScreenModal({ isOpen, onClose, theatreId }: Create
     onClose,
   });
 
+  const { data: theatreFormats = [] } = useTheatreFormats();
+
   const {
     register,
+    control,
     formState: { errors },
   } = form;
+
+  const formatOptions = theatreFormats.map((f) => ({
+    value: f.id,
+    label: f.name,
+  }));
 
   return (
     <Modal
@@ -53,6 +63,32 @@ export default function CreateScreenModal({ isOpen, onClose, theatreId }: Create
           helperText="Must be unique within this theatre."
           {...register('name')}
         />
+
+        {formatOptions.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-ink">
+              Screen Formats
+            </label>
+            <p className="text-xs text-ink-muted">
+              Select the projection and sound formats supported by this screen.
+            </p>
+            <Controller
+              name="cinemaFormatIds"
+              control={control}
+              render={({ field }) => (
+                <ChipSelect
+                  options={formatOptions}
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  multiple
+                  activeVariant="solid"
+                  idPrefix="screen-format"
+                  error={errors.cinemaFormatIds?.message ?? null}
+                />
+              )}
+            />
+          </div>
+        )}
 
         <div className="flex items-center justify-end gap-3 border-t border-border pt-3">
           <Button

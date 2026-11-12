@@ -31,6 +31,7 @@ describe('CreateScreenUseCase', () => {
     findById: ReturnType<typeof vi.fn>;
     findByName: ReturnType<typeof vi.fn>;
     findBySlug: ReturnType<typeof vi.fn>;
+    findActiveCinemaFormatIds: ReturnType<typeof vi.fn>;
     create: ReturnType<typeof vi.fn>;
   };
   let theatreRepository: { findById: ReturnType<typeof vi.fn> };
@@ -42,6 +43,7 @@ describe('CreateScreenUseCase', () => {
       findById: vi.fn(),
       findByName: vi.fn().mockResolvedValue(null),
       findBySlug: vi.fn().mockResolvedValue(null),
+      findActiveCinemaFormatIds: vi.fn(async (ids: string[]) => ids),
       create: vi.fn(async (props: CreateScreenProps) => buildScreen(props)),
     };
     theatreRepository = {
@@ -134,6 +136,40 @@ describe('CreateScreenUseCase', () => {
     await expect(
       useCase.execute({ theatreId: 'theatre-1', name: '!!!', actor }),
     ).rejects.toThrow(BadRequestError);
+    expect(screenRepository.create).not.toHaveBeenCalled();
+  });
+
+  it('deduplicates and validates cinemaFormatIds when provided', async () => {
+    await useCase.execute({
+      theatreId: 'theatre-1',
+      name: 'Audi 1',
+      cinemaFormatIds: ['cf-1', 'cf-2', 'cf-1'],
+      actor,
+    });
+
+    expect(screenRepository.findActiveCinemaFormatIds).toHaveBeenCalledWith(['cf-1', 'cf-2']);
+    expect(screenRepository.create).toHaveBeenCalledWith({
+      theatreId: 'theatre-1',
+      name: 'Audi 1',
+      slug: 'audi-1',
+      cinemaFormatIds: ['cf-1', 'cf-2'],
+    });
+  });
+
+  it('throws BadRequestError with field cinemaFormatIds when a format is invalid or inactive', async () => {
+    screenRepository.findActiveCinemaFormatIds.mockResolvedValue(['cf-1']);
+
+    const error = await useCase
+      .execute({
+        theatreId: 'theatre-1',
+        name: 'Audi 1',
+        cinemaFormatIds: ['cf-1', 'invalid-cf'],
+        actor,
+      })
+      .catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(BadRequestError);
+    expect((error as BadRequestError).details).toEqual({ field: 'cinemaFormatIds' });
     expect(screenRepository.create).not.toHaveBeenCalled();
   });
 });

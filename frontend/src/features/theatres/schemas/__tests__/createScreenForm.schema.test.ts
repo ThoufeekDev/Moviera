@@ -31,5 +31,17 @@ describe('createScreenFormSchema', () => {
     const result = createScreenFormSchema.safeParse({ name: 'Audi 1', slug: 'x' });
     expect(result.data).toEqual({ name: 'Audi 1' });
   });
+
+  it('accepts optional cinemaFormatIds', () => {
+    const result = createScreenFormSchema.safeParse({
+      name: 'Audi 1',
+      cinemaFormatIds: [' cf-1 ', 'cf-2'],
+    });
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual({
+      name: 'Audi 1',
+      cinemaFormatIds: ['cf-1', 'cf-2'],
+    });
+  });
 });
 

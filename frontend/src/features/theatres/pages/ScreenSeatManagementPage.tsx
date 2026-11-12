@@ -254,24 +254,41 @@ export default function ScreenSeatManagementPage() {
   if (!layoutSeats || layoutSeats.length === 0) {
     return (
       <div className="mx-auto max-w-5xl p-4 sm:p-6 space-y-4">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-2 text-xs text-ink-muted">
+        {/* Back & Breadcrumb Navigation */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
-            to="/theatre-admin/theatres"
-            className="hover:text-ink hover:underline flex items-center gap-1"
+            to={`/theatre-admin/theatres/${theatreId}?tab=SCREENS`}
+            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-ink shadow-card transition-colors hover:border-brand-600 hover:bg-brand-50 hover:text-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           >
-            <Building2 size={13} />
-            <span>Theatres</span>
+            <ChevronLeft size={15} />
+            <span>Back to Screens</span>
           </Link>
-          <span>/</span>
-          <Link
-            to={`/theatre-admin/theatres/${theatreId}`}
-            className="hover:text-ink hover:underline"
-          >
-            {theatre?.name || 'Theatre'}
-          </Link>
-          <span>/</span>
-          <span className="font-semibold text-ink">{screenName} Seats Setup</span>
+
+          <div className="flex items-center gap-2 text-xs text-ink-muted">
+            <Link
+              to="/theatre-admin/theatres"
+              className="hover:text-ink hover:underline flex items-center gap-1"
+            >
+              <Building2 size={13} />
+              <span>Theatres</span>
+            </Link>
+            <span>/</span>
+            <Link
+              to={`/theatre-admin/theatres/${theatreId}`}
+              className="hover:text-ink hover:underline"
+            >
+              {theatre?.name || 'Theatre'}
+            </Link>
+            <span>/</span>
+            <Link
+              to={`/theatre-admin/theatres/${theatreId}?tab=SCREENS`}
+              className="hover:text-ink hover:underline"
+            >
+              Screens
+            </Link>
+            <span>/</span>
+            <span className="font-semibold text-ink">{screenName} Seats Setup</span>
+          </div>
         </div>
 
         <SeatLayoutSetup
@@ -302,14 +319,28 @@ export default function ScreenSeatManagementPage() {
     >
       {/* Top Header & Breadcrumbs */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-border">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs text-ink-muted">
+        <div className="space-y-1.5">
+          <div className="flex flex-wrap items-center gap-2.5 text-xs text-ink-muted">
             <Link
-              to={`/theatre-admin/theatres/${theatreId}`}
-              className="hover:text-brand-600 transition-colors flex items-center gap-1"
+              to={`/theatre-admin/theatres/${theatreId}?tab=SCREENS`}
+              className="inline-flex min-h-[34px] items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1 text-xs font-semibold text-ink shadow-card transition-colors hover:border-brand-600 hover:bg-brand-50 hover:text-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
             >
               <ChevronLeft size={14} />
-              <span>Back to {theatre?.name || 'Theatre'}</span>
+              <span>Back to Screens</span>
+            </Link>
+            <span className="text-border">|</span>
+            <Link
+              to={`/theatre-admin/theatres/${theatreId}`}
+              className="hover:text-brand-600 transition-colors"
+            >
+              {theatre?.name || 'Theatre'}
+            </Link>
+            <span>/</span>
+            <Link
+              to={`/theatre-admin/theatres/${theatreId}?tab=SCREENS`}
+              className="hover:text-brand-600 transition-colors"
+            >
+              Screens
             </Link>
             <span>/</span>
             <span className="font-medium text-ink">{screenName}</span>

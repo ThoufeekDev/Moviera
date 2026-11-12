@@ -89,11 +89,16 @@ import { createTheatreRoutes } from './presentation/routes/theatre.routes';
 import { createSeatRoutes } from './presentation/routes/seat.routes';
 
 
+// !Interfaces 
+import type { IActiveScreenSeatReader } from './application/ports/IActiveScreenSeatReader';
+import type { IScreenDetailsReader } from './application/ports/IScreenDetailsReader';
+
 export function buildTheatreModule(prisma: PrismaClient, storageService?: IStorageService) {
   // Repositories & Query Service
   const theatreRepository = new PrismaTheatreRepository(prisma);
   const facilityRepository = new PrismaFacilityRepository(prisma);
   const screenRepository = new PrismaScreenRepository(prisma);
+  const screenDetailsReader: IScreenDetailsReader = screenRepository;
   const seatRepository = new PrismaSeatRepository(prisma);
   const theatreQueryService = new PrismaTheatreQueryService(prisma);
   const screenQueryService = new PrismaScreenQueryService(prisma);
@@ -103,7 +108,7 @@ export function buildTheatreModule(prisma: PrismaClient, storageService?: IStora
   const theatreAdminUserManager = new PrismaTheatreAdminUserManager(prisma);
   const theatreLocationRepository = new PrismaTheatreLocationRepository(prisma);
   const emailService = new ResendEmailService();
-
+  const activeScreenSeatReader: IActiveScreenSeatReader = seatRepository;
 
 
   // Services
@@ -300,5 +305,7 @@ const seatRouter = createSeatRoutes({
   theatreRouter,
   seatRouter,
   theatreAccessPolicy,
+  activeScreenSeatReader,
+  screenDetailsReader,
   };
 }

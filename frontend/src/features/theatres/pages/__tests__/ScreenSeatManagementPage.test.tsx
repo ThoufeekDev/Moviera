@@ -125,6 +125,10 @@ describe('ScreenSeatManagementPage Integration', () => {
         screen.getByText(/Screen 1 IMAX — Seating Layout Editor/i),
       ).toBeInTheDocument();
       expect(screen.getByText(/2 Total Seats/i)).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /back to screens/i })).toHaveAttribute(
+        'href',
+        '/theatre-admin/theatres/th-1?tab=SCREENS',
+      );
     });
   });
 

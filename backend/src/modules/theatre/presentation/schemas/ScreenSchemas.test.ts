@@ -44,6 +44,31 @@ describe('Screen schemas', () => {
 
       expect(result.success).toBe(false);
     });
+
+    it('accepts optional cinemaFormatIds and trims each ID', () => {
+      const result = createScreenSchema.safeParse({
+        theatreId: 'theatre-1',
+        name: 'Audi 1',
+        cinemaFormatIds: [' cf-1 ', 'cf-2'],
+      });
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual({
+        theatreId: 'theatre-1',
+        name: 'Audi 1',
+        cinemaFormatIds: ['cf-1', 'cf-2'],
+      });
+    });
+
+    it('rejects blank cinemaFormatIds entries', () => {
+      const result = createScreenSchema.safeParse({
+        theatreId: 'theatre-1',
+        name: 'Audi 1',
+        cinemaFormatIds: ['   '],
+      });
+
+      expect(result.success).toBe(false);
+    });
   });
 
   describe('listScreensQuerySchema', () => {

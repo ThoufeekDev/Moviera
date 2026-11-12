@@ -7,6 +7,9 @@ export const createScreenSchema = z.object({
     .trim()
     .min(1, 'Screen name is required')
     .max(100, 'Screen name must not exceed 100 character'),
+  cinemaFormatIds: z
+    .array(z.string().trim().min(1, 'Cinema format ID cannot be empty'))
+    .optional(),
 });
 
 export type CreateScreenInput = z.infer<typeof createScreenSchema>;

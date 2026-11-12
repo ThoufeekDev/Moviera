@@ -15,5 +15,18 @@ describe('buildCreateScreenPayload', () => {
       name: 'IMAX Screen 2',
     });
   });
+
+  it('includes deduplicated and trimmed cinemaFormatIds when selected', () => {
+    expect(
+      buildCreateScreenPayload('theatre-1', {
+        name: 'Audi 1',
+        cinemaFormatIds: [' cf-1 ', 'cf-2', 'cf-1'],
+      }),
+    ).toEqual({
+      theatreId: 'theatre-1',
+      name: 'Audi 1',
+      cinemaFormatIds: ['cf-1', 'cf-2'],
+    });
+  });
 });
 

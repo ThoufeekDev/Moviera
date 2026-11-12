@@ -21,6 +21,10 @@ describe('ScreenCard', () => {
     name: 'Audi 1 - IMAX',
     slug: 'audi-1-imax',
     isActive: true,
+    cinemaFormats: [
+      { id: 'cf-1', name: 'IMAX 3D', slug: 'imax-3d' },
+      { id: 'cf-2', name: 'Dolby Atmos', slug: 'dolby-atmos' },
+    ],
     totalSeats: 120,
     totalRows: 10,
     totalShows: 4,
@@ -33,13 +37,14 @@ describe('ScreenCard', () => {
     name: 'Audi 2',
     slug: 'audi-2',
     isActive: false,
+    cinemaFormats: [],
     totalSeats: 0,
     totalRows: 0,
     totalShows: 0,
     seatConfigurationStatus: 'NOT_CONFIGURED',
   };
 
-  it('renders screen details, statistics, and configured status badge', () => {
+  it('renders screen details, formats, statistics, and configured status badge', () => {
     render(
       <MemoryRouter>
         <ScreenCard screen={configuredScreen} />
@@ -49,12 +54,14 @@ describe('ScreenCard', () => {
     expect(screen.getByText('Audi 1 - IMAX')).toBeInTheDocument();
     expect(screen.getByText('ID: audi-1-imax')).toBeInTheDocument();
     expect(screen.getByText('Layout Configured')).toBeInTheDocument();
+    expect(screen.getByText('IMAX 3D')).toBeInTheDocument();
+    expect(screen.getByText('Dolby Atmos')).toBeInTheDocument();
     expect(screen.getByText('120')).toBeInTheDocument();
     expect(screen.getByText('10')).toBeInTheDocument();
     expect(screen.getByText('4')).toBeInTheDocument();
   });
 
-  it('renders unconfigured badge when seat configuration is pending', () => {
+  it('renders unconfigured badge and Standard 2D fallback when no formats are configured', () => {
     render(
       <MemoryRouter>
         <ScreenCard screen={unconfiguredScreen} />
@@ -62,6 +69,7 @@ describe('ScreenCard', () => {
     );
 
     expect(screen.getByText('No Seats Configured')).toBeInTheDocument();
+    expect(screen.getByText('Standard 2D')).toBeInTheDocument();
   });
 
   it('navigates to the seat management page when "Manage Seats" is clicked', async () => {

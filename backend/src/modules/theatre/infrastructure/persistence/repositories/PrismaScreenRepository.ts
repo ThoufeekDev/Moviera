@@ -6,8 +6,11 @@ import { ScreenMapper } from '../mappers/ScreenMapper';
 import { Seat } from '../../../domain/entities/Seat';
 import { CreateSeatProps } from '../../../domain/types/CreateSeatProps';
 import { SeatMapper } from '../mappers/SeatMapper';
-
-export class PrismaScreenRepository implements IScreenRepository {
+import type {
+  IScreenDetailsReader,
+  ScreenDetails,
+} from '../../../application/ports/IScreenDetailsReader';
+export class PrismaScreenRepository implements IScreenRepository,IScreenDetailsReader {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findById(id: string): Promise<Screen | null> {
@@ -44,17 +47,54 @@ export class PrismaScreenRepository implements IScreenRepository {
     return screen ? ScreenMapper.toDomain(screen) : null;
   }
 
+  async findActiveCinemaFormatIds(ids: string[]): Promise<string[]> {
+    if (ids.length === 0) return [];
+
+    const formats = await this.prisma.cinemaFormat.findMany({
+      where: {
+        id: { in: ids },
+        isActive: true,
+      },
+      select: { id: true },
+    });
+
+    return formats.map((f) => f.id);
+  }
+
   async create(screen: CreateScreenProps): Promise<Screen> {
+    const cinemaFormatIds = screen.cinemaFormatIds ?? [];
     const createdScreen = await this.prisma.screen.create({
       data: {
         theatreId: screen.theatreId,
         name: screen.name,
         slug: screen.slug,
+        ...(cinemaFormatIds.length > 0
+          ? {
+              cinemaFormats: {
+                create: cinemaFormatIds.map((cinemaFormatId) => ({
+                  cinemaFormatId,
+                })),
+              },
+            }
+          : {}),
       },
     });
 
     return ScreenMapper.toDomain(createdScreen);
   }
+
+  async findScreenDetailsById(
+  screenId: string,
+): Promise<ScreenDetails | null> {
+  return this.prisma.screen.findUnique({
+    where: { id: screenId },
+    select: {
+      id: true,
+      theatreId: true,
+      isActive: true,
+    },
+  });
+}
 
 
 }

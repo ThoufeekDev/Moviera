@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { Skeleton } from '@/shared/ui/Skeleton';
 import { ErrorState } from '@/shared/ui';
@@ -12,11 +11,30 @@ import TheatreSettings from '../components/TheatreSettings';
 import TheatreShows from '../components/TheatreShows';
 import TheatreTabs, { type TheatreTab } from '../components/TheatreTabs';
 
+const VALID_THEATRE_TABS: readonly TheatreTab[] = [
+  'OVERVIEW',
+  'SCREENS',
+  'SHOWS',
+  'SETTINGS',
+];
+
+function resolveTheatreTab(param: string | null): TheatreTab {
+  if (param && (VALID_THEATRE_TABS as readonly string[]).includes(param)) {
+    return param as TheatreTab;
+  }
+  return 'OVERVIEW';
+}
+
 export default function TheatreDetailsPage() {
   const { theatreId } = useParams<{ theatreId: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<TheatreTab>('OVERVIEW');
+  const activeTab = resolveTheatreTab(searchParams.get('tab'));
+
+  const handleTabChange = (tab: TheatreTab) => {
+    setSearchParams(tab === 'OVERVIEW' ? {} : { tab }, { replace: true });
+  };
 
   const { data: overview, isLoading, isError, error, refetch } = useTheatreOverview(theatreId!);
 
@@ -82,7 +100,7 @@ export default function TheatreDetailsPage() {
       <TheatreHeader theatre={theatre}>
         <TheatreTabs
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
           totalScreens={overview.statistics.totalScreens}
           totalShows={overview.statistics.totalShows}
         />

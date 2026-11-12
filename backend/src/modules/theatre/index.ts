@@ -13,4 +13,16 @@ export type {
   ITheatreAccessPolicy,
   TheatreAccessActor,
 } from './application/ports/ITheatreAccessPolicy';
+
+export type {
+  IActiveScreenSeatReader,
+  ActiveScreenSeat,
+} from './application/ports/IActiveScreenSeatReader';
+
+export type {
+  IScreenDetailsReader,
+  ScreenDetails,
+} from './application/ports/IScreenDetailsReader';
+
+export { SeatType } from './domain/enums/SeatType';
 export { ALLOWED_FACILITY_ICON_KEYS, type FacilityIconKey } from './domain/constants/FacilityIconKey';

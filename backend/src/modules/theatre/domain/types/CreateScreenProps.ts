@@ -1,5 +1,6 @@
 export interface CreateScreenProps {
- theatreId: string;
+  theatreId: string;
   name: string;
   slug: string;
+  cinemaFormatIds?: string[];
 }

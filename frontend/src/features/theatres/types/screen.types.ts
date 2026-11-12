@@ -3,12 +3,19 @@ import type { Paginated } from '@/shared/types/apiResponse';
 export type ScreenStatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
 export type SeatConfigurationStatus = 'CONFIGURED' | 'NOT_CONFIGURED';
 
+export interface ScreenCinemaFormat {
+  id: string;
+  name: string;
+  slug?: string;
+}
+
 export interface ScreenListItem {
   id: string;
   theatreId: string;
   name: string;
   slug: string;
   isActive: boolean;
+  cinemaFormats?: ScreenCinemaFormat[];
   totalSeats: number;
   totalRows: number;
   totalShows: number;
@@ -37,4 +44,5 @@ export type GetScreensResponseData = Paginated<ScreenListItem>;
 export interface CreateScreenPayload {
   theatreId: string;
   name: string;
+  cinemaFormatIds?: string[];
 }

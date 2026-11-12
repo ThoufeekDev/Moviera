@@ -92,6 +92,11 @@ export class PrismaScreenQueryService implements IScreenQueryService {
         name: screen.name,
         slug: screen.slug,
         isActive: screen.isActive,
+        cinemaFormats: (screen.cinemaFormats ?? []).map((cf) => ({
+          id: cf.cinemaFormat.id,
+          name: cf.cinemaFormat.name,
+          slug: cf.cinemaFormat.slug,
+        })),
         totalSeats,
         totalRows: rowCountByScreen.get(screen.id) ?? 0,
         totalShows: screen._count.shows,

@@ -10,8 +10,11 @@ import { MovieAdminListItemMapper } from '../mappers/MovieAdminListItemMapper';
 import { toPaginatedResult } from '../../../../../shared/utils/toPaginatedResult';
 import { MovieAdminDetailMapper } from '../mappers/MovieAdminDetailMapper';
 import { movieAdminDetailSelect } from '../selects/MovieAdminDetailSelect';
+import { MovieSchedulingDetails } from '../../../application/read-models/MovieSchedulingDetails';
 
-export class PrismaMovieQueryService implements IMovieQueryService {
+import type { IMovieSchedulingReader } from '../../../application/ports/IMovieSchedulingReader';
+export class PrismaMovieQueryService
+  implements IMovieQueryService, IMovieSchedulingReader {
   constructor(private readonly prisma: PrismaClient) {}
 
   async listForAdmin(query: ListMoviesForAdminQuery): Promise<PaginatedResult<MovieAdminListItem>> {
@@ -142,4 +145,37 @@ export class PrismaMovieQueryService implements IMovieQueryService {
 
     return movie ? MovieAdminDetailMapper.toDetail(movie) : null;
   }
+
+  async findSchedulingDetailsById(
+  id: string,
+): Promise<MovieSchedulingDetails | null> {
+  const movie = await this.prisma.movie.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      duration: true,
+      isActive: true,
+      cinemaFormats: {
+        select: {
+          cinemaFormat: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!movie) return null;
+
+  return {
+    id: movie.id,
+    duration: movie.duration,
+    isActive: movie.isActive,
+    theatreFormatIds: movie.cinemaFormats.map(
+      (format) => format.cinemaFormat.id,
+    ),
+  };
+}
 }
