@@ -1,8 +1,9 @@
 import { useMyTheatres } from '@/features/theatres';
-import { ContentLoader, ErrorState } from '@/shared/ui';
+import { ErrorState } from '@/shared/ui';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ShowListSection from '../components/ShowListSection';
+import TheatreShowsSkeleton from '../components/TheatreShowsSkeleton';
 
 export default function TheatreShowsPage() {
   const navigate = useNavigate();
@@ -10,11 +11,7 @@ export default function TheatreShowsPage() {
   const [selectedTheatreId, setSelectedTheatreId] = useState<string>('ALL');
 
   if (isLoading) {
-    return (
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <ContentLoader subtext="Loading your theatres and shows..." />
-      </div>
-    );
+    return <TheatreShowsSkeleton />;
   }
 
   if (isError) {

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMyTheatres } from '../hooks/useMyTheatres';
 import TheatreCard from '../components/TheatreCard';
-import { ContentLoader, ErrorState, EmptyState, SearchBar, StatusFilter } from '@/shared/ui';
+import MyTheatresSkeleton from '../components/MyTheatresSkeleton';
+import { ErrorState, EmptyState, SearchBar, StatusFilter } from '@/shared/ui';
 
 export function MyTheatrePage() {
   const navigate = useNavigate();
@@ -39,11 +40,7 @@ export function MyTheatrePage() {
           </p>
         </header>
 
-        <ContentLoader
-          text="Loading My Theatres"
-          subtext="Fetching multiplexes and screens assigned to your account..."
-          minHeight="360px"
-        />
+        <MyTheatresSkeleton />
       </div>
     );
   }

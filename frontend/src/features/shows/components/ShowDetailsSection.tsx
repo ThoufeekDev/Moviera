@@ -32,6 +32,10 @@ export interface ShowDetailsSectionProps {
   isCheckingSchedule: boolean;
   isLoadingScreens: boolean;
   hideTheatreSelect?: boolean;
+  /** Edit mode: the backend cannot move a show to another screen. */
+  lockScreen?: boolean;
+  /** Edit mode with bookings: movie and format cannot change. */
+  lockMovieAndFormat?: boolean;
 }
 
 export default function ShowDetailsSection({
@@ -46,6 +50,8 @@ export default function ShowDetailsSection({
   isCheckingSchedule,
   isLoadingScreens,
   hideTheatreSelect = false,
+  lockScreen = false,
+  lockMovieAndFormat = false,
 }: ShowDetailsSectionProps) {
   const {
     register,
@@ -118,6 +124,20 @@ export default function ShowDetailsSection({
       </div>
 
       <div className="flex flex-col gap-5">
+        {(lockScreen || lockMovieAndFormat) && (
+          <p
+            role="note"
+            className="flex items-start gap-2 rounded-md border border-border bg-surface-muted/60 px-3 py-2 text-xs text-ink/70"
+          >
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span>
+              The screen cannot be changed after a show is created.
+              {lockMovieAndFormat &&
+                ' Movie, format and pricing are locked because this show already has booking activity; only the start time can be changed.'}
+            </span>
+          </p>
+        )}
+
         {/* Theatre Selector (shown when user has multiple theatres or came from global /shows/create) */}
         {!hideTheatreSelect && theatres.length > 1 && (
           <div className="flex flex-col gap-1.5">
@@ -158,9 +178,10 @@ export default function ShowDetailsSection({
               aria-labelledby="show-movie-label"
               aria-expanded={isMovieDropdownOpen}
               aria-haspopup="listbox"
+              disabled={lockMovieAndFormat}
               onClick={() => setIsMovieDropdownOpen((prev) => !prev)}
               className={cn(
-                'flex min-h-[60px] w-full items-center justify-between gap-3 rounded-md border bg-surface px-3.5 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600',
+                'flex min-h-[60px] w-full items-center justify-between gap-3 rounded-md border bg-surface px-3.5 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 disabled:cursor-not-allowed disabled:bg-surface-muted/60',
                 errors.movieId ? 'border-danger-600' : 'border-border hover:border-ink/30',
               )}
             >
@@ -282,7 +303,7 @@ export default function ShowDetailsSection({
               aria-labelledby="show-screen-label"
               aria-expanded={isScreenDropdownOpen}
               aria-haspopup="listbox"
-              disabled={isLoadingScreens || screens.length === 0}
+              disabled={lockScreen || isLoadingScreens || screens.length === 0}
               onClick={() => setIsScreenDropdownOpen((prev) => !prev)}
               className={cn(
                 'flex min-h-[60px] w-full items-center justify-between gap-3 rounded-md border bg-surface px-3.5 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 disabled:cursor-not-allowed disabled:opacity-60',
@@ -396,11 +417,12 @@ export default function ShowDetailsSection({
                     <button
                       key={fmt.id}
                       type="button"
+                      disabled={lockMovieAndFormat}
                       onClick={() =>
                         setValue('cinemaFormatId', fmt.id, { shouldValidate: true })
                       }
                       className={cn(
-                        'min-h-[36px] rounded-md border px-3 py-1 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600',
+                        'min-h-[36px] rounded-md border px-3 py-1 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 disabled:cursor-not-allowed disabled:opacity-60',
                         active
                           ? 'border-brand-600 bg-brand-50 text-brand-600'
                           : 'border-border bg-surface text-ink/70 hover:bg-surface-muted',

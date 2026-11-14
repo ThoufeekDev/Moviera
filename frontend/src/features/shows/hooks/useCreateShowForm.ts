@@ -16,7 +16,9 @@ import {
   createShowFormSchema,
   type CreateShowFormValues,
 } from '../schemas/createShowForm.schema';
+import type { ShowDetail } from '../types/show.types';
 import { buildCreateShowPayload } from '../utils/buildCreateShowPayload';
+import { buildUpdateShowPayload } from '../utils/buildUpdateShowPayload';
 import {
   computeSeatCategoryPrices,
   computeShowPriceRangeRupees,
@@ -28,6 +30,7 @@ import {
 } from '../utils/showScheduling.utils';
 import { useCreateShow } from './useCreateShow';
 import { useShows } from './useShows';
+import { useUpdateShow } from './useUpdateShow';
 
 function getTodayDateString(): string {
   const now = new Date();
@@ -53,19 +56,30 @@ const KNOWN_CREATE_SHOW_FIELDS: readonly string[] = [
   'priceAdjustmentsRupees.WHEELCHAIR',
 ];
 
-export interface UseCreateShowFormOptions {
-  initialTheatreId?: string;
+export type ShowSubmitMode = 'DRAFT' | 'PUBLISH' | 'SAVE';
+
+export interface EditShowContext {
+  showId: string;
+  original: ShowDetail;
+  initialValues: CreateShowFormValues;
+  /** True when bookings exist: only the schedule may be edited. */
+  pricingLocked: boolean;
 }
 
-export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions = {}) {
+export interface UseCreateShowFormOptions {
+  initialTheatreId?: string;
+  edit?: EditShowContext;
+}
+
+export function useCreateShowForm({ initialTheatreId, edit }: UseCreateShowFormOptions = {}) {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState<string | null>(null);
   const [unmappedErrors, setUnmappedErrors] = useState<string[]>([]);
-  const [submittingMode, setSubmittingMode] = useState<'DRAFT' | 'PUBLISH' | null>(null);
+  const [submittingMode, setSubmittingMode] = useState<ShowSubmitMode | null>(null);
 
   const form = useForm<CreateShowFormValues>({
     resolver: zodResolver(createShowFormSchema) as Resolver<CreateShowFormValues>,
-    defaultValues: {
+    defaultValues: edit?.initialValues ?? {
       theatreId: initialTheatreId ?? '',
       movieId: '',
       screenId: '',
@@ -128,8 +142,10 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
     [screensData],
   );
 
-  // Pre-select first active configured screen when theatre changes
+  // Pre-select first active configured screen when theatre changes (never in edit mode:
+  // the backend does not allow moving a show to another screen)
   useEffect(() => {
+    if (edit) return;
     if (screens.length === 0) {
       if (watchedValues.screenId) {
         setValue('screenId', '');
@@ -141,7 +157,7 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
     if (!exists) {
       setValue('screenId', screens[0].id, { shouldValidate: true });
     }
-  }, [screens, watchedValues.screenId, setValue]);
+  }, [screens, watchedValues.screenId, setValue, edit]);
 
   const selectedMovie: Movie | undefined = useMemo(
     () => movies.find((m) => m.id === watchedValues.movieId),
@@ -165,8 +181,10 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
     return movieFormats.filter((mf) => screenFormatIds.has(mf.id));
   }, [selectedMovie, selectedScreen]);
 
-  // Keep cinemaFormatId synced to compatibleFormats
+  // Keep cinemaFormatId synced to compatibleFormats (only once movie and screen are known,
+  // so an edited show never loses its format while reference data is still loading)
   useEffect(() => {
+    if (!selectedMovie || !selectedScreen) return;
     if (compatibleFormats.length === 0) {
       if (watchedValues.cinemaFormatId) {
         setValue('cinemaFormatId', '');
@@ -182,7 +200,13 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
         shouldValidate: true,
       });
     }
-  }, [compatibleFormats, watchedValues.cinemaFormatId, setValue]);
+  }, [
+    compatibleFormats,
+    watchedValues.cinemaFormatId,
+    selectedMovie,
+    selectedScreen,
+    setValue,
+  ]);
 
   const selectedFormat = useMemo(
     () => compatibleFormats.find((f) => f.id === watchedValues.cinemaFormatId),
@@ -209,8 +233,12 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
   );
 
   const endTimeDate = useMemo(
-    () => calculateShowEndTime(startTimeDate, selectedMovie?.duration),
-    [startTimeDate, selectedMovie?.duration],
+    () =>
+      calculateShowEndTime(
+        startTimeDate,
+        selectedMovie?.duration ?? edit?.original.movie.duration,
+      ),
+    [startTimeDate, selectedMovie?.duration, edit?.original.movie.duration],
   );
 
   const scheduleEvaluation = useMemo(
@@ -220,12 +248,14 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
         endTime: endTimeDate,
         cleaningBufferMinutes: selectedTheatre?.cleaningBufferMinutes ?? 15,
         existingShows: existingShowsData?.items ?? [],
+        excludeShowId: edit?.showId,
       }),
     [
       startTimeDate,
       endTimeDate,
       selectedTheatre?.cleaningBufferMinutes,
       existingShowsData?.items,
+      edit?.showId,
     ],
   );
 
@@ -248,20 +278,46 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
   );
 
   const createShowMutation = useCreateShow();
+  const updateShowMutation = useUpdateShow();
+
+  const navigateToShows = (theatreId: string) => {
+    navigate(
+      theatreId
+        ? `/theatre-admin/theatres/${theatreId}?tab=SHOWS`
+        : '/theatre-admin/shows',
+    );
+  };
+
+  const applyServerError = (err: unknown) => {
+    const mapped = setFormServerErrors(setError, err, {
+      fieldAliases: {
+        startTime: 'showTime',
+        endTime: 'showTime',
+        basePrice: 'basePriceRupees',
+        priceAdjustments: 'priceAdjustmentsRupees',
+      },
+      knownFields: KNOWN_CREATE_SHOW_FIELDS,
+    });
+    setServerError(mapped.generalMessage);
+    setUnmappedErrors(mapped.unmappedErrors);
+  };
+
+  const hasConflictError = (): boolean => {
+    if (!scheduleEvaluation.hasConflict) return false;
+    setError('showTime', {
+      type: 'manual',
+      message:
+        'Selected show time conflicts with an existing show or cleaning buffer on this screen',
+    });
+    return true;
+  };
 
   const submitWithMode = (publishImmediately: boolean) =>
     handleSubmit(async (values) => {
       setServerError(null);
       setUnmappedErrors([]);
 
-      if (scheduleEvaluation.hasConflict) {
-        setError('showTime', {
-          type: 'manual',
-          message:
-            'Selected show time conflicts with an existing show or cleaning buffer on this screen',
-        });
-        return;
-      }
+      if (hasConflictError()) return;
 
       setSubmittingMode(publishImmediately ? 'PUBLISH' : 'DRAFT');
 
@@ -277,28 +333,38 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
             ? 'Show created and published successfully!'
             : 'Show saved as draft!',
         );
-
-        if (values.theatreId) {
-          navigate(`/theatre-admin/theatres/${values.theatreId}?tab=SHOWS`);
-        } else {
-          navigate('/theatre-admin/shows');
-        }
+        navigateToShows(values.theatreId);
       } catch (err: unknown) {
-        const mapped = setFormServerErrors(setError, err, {
-          fieldAliases: {
-            startTime: 'showTime',
-            endTime: 'showTime',
-            basePrice: 'basePriceRupees',
-            priceAdjustments: 'priceAdjustmentsRupees',
-          },
-          knownFields: KNOWN_CREATE_SHOW_FIELDS,
-        });
-        setServerError(mapped.generalMessage);
-        setUnmappedErrors(mapped.unmappedErrors);
+        applyServerError(err);
       } finally {
         setSubmittingMode(null);
       }
     });
+
+  const handleSaveChanges = handleSubmit(async (values) => {
+    if (!edit) return;
+    setServerError(null);
+    setUnmappedErrors([]);
+
+    if (hasConflictError()) return;
+
+    const payload = buildUpdateShowPayload(values, edit.initialValues, edit.pricingLocked);
+    if (!payload) {
+      toast.info('No changes to save.');
+      return;
+    }
+
+    setSubmittingMode('SAVE');
+    try {
+      await updateShowMutation.mutateAsync({ showId: edit.showId, payload });
+      toast.success('Show updated successfully!');
+      navigateToShows(edit.original.theatre.id);
+    } catch (err: unknown) {
+      applyServerError(err);
+    } finally {
+      setSubmittingMode(null);
+    }
+  });
 
   return {
     form,
@@ -323,7 +389,7 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
       refetchTheatres();
       refetchMovies();
     },
-    isSubmitting: createShowMutation.isPending,
+    isSubmitting: createShowMutation.isPending || updateShowMutation.isPending,
     submittingMode,
     serverError,
     unmappedErrors,
@@ -333,6 +399,7 @@ export function useCreateShowForm({ initialTheatreId }: UseCreateShowFormOptions
     },
     handleSaveAsDraft: submitWithMode(false),
     handleCreateAndPublish: submitWithMode(true),
+    handleSaveChanges,
   };
 }
 

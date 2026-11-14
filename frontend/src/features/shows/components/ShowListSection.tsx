@@ -5,6 +5,7 @@ import {
   EmptyState,
   ErrorState,
   Pagination,
+  RefreshButton,
   SearchBar,
   Skeleton,
 } from '@/shared/ui';
@@ -14,11 +15,13 @@ import {
   Clock,
   Film,
   Monitor,
+  Pencil,
   Plus,
   Send,
   XCircle,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useCancelShow } from '../hooks/useCancelShow';
 import { usePublishShow } from '../hooks/usePublishShow';
@@ -46,13 +49,17 @@ export default function ShowListSection({
   theatreId,
   onScheduleShow,
 }: ShowListSectionProps) {
+  const navigate = useNavigate();
+  // `search` is the committed value: SearchBar debounces typing (400ms) and commits
+  // immediately on Enter/clear. The query key includes it, so TanStack Query cancels
+  // stale requests (AbortSignal) and never shows an older response over a newer one.
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<ShowStatusFilter>('ALL');
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, error, refetch } = useShows({
+  const { data, isLoading, isFetching, isError, error, refetch } = useShows({
     theatreId,
-    search: search.trim() || undefined,
+    search: search || undefined,
     status,
     page,
     limit: 20,
@@ -61,8 +68,10 @@ export default function ShowListSection({
   const publishMutation = usePublishShow();
   const cancelMutation = useCancelShow();
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
+  const handleSearch = (term: string) => {
+    const next = term.trim();
+    if (next === search) return;
+    setSearch(next);
     setPage(1);
   };
 
@@ -91,7 +100,7 @@ export default function ShowListSection({
 
   const items = data?.items ?? [];
   const pagination = data?.pagination;
-  const hasFilters = Boolean(search.trim() || status !== 'ALL');
+  const hasFilters = Boolean(search || status !== 'ALL');
 
   return (
     <div className="flex flex-col gap-6">
@@ -104,10 +113,19 @@ export default function ShowListSection({
           </p>
         </div>
 
-        <Button variant="primary" size="md" onClick={onScheduleShow}>
-          <Plus className="mr-1.5 h-4 w-4" aria-hidden="true" />
-          Schedule Show
-        </Button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <RefreshButton
+            onClick={() => refetch()}
+            isRefreshing={isFetching}
+            title="Refresh shows"
+            ariaLabel="Refresh shows"
+          />
+
+          <Button variant="primary" size="md" onClick={onScheduleShow}>
+            <Plus className="mr-1.5 h-4 w-4" aria-hidden="true" />
+            Schedule Show
+          </Button>
+        </div>
       </div>
 
       {/* Search & Status Filter Controls */}
@@ -115,10 +133,18 @@ export default function ShowListSection({
         <div className="w-full sm:max-w-md">
           <SearchBar
             value={search}
-            onChange={handleSearchChange}
-            onSearch={handleSearchChange}
+            onSearch={handleSearch}
             placeholder="Search by movie, screen, or format..."
+            ariaLabel="Search shows"
+            debounceMs={400}
+            searchOnSubmitOnly={false}
+            showButton={false}
           />
+          {isFetching && !isLoading && (
+            <p role="status" className="mt-1.5 text-xs text-ink-muted">
+              Updating results…
+            </p>
+          )}
         </div>
 
         <div
@@ -274,6 +300,18 @@ export default function ShowListSection({
 
                 {/* Actions */}
                 <div className="flex flex-wrap items-center gap-2 self-end sm:self-center">
+                  {show.status !== 'CANCELLED' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={isPublishing || isCancelling}
+                      onClick={() => navigate(`/theatre-admin/shows/${show.id}/edit`)}
+                      aria-label={`Edit show ${show.movie.title}`}
+                    >
+                      <Pencil className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                      Edit
+                    </Button>
+                  )}
                   {show.status === 'DRAFT' && (
                     <Button
                       variant="primary"

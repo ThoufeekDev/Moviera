@@ -158,15 +158,22 @@ export default function TheatreScreens({ theatreId }: TheatreScreensProps) {
       </div>
 
       <section className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-card sm:flex-row sm:items-center sm:justify-between">
-        <SearchBar
-          value={search}
-          onSearch={handleSearch}
-          placeholder="Search by screen name or identifier..."
-          ariaLabel="Search screens"
-          debounceMs={400}
-          searchOnSubmitOnly={false}
-          className="flex-1"
-        />
+        <div className="flex-1">
+          <SearchBar
+            value={search}
+            onSearch={handleSearch}
+            placeholder="Search by screen name or identifier..."
+            ariaLabel="Search screens"
+            debounceMs={400}
+            searchOnSubmitOnly={false}
+            showButton={false}
+          />
+          {isFetching && !isLoading && (
+            <p role="status" className="mt-1.5 text-xs text-ink-muted">
+              Updating results…
+            </p>
+          )}
+        </div>
         <StatusFilter<ScreenStatusFilter>
           label="Status:"
           value={status}

@@ -1,6 +1,7 @@
 import type { Movie, MovieTheatreFormat } from '@/features/movies';
 import type { ScreenListItem, Theatre } from '@/features/theatres';
 import { Button } from '@/shared/ui/Button';
+import type { ShowSubmitMode } from '../hooks/useCreateShowForm';
 import {
   Building2,
   Calendar,
@@ -28,9 +29,11 @@ export interface ShowSummaryCardProps {
   priceRange: { minRupees: number; maxRupees: number };
   hasScheduleConflict: boolean;
   isSubmitting: boolean;
-  submittingMode: 'DRAFT' | 'PUBLISH' | null;
+  submittingMode: ShowSubmitMode | null;
+  isEditMode?: boolean;
   onSaveAsDraft: () => void;
   onCreateAndPublish: () => void;
+  onSaveChanges?: () => void;
 }
 
 export default function ShowSummaryCard({
@@ -46,8 +49,10 @@ export default function ShowSummaryCard({
   hasScheduleConflict,
   isSubmitting,
   submittingMode,
+  isEditMode = false,
   onSaveAsDraft,
   onCreateAndPublish,
+  onSaveChanges,
 }: ShowSummaryCardProps) {
   const movieLanguages =
     selectedMovie?.languages?.map((l) => l.name).join(', ') || 'Multi-language';
@@ -174,49 +179,74 @@ export default function ShowSummaryCard({
         </div>
       </div>
 
-      {/* Seat Inventory Creation Info Banner */}
+      {/* Seat Inventory Info Banner */}
       <div className="mb-5 flex items-start gap-2.5 rounded-md border border-border bg-surface-muted/70 px-3.5 py-3 text-xs text-ink/80">
         <Info
           className="mt-0.5 h-4 w-4 shrink-0 text-ink/60"
           aria-hidden="true"
         />
         <p>
-          A total of{' '}
-          <span className="font-semibold text-ink">{totalSeats} show seats</span>{' '}
-          will be created with the above pricing.
+          {isEditMode ? (
+            <>
+              Seat prices are only regenerated when pricing changes and the show has no
+              bookings.
+            </>
+          ) : (
+            <>
+              A total of{' '}
+              <span className="font-semibold text-ink">{totalSeats} show seats</span>{' '}
+              will be created with the above pricing.
+            </>
+          )}
         </p>
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          size="md"
-          disabled={isSubmitting || hasScheduleConflict}
-          loading={isSubmitting && submittingMode === 'DRAFT'}
-          onClick={onSaveAsDraft}
-          className="w-full"
-        >
-          Save as Draft
-        </Button>
-
+      {isEditMode ? (
         <Button
           type="button"
           variant="primary"
           size="md"
           disabled={isSubmitting || hasScheduleConflict}
-          loading={isSubmitting && submittingMode === 'PUBLISH'}
-          onClick={onCreateAndPublish}
+          loading={isSubmitting && submittingMode === 'SAVE'}
+          onClick={onSaveChanges}
           className="w-full"
         >
-          Create &amp; Publish
+          Save Changes
         </Button>
-      </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              disabled={isSubmitting || hasScheduleConflict}
+              loading={isSubmitting && submittingMode === 'DRAFT'}
+              onClick={onSaveAsDraft}
+              className="w-full"
+            >
+              Save as Draft
+            </Button>
 
-      <p className="mt-3 text-center text-[11px] text-ink/60">
-        You can also save as draft and publish later.
-      </p>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              disabled={isSubmitting || hasScheduleConflict}
+              loading={isSubmitting && submittingMode === 'PUBLISH'}
+              onClick={onCreateAndPublish}
+              className="w-full"
+            >
+              Create &amp; Publish
+            </Button>
+          </div>
+
+          <p className="mt-3 text-center text-[11px] text-ink/60">
+            You can also save as draft and publish later.
+          </p>
+        </>
+      )}
     </aside>
   );
 }

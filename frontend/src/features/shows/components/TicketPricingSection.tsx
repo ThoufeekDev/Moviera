@@ -7,6 +7,8 @@ import type { ComputedSeatCategoryPrice } from '../utils/showPricing.utils';
 
 export interface TicketPricingSectionProps {
   categoryPrices: ComputedSeatCategoryPrice[];
+  /** Pricing cannot change once the show has booking activity. */
+  locked?: boolean;
 }
 
 const SEAT_CATEGORY_DOT_CLASSES: Record<SeatType, string> = {
@@ -19,6 +21,7 @@ const SEAT_CATEGORY_DOT_CLASSES: Record<SeatType, string> = {
 
 export default function TicketPricingSection({
   categoryPrices,
+  locked = false,
 }: TicketPricingSectionProps) {
   const {
     register,
@@ -64,8 +67,10 @@ export default function TicketPricingSection({
               min={1}
               step="1"
               {...register('basePriceRupees', { valueAsNumber: true })}
+              readOnly={locked}
               className={cn(
                 'min-h-[44px] w-full rounded-md border bg-surface pl-8 pr-3.5 py-2 text-sm font-semibold text-ink focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20',
+                locked && 'cursor-not-allowed bg-surface-muted/60',
                 errors.basePriceRupees ? 'border-danger-600' : 'border-border',
               )}
             />
@@ -142,8 +147,10 @@ export default function TicketPricingSection({
                         {...register(`priceAdjustmentsRupees.${row.seatType}`, {
                           valueAsNumber: true,
                         })}
+                        readOnly={locked}
                         className={cn(
                           'mx-auto block h-9 w-24 rounded border bg-surface px-2.5 py-1 text-xs font-medium text-ink focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20',
+                          locked && 'cursor-not-allowed bg-surface-muted/60',
                           !row.isValid || fieldError
                             ? 'border-danger-600'
                             : 'border-border',

@@ -66,11 +66,13 @@ export function evaluateScreenScheduleSlot(params: {
   endTime: Date | null;
   cleaningBufferMinutes?: number;
   existingShows: ShowListItem[];
+  excludeShowId?: string;
 }): ScheduleConflictEvaluation {
   const cleaningBufferMinutes = Math.max(0, params.cleaningBufferMinutes ?? 15);
   const bufferMs = cleaningBufferMinutes * 60_000;
 
   const activeShows = params.existingShows
+    .filter((s) => s.id !== params.excludeShowId)
     .filter((s) => s.status === 'DRAFT' || s.status === 'PUBLISHED')
     .sort(
       (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),

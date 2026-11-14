@@ -1,5 +1,4 @@
 import {
-  ContentLoader,
   ErrorState,
   FormErrorBanner,
 } from '@/shared/ui';
@@ -9,15 +8,22 @@ import { FormProvider } from 'react-hook-form';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import CreateShowStepper from '../components/CreateShowStepper';
 import ShowDetailsSection from '../components/ShowDetailsSection';
+import ShowFormSkeleton from '../components/ShowFormSkeleton';
 import ShowSummaryCard from '../components/ShowSummaryCard';
 import TicketPricingSection from '../components/TicketPricingSection';
-import { useCreateShowForm } from '../hooks/useCreateShowForm';
+import { useCreateShowForm, type EditShowContext } from '../hooks/useCreateShowForm';
 
-export default function CreateShowPage() {
+export interface CreateShowPageProps {
+  /** When provided the page edits an existing show instead of creating one. */
+  edit?: EditShowContext;
+}
+
+export default function CreateShowPage({ edit }: CreateShowPageProps = {}) {
+  const isEditMode = Boolean(edit);
   const { theatreId: paramTheatreId } = useParams<{ theatreId?: string }>();
   const [searchParams] = useSearchParams();
   const initialTheatreId =
-    paramTheatreId ?? searchParams.get('theatreId') ?? undefined;
+    edit?.original.theatre.id ?? paramTheatreId ?? searchParams.get('theatreId') ?? undefined;
 
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
   const detailsRef = useRef<HTMLDivElement>(null);
@@ -51,7 +57,8 @@ export default function CreateShowPage() {
     onDismissError,
     handleSaveAsDraft,
     handleCreateAndPublish,
-  } = useCreateShowForm({ initialTheatreId });
+    handleSaveChanges,
+  } = useCreateShowForm({ initialTheatreId, edit });
 
   const showDate = form.watch('showDate');
   const basePriceRupees = Number(form.watch('basePriceRupees')) || 0;
@@ -68,11 +75,7 @@ export default function CreateShowPage() {
   };
 
   if (isLoadingInitialData) {
-    return (
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <ContentLoader subtext="Loading theatre and movie catalog..." />
-      </div>
-    );
+    return <ShowFormSkeleton />;
   }
 
   if (isInitialError) {
@@ -106,12 +109,18 @@ export default function CreateShowPage() {
             Shows
           </Link>
           <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
-          <span className="font-medium text-ink">Create Show</span>
+          <span className="font-medium text-ink">
+            {isEditMode ? 'Edit Show' : 'Create Show'}
+          </span>
         </nav>
 
-        <h1 className="text-2xl font-bold text-ink">Create Show</h1>
+        <h1 className="text-2xl font-bold text-ink">
+          {isEditMode ? 'Edit Show' : 'Create Show'}
+        </h1>
         <p className="text-sm text-ink/60">
-          Schedule a new movie show for your theatre
+          {isEditMode
+            ? 'Update the schedule and pricing of this show'
+            : 'Schedule a new movie show for your theatre'}
         </p>
       </header>
 
@@ -135,7 +144,11 @@ export default function CreateShowPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleCreateAndPublish();
+            if (isEditMode) {
+              handleSaveChanges();
+            } else {
+              handleCreateAndPublish();
+            }
           }}
           noValidate
           className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start"
@@ -154,12 +167,17 @@ export default function CreateShowPage() {
                 scheduleEvaluation={scheduleEvaluation}
                 isCheckingSchedule={isCheckingSchedule}
                 isLoadingScreens={isLoadingScreens}
-                hideTheatreSelect={Boolean(paramTheatreId)}
+                hideTheatreSelect={isEditMode || Boolean(paramTheatreId)}
+                lockScreen={isEditMode}
+                lockMovieAndFormat={Boolean(edit?.pricingLocked)}
               />
             </div>
 
             <div ref={pricingRef} onFocusCapture={() => setActiveStep(2)}>
-              <TicketPricingSection categoryPrices={categoryPrices} />
+              <TicketPricingSection
+                categoryPrices={categoryPrices}
+                locked={Boolean(edit?.pricingLocked)}
+              />
             </div>
           </div>
 
@@ -182,8 +200,10 @@ export default function CreateShowPage() {
               hasScheduleConflict={scheduleEvaluation.hasConflict}
               isSubmitting={isSubmitting}
               submittingMode={submittingMode}
+              isEditMode={isEditMode}
               onSaveAsDraft={handleSaveAsDraft}
               onCreateAndPublish={handleCreateAndPublish}
+              onSaveChanges={handleSaveChanges}
             />
           </div>
         </form>

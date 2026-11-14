@@ -31,6 +31,9 @@ const TheatreShowsPage = lazy(() =>
 const CreateShowPage = lazy(() =>
   import('@/features/shows').then((m) => ({ default: m.CreateShowPage }))
 );
+const EditShowPage = lazy(() =>
+  import('@/features/shows').then((m) => ({ default: m.EditShowPage }))
+);
 
 export const theatreAdminRoutes = (
   <>
@@ -76,6 +79,7 @@ export const theatreAdminRoutes = (
         />
         <Route path="shows" element={<TheatreShowsPage />} />
         <Route path="shows/create" element={<CreateShowPage />} />
+        <Route path="shows/:showId/edit" element={<EditShowPage />} />
         <Route
           path="settings"
           element={
