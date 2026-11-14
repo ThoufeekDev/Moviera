@@ -1,4 +1,5 @@
 import type { PaginatedResult } from "../../../../shared/types/Pagination";
+import type { ResolvedScreenSummary } from "../read-models/ResolvedScreenSummary";
 import type { ScreenListItem } from "../read-models/ScreenListItem";
 
 export interface ListScreensFilter {
@@ -13,4 +14,8 @@ export interface IScreenQueryService {
     theatreId: string,
     filter?: ListScreensFilter,
   ): Promise<PaginatedResult<ScreenListItem>>;
+  findByTheatreAndSlug(
+    theatreId: string,
+    screenSlug: string,
+  ): Promise<ResolvedScreenSummary | null>;
 }

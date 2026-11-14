@@ -45,52 +45,84 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
     }));
   }
 
-  async getOverview(theatreId: string, adminId: string): Promise<TheatreOverview | null> {
-    const assignment = await this.prisma.theatreAdminAssignment.findFirst({
+  async findTheatreIdBySlugs(citySlug: string, theatreSlug: string): Promise<string | null> {
+    const theatre = await this.prisma.theatre.findFirst({
       where: {
-        theatreId,
-        userId: adminId,
-        isActive: true,
-        user: {
-          isActive:true,
-        },
-        theatre: {
-          isActive: true,
-          deletedAt:null,
+        slug: theatreSlug,
+        deletedAt: null,
+        city: {
+          slug: citySlug,
         },
       },
-      include: {
-        theatre: {
-          include: {
-            city: true,
-            facilities: {
-              include: {
-                facility: true,
-              },
-            },
-            screens: {
-              include: {
-                _count: {
-                  select: {
-                    seats: true,
-                    shows: true,
-                  },
-                },
-              },
-            },
-            _count: {
-              select: {
-                reviews: true,
-              },
+      select: {
+        id: true,
+      },
+    });
+
+    return theatre?.id ?? null;
+  }
+
+  async getOverview(
+    theatreId: string,
+    adminId: string,
+    isSuperAdmin = false,
+  ): Promise<TheatreOverview | null> {
+    const includeConfig = {
+      city: true,
+      facilities: {
+        include: {
+          facility: true,
+        },
+      },
+      screens: {
+        include: {
+          _count: {
+            select: {
+              seats: true,
+              shows: true,
             },
           },
         },
       },
-    });
+      _count: {
+        select: {
+          reviews: true,
+        },
+      },
+    };
 
-    if (!assignment) return null;
+    const theatre = isSuperAdmin
+      ? await this.prisma.theatre.findFirst({
+          where: {
+            id: theatreId,
+            isActive: true,
+            deletedAt: null,
+          },
+          include: includeConfig,
+        })
+      : (
+          await this.prisma.theatreAdminAssignment.findFirst({
+            where: {
+              theatreId,
+              userId: adminId,
+              isActive: true,
+              user: {
+                isActive: true,
+              },
+              theatre: {
+                isActive: true,
+                deletedAt: null,
+              },
+            },
+            include: {
+              theatre: {
+                include: includeConfig,
+              },
+            },
+          })
+        )?.theatre ?? null;
 
-    const theatre = assignment.theatre;
+    if (!theatre) return null;
 
     const totalScreens = theatre.screens.length;
 
@@ -309,6 +341,7 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
             select: {
               id: true,
               name: true,
+              slug: true,
               state: true,
             },
           },
@@ -450,11 +483,30 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
   }
 
   async getTheatreDetailForSuperAdmin(identifier: string): Promise<SuperAdminTheatreDetail | null> {
-    const theatre = await this.prisma.theatre.findFirst({
-      where: {
-        deletedAt: null,
-        OR: [{ id: identifier }, { slug: identifier }],
+    return this.fetchSuperAdminTheatreDetail({
+      deletedAt: null,
+      OR: [{ id: identifier }, { slug: identifier }],
+    });
+  }
+
+  async getTheatreDetailForSuperAdminBySlugs(
+    citySlug: string,
+    theatreSlug: string,
+  ): Promise<SuperAdminTheatreDetail | null> {
+    return this.fetchSuperAdminTheatreDetail({
+      deletedAt: null,
+      slug: theatreSlug,
+      city: {
+        slug: citySlug,
       },
+    });
+  }
+
+  private async fetchSuperAdminTheatreDetail(
+    where: Prisma.TheatreWhereInput,
+  ): Promise<SuperAdminTheatreDetail | null> {
+    const theatre = await this.prisma.theatre.findFirst({
+      where,
       include: {
         city: true,
         area: true,
@@ -623,6 +675,7 @@ export class PrismaTheatreQueryService implements ITheatreQueryService {
       city: {
         id: theatre.city.id,
         name: theatre.city.name,
+        slug: theatre.city.slug,
         district: theatre.city.district,
         state: theatre.city.state,
         country: theatre.city.country,

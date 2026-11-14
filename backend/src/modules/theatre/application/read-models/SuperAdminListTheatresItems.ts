@@ -12,6 +12,7 @@ export interface SuperAdminListTheatresItems {
   city: {
     id: string;
     name: string;
+    slug: string;
     state?: string;
   };
   createdAt: Date;

@@ -12,8 +12,17 @@ import type { SuperAdminTheatreDetail } from '../read-models/SuperAdminTheatreDe
 
 export interface ITheatreQueryService {
   findByAdminId(adminId: string): Promise<TheatreWithCity[]>;
-  getOverview(theatreId: string, adminId: string): Promise<TheatreOverview | null>;
+  findTheatreIdBySlugs(citySlug: string, theatreSlug: string): Promise<string | null>;
+  getOverview(
+    theatreId: string,
+    adminId: string,
+    isSuperAdmin?: boolean,
+  ): Promise<TheatreOverview | null>;
   getTheatreDetailForSuperAdmin(theatreId: string): Promise<SuperAdminTheatreDetail | null>;
+  getTheatreDetailForSuperAdminBySlugs(
+    citySlug: string,
+    theatreSlug: string,
+  ): Promise<SuperAdminTheatreDetail | null>;
   listForSuperAdmin(filter?: {
     search?: string;
     city?: string;

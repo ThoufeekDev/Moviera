@@ -22,6 +22,7 @@ export interface SuperAdminTheatreDetail {
   city: {
     id: string;
     name: string;
+    slug: string;
     district: string | null;
     state: string;
     country: string;

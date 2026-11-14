@@ -107,4 +107,27 @@ export class PrismaScreenQueryService implements IScreenQueryService {
 
     return toPaginatedResult(items, total, page, limit);
   }
+
+  async findByTheatreAndSlug(
+    theatreId: string,
+    screenSlug: string,
+  ): Promise<ResolvedScreenSummary | null> {
+    const screen = await this.prisma.screen.findUnique({
+      where: {
+        theatreId_slug: {
+          theatreId,
+          slug: screenSlug,
+        },
+      },
+      select: {
+        id: true,
+        theatreId: true,
+        name: true,
+        slug: true,
+        isActive: true,
+      },
+    });
+
+    return screen ?? null;
+  }
 }
