@@ -84,17 +84,45 @@ export class PrismaScreenRepository implements IScreenRepository,IScreenDetailsR
   }
 
   async findScreenDetailsById(
-  screenId: string,
-): Promise<ScreenDetails | null> {
-  return this.prisma.screen.findUnique({
-    where: { id: screenId },
-    select: {
-      id: true,
-      theatreId: true,
-      isActive: true,
-    },
-  });
-}
+    screenId: string,
+  ): Promise<ScreenDetails | null> {
+    const screen = await this.prisma.screen.findUnique({
+      where: { id: screenId },
+      select: {
+        id: true,
+        theatreId: true,
+        isActive: true,
+        theatre: {
+          select: {
+            isActive: true,
+            deletedAt: true,
+            cleaningBufferMinutes: true,
+          },
+        },
+        cinemaFormats: {
+          where: {
+            cinemaFormat: {
+              isActive: true,
+            },
+          },
+          select: {
+            cinemaFormatId: true,
+          },
+        },
+      },
+    });
+
+    if (!screen) return null;
+
+    return {
+      id: screen.id,
+      theatreId: screen.theatreId,
+      isActive: screen.isActive,
+      theatreIsActive: screen.theatre.isActive && screen.theatre.deletedAt === null,
+      cleaningBufferMinutes: screen.theatre.cleaningBufferMinutes,
+      cinemaFormatIds: screen.cinemaFormats.map((cf) => cf.cinemaFormatId),
+    };
+  }
 
 
 }

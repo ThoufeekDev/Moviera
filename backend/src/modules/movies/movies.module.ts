@@ -42,6 +42,7 @@ import { createPersonRoutes } from './presentation/routes/person.routes';
 import { createLanguageRoutes } from './presentation/routes/language.routes';
 import { createTheatreFormatRoutes } from './presentation/routes/theatre-format.routes';
 import { createGenreRoutes } from './presentation/routes/genre.routes';
+import type { IMovieSchedulingReader } from './application/ports/IMovieSchedulingReader';
 
 export function buildMoviesModule(
   prisma: PrismaClient,
@@ -54,6 +55,7 @@ export function buildMoviesModule(
   const theatreFormatRepository = new PrismaTheatreFormatRepository(prisma);
   const personRepository = new PrismaPersonRepository(prisma);
   const movieQueryService = new PrismaMovieQueryService(prisma);
+  const movieSchedulingReader: IMovieSchedulingReader = movieQueryService;
 
   // Services
   const movieReferenceValidator = new MovieReferenceValidator(
@@ -152,5 +154,6 @@ export function buildMoviesModule(
     languageRouter,
     theatreFormatRouter,
     genreRouter,
+    movieSchedulingReader,
   };
 }

@@ -29,6 +29,10 @@ export function createMovieRoutes(controllers: MovieRouteControllers): Router {
   const movieRoute = Router();
 
   const admin = [authenticateUser, authorizeRoles(Role.SUPER_ADMIN)];
+  const movieReaders = [
+    authenticateUser,
+    authorizeRoles(Role.SUPER_ADMIN, Role.THEATRE_ADMIN),
+  ];
   const files = upload.fields([
     { name: 'poster', maxCount: 1 },
     { name: 'backdrop', maxCount: 1 },
@@ -37,7 +41,7 @@ export function createMovieRoutes(controllers: MovieRouteControllers): Router {
   // Admin routes
   movieRoute.get(
     '/admin',
-    ...admin,
+    ...movieReaders,
     validate({ query: listMoviesForAdminSchema }),
     adapt(controllers.listMoviesForAdminController.handle),
   );

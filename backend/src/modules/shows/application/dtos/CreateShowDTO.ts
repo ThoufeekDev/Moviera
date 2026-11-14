@@ -1,6 +1,4 @@
-import type { TheatreAccessActor } from '../../../theatre';
-import type { SeatType } from '../../../theatre';
-
+import type { TheatreAccessActor, SeatType } from '../../../theatre';
 
 export interface CreateShowDTO {
   actor: TheatreAccessActor;
@@ -10,5 +8,5 @@ export interface CreateShowDTO {
   startTime: Date;
   endTime?: Date;
   basePrice: number;
-  priceAdjustments: Record<SeatType, number>;
+  priceAdjustments?: Partial<Record<SeatType, number>>;
 }

@@ -17,6 +17,7 @@ export class TheatreResponseMapper {
       latitude: theatre.latitude,
       longitude: theatre.longitude,
       isActive: theatre.isActive,
+      cleaningBufferMinutes: theatre.cleaningBufferMinutes,
       licenseNumber: theatre.licenseNumber,
       createdAt: theatre.createdAt,
       updatedAt: theatre.updatedAt,

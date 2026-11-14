@@ -16,6 +16,7 @@ export interface TheatreProps {
   pincode?: string | null;
   landmark?: string | null;
   isActive: boolean;
+  cleaningBufferMinutes?: number;
   licenseNumber?: string | null;
   createdById?: string | null;
   deletedAt?: Date | null;

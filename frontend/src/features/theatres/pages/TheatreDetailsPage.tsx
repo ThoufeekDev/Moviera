@@ -113,12 +113,7 @@ export default function TheatreDetailsPage() {
       {activeTab === 'SCREENS' && <TheatreScreens theatreId={theatre.id} />}
 
       {/* Shows */}
-      {activeTab === 'SHOWS' && (
-        <TheatreShows
-          totalShows={overview.statistics.totalShows}
-          totalScreens={overview.statistics.totalScreens}
-        />
-      )}
+      {activeTab === 'SHOWS' && <TheatreShows theatreId={theatre.id} />}
 
       {/* Settings */}
       {activeTab === 'SETTINGS' && <TheatreSettings />}

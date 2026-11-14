@@ -1,29 +1,19 @@
-import { Button } from '@/shared/ui/Button';
+import { ShowListSection } from '@/features/shows';
+import { useNavigate } from 'react-router-dom';
 
-interface TheatreShowsProps {
-  totalShows: number;
-  totalScreens: number;
+export interface TheatreShowsProps {
+  theatreId: string;
 }
 
-export default function TheatreShows({
-  totalShows,
-  totalScreens,
-}: TheatreShowsProps) {
+export default function TheatreShows({ theatreId }: TheatreShowsProps) {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h2 className="text-xl font-bold text-ink">Today&apos;s Showtimes</h2>
-
-        <Button variant="primary" size="md">
-          + Schedule Show
-        </Button>
-      </div>
-
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface p-12 text-center text-sm text-ink-muted shadow-card">
-        <p>
-          {totalShows} active showtimes scheduled for today across {totalScreens} screens.
-        </p>
-      </div>
-    </div>
+    <ShowListSection
+      theatreId={theatreId}
+      onScheduleShow={() =>
+        navigate(`/theatre-admin/theatres/${theatreId}/shows/create`)
+      }
+    />
   );
 }

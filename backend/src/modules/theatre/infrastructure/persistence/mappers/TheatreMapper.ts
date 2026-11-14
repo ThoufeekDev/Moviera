@@ -22,6 +22,7 @@ export class TheatreMapper {
       pincode: data.pincode,
       landmark: data.landmark,
       isActive: data.isActive,
+      cleaningBufferMinutes: data.cleaningBufferMinutes,
       licenseNumber: data.licenseNumber,
       createdById: data.createdById,
       deletedAt: data.deletedAt,

@@ -25,6 +25,12 @@ const TheatreDetailsPage = lazy(() =>
 const ScreenSeatManagementPage = lazy(() =>
   import('@/features/theatres').then((m) => ({ default: m.ScreenSeatManagementPage }))
 );
+const TheatreShowsPage = lazy(() =>
+  import('@/features/shows').then((m) => ({ default: m.TheatreShowsPage }))
+);
+const CreateShowPage = lazy(() =>
+  import('@/features/shows').then((m) => ({ default: m.CreateShowPage }))
+);
 
 export const theatreAdminRoutes = (
   <>
@@ -64,6 +70,12 @@ export const theatreAdminRoutes = (
           path="theatres/:theatreId/screens/:screenId/seats"
           element={<ScreenSeatManagementPage />}
         />
+        <Route
+          path="theatres/:theatreId/shows/create"
+          element={<CreateShowPage />}
+        />
+        <Route path="shows" element={<TheatreShowsPage />} />
+        <Route path="shows/create" element={<CreateShowPage />} />
         <Route
           path="settings"
           element={

@@ -1,6 +1,5 @@
 import type { ShowStatus } from "../enums/ShowStatus";
 
-
 export interface ShowProps {
   id: string;
   movieId: string;
@@ -10,7 +9,7 @@ export interface ShowProps {
   endTime: Date;
   basePrice: number;
   status: ShowStatus;
+  isActive?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
-
-
-

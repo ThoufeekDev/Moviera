@@ -24,6 +24,7 @@ export interface Theatre {
   pincode?: string | null;
   landmark?: string | null;
   isActive: boolean;
+  cleaningBufferMinutes?: number;
   licenseNumber: string | null;
   city: City;
   area?: Area | null;

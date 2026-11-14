@@ -1,0 +1,4 @@
+export const MIN_SHOW_SEAT_PRICE_PAISE = 100;
+export const DEFAULT_CLEANING_BUFFER_MINUTES = 15;
+export const QUICK_CLEANING_BUFFER_OPTIONS = [10, 15, 20] as const;
+

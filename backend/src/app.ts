@@ -33,6 +33,10 @@ app.use('/genres', container.movies.genreRouter);
 // Theatre Module
 app.use('/theatres', container.theatre.theatreRouter);
 app.use('/theatres', container.theatre.seatRouter);
+app.use('/theatres', container.shows.theatreShowRouter);
+
+// Shows Module
+app.use('/shows', container.shows.showRouter);
 
 // Error Handling Middleware
 app.use(errorHandler);

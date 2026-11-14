@@ -88,6 +88,10 @@ get googlePlaceId(): string | null {
     return this.props.isActive;
   }
 
+  get cleaningBufferMinutes(): number {
+    return this.props.cleaningBufferMinutes ?? 15;
+  }
+
   get pincode(): string | null {
     return this.props.pincode ?? null;
   }

@@ -9,4 +9,6 @@ export interface ShowResultDTO {
   endTime: Date;
   basePrice: number;
   status: ShowStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

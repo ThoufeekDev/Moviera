@@ -147,35 +147,40 @@ export class PrismaMovieQueryService
   }
 
   async findSchedulingDetailsById(
-  id: string,
-): Promise<MovieSchedulingDetails | null> {
-  const movie = await this.prisma.movie.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      duration: true,
-      isActive: true,
-      cinemaFormats: {
-        select: {
-          cinemaFormat: {
-            select: {
-              id: true,
+    id: string,
+  ): Promise<MovieSchedulingDetails | null> {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        duration: true,
+        isActive: true,
+        cinemaFormats: {
+          where: {
+            cinemaFormat: {
+              isActive: true,
+            },
+          },
+          select: {
+            cinemaFormat: {
+              select: {
+                id: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
 
-  if (!movie) return null;
+    if (!movie) return null;
 
-  return {
-    id: movie.id,
-    duration: movie.duration,
-    isActive: movie.isActive,
-    theatreFormatIds: movie.cinemaFormats.map(
-      (format) => format.cinemaFormat.id,
-    ),
-  };
-}
+    return {
+      id: movie.id,
+      duration: movie.duration,
+      isActive: movie.isActive,
+      theatreFormatIds: movie.cinemaFormats.map(
+        (format) => format.cinemaFormat.id,
+      ),
+    };
+  }
 }

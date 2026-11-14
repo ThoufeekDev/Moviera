@@ -3,6 +3,8 @@ export * from './types/person.types';
 export * from './types/referenceData.types';
 export * from './keys';
 export { useTheatreFormats } from './hooks/useTheatreFormats';
+export { useMovies } from './hooks/useMovies';
+export type { GetMoviesParams } from './api/getMovies.api';
 
 export { default as MovieManagementPage } from './pages/MovieManagementPage';
 export { default as CreateMoviePage } from './pages/CreateMoviePage';
